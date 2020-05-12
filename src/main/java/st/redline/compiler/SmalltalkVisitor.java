@@ -104,7 +104,7 @@ public interface SmalltalkVisitor<T> extends ParseTreeVisitor<T> {
 	T visitHex(@NotNull SmalltalkParser.HexContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link SmalltalkParser#StatementExpressions}.
+	 * Visit a parse tree produced by {@link SmalltalkParser.StatementExpressionsContext}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -153,7 +153,7 @@ public interface SmalltalkVisitor<T> extends ParseTreeVisitor<T> {
 	T visitScript(@NotNull SmalltalkParser.ScriptContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link SmalltalkParser#StatementExpressionsAnswer}.
+	 * Visit a parse tree produced by {@link SmalltalkParser.StatementExpressionsAnswerContext}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -258,7 +258,7 @@ public interface SmalltalkVisitor<T> extends ParseTreeVisitor<T> {
 	T visitExpression(@NotNull SmalltalkParser.ExpressionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link SmalltalkParser#StatementAnswer}.
+	 * Visit a parse tree produced by {@link SmalltalkParser.StatementAnswerContext}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

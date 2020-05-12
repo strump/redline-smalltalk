@@ -15,7 +15,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	public byte[] generatedClassBytes() { return null; }
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -23,7 +22,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -31,7 +29,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -39,7 +36,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -47,7 +43,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -55,7 +50,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -63,7 +57,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -71,7 +64,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -79,7 +71,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -87,7 +78,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -95,7 +85,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -103,7 +92,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -111,7 +99,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -119,7 +106,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -127,7 +113,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -135,7 +120,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -143,7 +127,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -151,7 +134,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -159,7 +141,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -167,7 +148,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -175,7 +155,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -183,7 +162,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -191,7 +169,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -199,7 +176,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -207,7 +183,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -215,7 +190,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -223,7 +197,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -231,7 +204,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -239,7 +211,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -247,7 +218,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -255,7 +225,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -263,7 +232,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -271,7 +239,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -279,7 +246,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -287,7 +253,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -295,7 +260,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -303,7 +267,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -311,7 +274,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -319,7 +281,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -327,7 +288,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -335,7 +295,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -343,7 +302,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -351,7 +309,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -359,7 +316,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -367,7 +323,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -375,7 +330,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -383,7 +337,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -391,7 +344,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -399,7 +351,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
@@ -407,7 +358,6 @@ public class SmalltalkBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 
 	/**
 	 * {@inheritDoc}
-	 * <p/>
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
