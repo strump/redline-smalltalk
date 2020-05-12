@@ -50,6 +50,11 @@
       <version>4.1</version>
     </dependency>
     <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-all</artifactId>
       <version>5.1</version>
@@ -58,29 +63,50 @@
 
   <build>
     <defaultGoal>install</defaultGoal>
-      <resources>
-        <resource>
-          <directory>${project.basedir}/src/main/smalltalk</directory>
-          <includes>
-            <include>**/*.st</include>
-          </includes>
-        </resource>
-      </resources>
-      <testResources>
-        <testResource>
-          <directory>${project.basedir}/src/test/java</directory>
-          <includes>
-            <include>**/*.st</include>
-          </includes>
-        </testResource>
-        <testResource>
-          <directory>${project.basedir}/src/test/smalltalk</directory>
-          <includes>
-            <include>**/*.st</include>
-          </includes>
-        </testResource>
-      </testResources>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/smalltalk</directory>
+        <includes>
+          <include>**/*.st</include>
+        </includes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>${project.basedir}/src/test/java</directory>
+        <includes>
+          <include>**/*.st</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>${project.basedir}/src/test/smalltalk</directory>
+        <includes>
+          <include>**/*.st</include>
+        </includes>
+      </testResource>
+    </testResources>
     <plugins>
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+        <version>4.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+            <configuration>
+              <visitor>true</visitor>
+              <listener>false</listener>
+              <outputDirectory>${project.build.directory}/generated-sources/st/redline/compiler/generated</outputDirectory>
+              <arguments>
+                <argument>-package</argument>
+                <argument>st.redline.compiler.generated</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

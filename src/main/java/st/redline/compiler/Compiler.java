@@ -5,6 +5,8 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import st.redline.classloader.Source;
+import st.redline.compiler.generated.SmalltalkLexer;
+import st.redline.compiler.generated.SmalltalkParser;
 
 public class Compiler {
 

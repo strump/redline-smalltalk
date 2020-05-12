@@ -7,6 +7,9 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.*;
 import st.redline.classloader.SmalltalkClassLoader;
 import st.redline.classloader.Source;
+import st.redline.compiler.generated.SmalltalkBaseVisitor;
+import st.redline.compiler.generated.SmalltalkVisitor;
+import st.redline.compiler.generated.SmalltalkParser;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -1331,7 +1334,6 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         OPCODES.put("V1_4", 48);
         OPCODES.put("V1_5", 49);
         OPCODES.put("V1_6", 50);
-        OPCODES.put("V1_7", 51);
         OPCODES.put("V1_7", 51);
         OPCODES.put("V1_8", 52);
         OPCODES.put("ACC_PUBLIC", 1);
