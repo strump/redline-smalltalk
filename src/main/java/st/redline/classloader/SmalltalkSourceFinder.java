@@ -11,6 +11,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
 
     private final SourceFactory sourceFactory;
     private final String[] classPaths;
+    private static final String fileSeparatorEscaped = File.separator.replace("\\", "\\\\");
 
     public SmalltalkSourceFinder(SourceFactory sourceFactory, String[] classPaths) {
         this.sourceFactory = sourceFactory;
@@ -32,7 +33,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
     }
 
     private List<Source> findInPath(String path) {
-        String packagePath = path.replace(".", SEPARATOR);
+        String packagePath = path.replace(".", CLASS_SEPARATOR);
         List<Source> sources = new ArrayList<>();
         for (String classPath : classPaths)
             sources.addAll(findInPath(packagePath, classPath));
@@ -48,7 +49,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
 
     @SuppressWarnings("unchecked")
     private List<Source> findSourceInFile(String packagePath, String classPath) {
-        File folder = new File(classPath + SEPARATOR + packagePath);
+        File folder = new File(classPath + CLASS_SEPARATOR + packagePath);
         if (!folder.isDirectory())
             return Collections.EMPTY_LIST;
         List<Source> sources = new ArrayList<>();
@@ -56,7 +57,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
         if (files != null)
             for (File file : files)
                 if (file.isFile() && file.getName().endsWith(SOURCE_EXTENSION))
-                    sources.add(sourceFile(packagePath + SEPARATOR + file.getName(), file, classPath));
+                    sources.add(sourceFile(packagePath + CLASS_SEPARATOR + file.getName(), file, classPath));
         return sources;
     }
 
@@ -94,7 +95,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
     }
 
     private String toFilename(String name) {
-        return name.replaceAll("\\.", File.separator) + SOURCE_EXTENSION;
+        return name.replaceAll("\\.", fileSeparatorEscaped) + SOURCE_EXTENSION;
     }
 
     public class SourceNotFound implements Source {

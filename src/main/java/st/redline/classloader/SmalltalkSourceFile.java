@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class SmalltalkSourceFile implements Source, LineTransformer {
 
-    public static final String SEPARATOR = "/";
+    public static final String CLASS_SEPARATOR = "/";
     public static final String SOURCE_EXTENSION = ".st";
 
     private static final Pattern METHOD_START_PATTERN = Pattern.compile("^[-+] .*\\s");
@@ -160,10 +160,10 @@ public class SmalltalkSourceFile implements Source, LineTransformer {
     public String packageName() {
         if (packageName == null) {
             packageName = fullClassName();
-            int index = packageName.lastIndexOf(File.separatorChar);
+            int index = packageName.lastIndexOf(CLASS_SEPARATOR);
             if (index != -1)
                 packageName = packageName.substring(0, index);
-            packageName = packageName.replaceAll(String.valueOf(File.separatorChar), ".");
+            packageName = packageName.replaceAll(Pattern.quote(CLASS_SEPARATOR), ".");
         }
         return packageName;
     }

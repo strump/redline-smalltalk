@@ -3,6 +3,7 @@ package st.redline.classloader;
 
 import java.io.*;
 
+import static st.redline.classloader.SmalltalkSourceFile.CLASS_SEPARATOR;
 import static st.redline.classloader.SmalltalkSourceFile.SOURCE_EXTENSION;
 
 public class SourceFactory {
@@ -19,7 +20,7 @@ public class SourceFactory {
 
     private String nameWithoutExtensionAndPackage(String sourceName) {
         String name = nameWithoutExtension(sourceName);
-        int index = name.lastIndexOf(File.separator);
+        int index = name.lastIndexOf(CLASS_SEPARATOR);
         if (index == -1)
             return name;
         return name.substring(index + 1);

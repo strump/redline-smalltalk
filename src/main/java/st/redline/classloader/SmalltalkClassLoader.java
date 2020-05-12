@@ -212,7 +212,7 @@ public class SmalltalkClassLoader extends ClassLoader {
     }
 
     private String dotted(String name) {
-        return name.replaceAll(String.valueOf(File.separator), ".");
+        return name.replaceAll(SmalltalkSourceFile.CLASS_SEPARATOR, ".");
     }
 
     public void importAll(String packageName) {
