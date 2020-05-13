@@ -143,81 +143,156 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         mv.visitInsn(ACONST_NULL);
     }
 
+    /* Generate code:
+     * <code>
+       primContext.temporaryAt(index);
+       </code>
+     */
     public void pushTemporary(MethodVisitor mv, int index) {
         pushContext(mv);
         pushNumber(mv, index);
         mv.visitMethodInsn(INVOKEVIRTUAL, contextName(), "temporaryAt", "(I)Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code:
+     * <code>
+       primContext.homeTemporaryAt(index);
+       </code>
+     */
     public void pushHomeTemporary(MethodVisitor mv, int index) {
         pushContext(mv);
         pushNumber(mv, index);
         mv.visitMethodInsn(INVOKEVIRTUAL, contextName(), "homeTemporaryAt", "(I)Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code:
+     * <code>
+       static PrimContext.temporaryPutAt(primObject, index, primContext);
+       </code>
+     */
     public void storeTemporary(MethodVisitor mv, int index) {
         pushNumber(mv, index);
         pushContext(mv);
         mv.visitMethodInsn(INVOKESTATIC, contextName(), "temporaryPutAt", "(Lst/redline/core/PrimObject;IL" + contextName() + ";)V", false);
     }
 
+    /* Generate code:
+     * <code>
+       primContext.instVarAt(var);
+       </code>
+     */
     public void pushInstVar(MethodVisitor mv, String var) {
         pushContext(mv);
         pushLiteral(mv, var);
         mv.visitMethodInsn(INVOKEVIRTUAL, contextName(), "instVarAt", "(Ljava/lang/String;)Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code:
+     * <code>
+       static PrimContext.instVarPutAt(primObject, identifier, primContext);
+       </code>
+     */
     public void storeInstVar(MethodVisitor mv, String identifier) {
         pushLiteral(mv, identifier);
         pushContext(mv);
         mv.visitMethodInsn(INVOKESTATIC, contextName(), "instVarPutAt", "(Lst/redline/core/PrimObject;Ljava/lang/String;L" + contextName() + ";)V", false);
     }
 
+    /* Generate code:
+     * <code>
+       static PrimContext.homeTemporaryPutAt(primObject, index, primContext);
+       </code>
+     */
     public void storeHomeTemporary(MethodVisitor mv, int index) {
         pushNumber(mv, index);
         pushContext(mv);
         mv.visitMethodInsn(INVOKESTATIC, contextName(), "homeTemporaryPutAt", "(Lst/redline/core/PrimObject;IL" + contextName() + ";)V", false);
     }
 
+    /* Generate code:
+     * <code>
+       primContext.argumentAt(index);
+       </code>
+     */
     public void pushArgument(MethodVisitor mv, int index) {
         pushContext(mv);
         pushNumber(mv, index);
         mv.visitMethodInsn(INVOKEVIRTUAL, contextName(), "argumentAt", "(I)Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code:
+     * <code>
+       primContext.outerArgumentAt(index);
+       </code>
+     */
     public void pushOuterArgument(MethodVisitor mv, int index) {
         pushContext(mv);
         pushNumber(mv, index);
         mv.visitMethodInsn(INVOKEVIRTUAL, contextName(), "outerArgumentAt", "(I)Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code:
+     * <code>
+       primContext.homeArgumentAt(index);
+       </code>
+     */
     public void pushHomeArgument(MethodVisitor mv, int index) {
         pushContext(mv);
         pushNumber(mv, index);
         mv.visitMethodInsn(INVOKEVIRTUAL, contextName(), "homeArgumentAt", "(I)Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code:
+     * <code>
+       primObject.reference(name);
+       </code>
+     */
     public void pushReference(MethodVisitor mv, String name) {
         pushReceiver(mv);
         pushLiteral(mv, name);
         mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "reference", "(Ljava/lang/String;)Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code:
+     * <code>
+       primObject.referenceNil();
+       </code>
+     */
     public void pushNil(MethodVisitor mv) {
         pushReceiver(mv);
         mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "referenceNil", "()Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code:
+     * <code>
+       primObject.referenceTrue();
+       </code>
+     */
     public void pushTrue(MethodVisitor mv) {
         pushReceiver(mv);
         mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "referenceTrue", "()Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code:
+     * <code>
+       primObject.referenceFalse();
+       </code>
+     */
     public void pushFalse(MethodVisitor mv) {
         pushReceiver(mv);
         mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "referenceFalse", "()Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate code (assuming arguments are already on stack):
+     * <code>
+       primObject.perform(arg0, selector);
+       primObject.perform(arg0, arg1, selector);
+       primObject.perform(arg0, arg1, ..., argN, selector);
+       primObject.superPerform(arg0, selector);
+       primObject.superPerform(arg0, arg1, selector);
+       primObject.superPerform(arg0, arg1, ..., argN, selector);
+       </code>
+     */
     public void invokePerform(MethodVisitor mv, String selector, int argumentCount, boolean sendToSuper) {
         pushLiteral(mv, selector);
         String methodName = (sendToSuper) ? "superPerform" : "perform";
@@ -230,6 +305,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         mv.visitLineNumber(line, l0);
     }
 
+    /* Push integer on stack */
     public static void pushNumber(MethodVisitor mv, int value) {
         switch (value) {
             case 0: mv.visitInsn(ICONST_0); break;
@@ -246,6 +322,12 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
     }
 
+    /* Convert Java value to Smalltalk PrimObject value and put on stack:
+     * <code>
+       primObject.{type}(value);
+       </code>
+       `type` could be "smalltalkArray", "smalltalkCharacter", "smalltalkInteger", "smalltalkString" or "smalltalkSymbol"
+     */
     public void pushNewObject(MethodVisitor mv, String type, String value, int line) {
         visitLine(mv, line);
         pushReceiver(mv);
@@ -253,6 +335,13 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", type, "(Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
     }
 
+    /* Create BlockClosure class to wrap smalltalk block lambda (with ^ answer or without)
+     * <code>
+       primObject.smalltalkBlock(lambdaObject, context);
+       primObject.smalltalkBlockAnswer(lambdaObject, context);
+       </code>
+       `type` could be "smalltalkArray", "smalltalkCharacter", "smalltalkInteger", "smalltalkString" or "smalltalkSymbol"
+     */
     private void pushNewBlock(MethodVisitor mv, String className, String name, String sig, int line, boolean answerBlock, String answerBlockClassName) {
         pushNewLambda(mv, className, name, sig, line);
         pushContext(mv);
@@ -265,10 +354,13 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     }
 
     private void pushNewMethod(MethodVisitor mv, String className, String name, String sig, int line) {
-        pushNewLambda(mv, className,name, sig, line);
+        pushNewLambda(mv, className, name, sig, line);
         mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "smalltalkMethod", "(Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
     }
 
+    /* Generate lambda call with LambdaBlock interface.
+     * TODO: clarify, is lambda function invoked by this bytecode or only created!
+     */
     private void pushNewLambda(MethodVisitor mv, String className, String name, String sig, int line) {
         visitLine(mv, line);
         pushReceiver(mv);
@@ -278,6 +370,9 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
 
     // ------------------------------
 
+    /* Generator of class bytecode. Such generator is created once for every *.st source file assuming that
+     * single .st file contains one class definition (see source.fullClassName()).
+     */
     private class ClassGeneratorVisitor extends SmalltalkBaseVisitor<Void> implements SmalltalkVisitor<Void>, Opcodes {
 
         protected final String LAMBDA_BLOCK_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
@@ -310,6 +405,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             mv = methodVisitor;
         }
 
+        /* Generate full bytecode for a single class. */
         public Void visitScript(SmalltalkParser.ScriptContext ctx) {
             openJavaClass();
             createPackageNameMethod();
@@ -372,6 +468,17 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             classBytes = cw.toByteArray();
         }
 
+        /* Generate constructor
+         * <code>
+           <init>() {
+               super();
+               importAll(packageName());
+               PrimContext context = new PrimContext(this);
+               selfClass(this);
+               sendMessages(this, context);
+           }
+           </code>
+         */
         private void makeJavaClassInitializer() {
             MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
             mv.visitCode();
@@ -428,6 +535,11 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             return null;
         }
 
+        /* Generate constructor
+         * <code>
+           primContext.initTemporaries(temporaries.size());
+           </code>
+         */
         private void addTemporariesToContext() {
             visitLine(mv, lineNumberOfFirstTemporary());
             pushContext(mv);
@@ -1022,8 +1134,8 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             cw.visitSource(className() + sourceFileExtension(), null);
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(Lst/redline/core/PrimObject;)V", null, null);
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn(ALOAD, 0); //this
+            mv.visitVarInsn(ALOAD, 1); //first argument
             mv.visitMethodInsn(INVOKESPECIAL, "st/redline/core/PrimBlockAnswer", "<init>", "(Lst/redline/core/PrimObject;)V", false);
             mv.visitInsn(RETURN);
             mv.visitMaxs(2, 2);
@@ -1061,6 +1173,10 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     }
 
 
+    /* Generator of Smalltalk block method.
+     * Each Smalltalk block is compiled to Java inner class method with name "B2B1B4" meaning that every
+     * inner block appends name to outer block method name.
+     */
     private class BlockGeneratorVisitor extends ClassGeneratorVisitor {
 
         private final ClassWriter cw;
@@ -1081,6 +1197,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             this.outerArguments = outerArguments;
         }
 
+        /* Generate java lambda body with Smalltalk block code inside. */
         public void handleBlock(@NotNull SmalltalkParser.BlockContext ctx) {
             log("handleBlock " + blockName + " " + blockNumber);
             openBlockLambdaMethod();

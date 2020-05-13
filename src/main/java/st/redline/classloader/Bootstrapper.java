@@ -131,11 +131,19 @@ public class Bootstrapper {
         classLoader.cacheObject("st.redline.kernel.PrimObject", primObject);
     }
 
-    private void loadObject(ClassLoader classLoader, String name) {
+    private void loadObject(SmalltalkClassLoader classLoader, String name) {
         try {
             // Loading and instantiating the class causes the 'sendMessages' java method
             // to be called which executes all the message sends of the Smalltalk source.
-            classLoader.loadClass(name).newInstance();
+            final Class<?> aClass = classLoader.loadClass(name);
+            aClass.newInstance();
+
+            /*final PrimObject cachedObject = classLoader.cachedObject(name);
+            if (cachedObject instanceof PrimClass) {
+                PrimClass cachedClass = (PrimClass) cachedObject;
+                //cachedClass.addMethod;
+                System.out.println("Class: "+ aClass.getName());
+            }*/
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
