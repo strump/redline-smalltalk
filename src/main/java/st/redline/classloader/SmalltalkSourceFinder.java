@@ -11,7 +11,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
 
     private final SourceFactory sourceFactory;
     private final String[] classPaths;
-    private static final String fileSeparatorEscaped = File.separator.replace("\\", "\\\\");
+    public static final String FILE_SEPARATOR_ESCAPED = File.separator.replace("\\", "\\\\");
 
     public SmalltalkSourceFinder(SourceFactory sourceFactory, String[] classPaths) {
         this.sourceFactory = sourceFactory;
@@ -95,7 +95,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
     }
 
     private String toFilename(String name) {
-        return name.replaceAll("\\.", fileSeparatorEscaped) + SOURCE_EXTENSION;
+        return name.replaceAll("\\.", FILE_SEPARATOR_ESCAPED) + SOURCE_EXTENSION;
     }
 
     public class SourceNotFound implements Source {

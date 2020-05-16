@@ -4,6 +4,7 @@ package st.redline.classloader;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static st.redline.classloader.SmalltalkSourceFinder.FILE_SEPARATOR_ESCAPED;
 
 /* Note: Move the preprocessing responsibility into an inner class. */
 
@@ -152,8 +153,10 @@ public class SmalltalkSourceFile implements Source, LineTransformer {
     }
 
     public String fullClassName() {
-        if (fullClassName == null)
+        if (fullClassName == null) {
             fullClassName = withoutClassPath(withoutExtension(filename()));
+            fullClassName = fullClassName.replaceAll(FILE_SEPARATOR_ESCAPED, CLASS_SEPARATOR);
+        }
         return fullClassName;
     }
 
