@@ -358,14 +358,23 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "smalltalkMethod", "(Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
     }
 
-    /* Generate lambda call with LambdaBlock interface.
-     * TODO: clarify, is lambda function invoked by this bytecode or only created!
+    /* Generate lambda function with LambdaBlock interface. Body of the lambda function is static method
+       created by BlockGeneratorVisitor.
+       <code>
+       (thiz, reciever, context) -> {
+           //lambda body here
+       }
+       </code>
      */
-    private void pushNewLambda(MethodVisitor mv, String className, String name, String sig, int line) {
+    private void pushNewLambda(MethodVisitor mv, String className, String methodName, String sig, int line) {
         visitLine(mv, line);
         pushReceiver(mv);
-        mv.visitInvokeDynamicInsn("apply", "()Lst/redline/core/LambdaBlock;",
-                new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory", "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;"), new Object[]{Type.getType(sig), new Handle(Opcodes.H_INVOKESTATIC, className, name, sig), Type.getType(sig)});
+
+        final Handle bootstrapMethodHandle = new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory",
+                "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;", false);
+        final Handle lambdaMethodHandle = new Handle(Opcodes.H_INVOKESTATIC, className, methodName, sig, false);
+        mv.visitInvokeDynamicInsn("apply", "()Lst/redline/core/LambdaBlock;", bootstrapMethodHandle,
+                Type.getType(sig), lambdaMethodHandle, Type.getType(sig));
     }
 
     // ------------------------------
