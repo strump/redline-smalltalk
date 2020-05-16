@@ -105,7 +105,7 @@ public class SmalltalkClassLoader extends ClassLoader {
     private void saveClass(byte[] classData, String name) {
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream("/home/jamesl/dev/redline-smalltalk/target/classes/" + name + ".class");
+            fos = new FileOutputStream("D:\\tmp\\redline\\" + name + ".class");
             fos.write(classData);
             fos.close();
         } catch (Exception e) {
