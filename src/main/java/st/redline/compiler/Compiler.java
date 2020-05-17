@@ -58,8 +58,7 @@ public class Compiler {
         //parser.setErrorHandler(new BailErrorStrategy());
         parser.removeErrorListeners();
         parser.addErrorListener(new SmalltalkParserErrorListener());
-        //dumpTree(parser);
-
+        dumpTree(parser);
 
         return parser.script();
     }
@@ -82,8 +81,11 @@ public class Compiler {
             final List<String> ruleNamesList = Arrays.asList(parser.getRuleNames());
             final String treeStr = TreeUtils.toPrettyTree(parser.script(), ruleNamesList);
             fos.write(treeStr.getBytes());
-        } catch (Exception e) {
-            log.error("Can't save tree dump", e);
+        } catch (SmalltalkParserException e) {
+            throw e;
+        }
+        catch (Exception exc) {
+            log.error("Can't save tree dump", exc);
         }
     }
 }

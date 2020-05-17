@@ -21,7 +21,7 @@ public class ParserTest {
     private static List<String> parserTestFiles;
 
     @BeforeClass
-    public static void init() throws IOException {
+    public static void init() {
         parserTestFiles = new LinkedList<>();
         final URL smalltalkStream = ParserTest.class.getClassLoader().getResource(SMALLTALK_FOLDER);
         final File[] files = new File(smalltalkStream.getPath()).listFiles();

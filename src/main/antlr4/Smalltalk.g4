@@ -7,7 +7,7 @@ grammar Smalltalk;
 
 script : sequence ws EOF;
 sequence : temps? ws statements? ws;
-ws : (SEP | LINE_END | COMMENT)*;
+ws : (SEP | EOL | COMMENT)*;
 temps : ws PIPE (ws IDENTIFIER)+ ws PIPE;
 statements : answer ws # StatementAnswer
            | expressions ws PERIOD ws answer # StatementExpressionsAnswer
@@ -71,10 +71,9 @@ methodDeclaration : methodHeader SEP* LINE_END
 methodHeader : IDENTIFIER | (BINARY_SELECTOR SEP* IDENTIFIER) | (KEYWORD SEP* IDENTIFIER (SEP+ KEYWORD SEP* IDENTIFIER)+);
 
 EXCLAMATION : '!';
-LINE_END : '\r'? '\n';
+EOL : '\r'? '\n';
 SEP : [ \t];
 
-//SEPARATOR : [ \t\r\n];
 STRING : '\'' (.)*? '\'';
 COMMENT : '"' (.)*? '"';
 BLOCK_START : '[';
