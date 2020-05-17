@@ -1,8 +1,7 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.compiler;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ public class Compiler {
         return generateClass(parsedSourceContents());
     }
 
-    private ParseTree parsedSourceContents() {
+    public ParseTree parsedSourceContents() {
         return parse(sourceContents());
     }
 
@@ -51,10 +50,16 @@ public class Compiler {
     }
 
     private ParseTree parse(String input) {
-        SmalltalkLexer lexer = new SmalltalkLexer(new ANTLRInputStream(input));
-        SmalltalkParser parser = new SmalltalkParser(new CommonTokenStream(lexer));
+        final ANTLRInputStream inputStream = new ANTLRInputStream(input);
+        inputStream.name = source.fullClassName();
 
+        SmalltalkLexer lexer = new SmalltalkLexer(inputStream);
+        SmalltalkParser parser = new SmalltalkParser(new CommonTokenStream(lexer));
+        //parser.setErrorHandler(new BailErrorStrategy());
+        parser.removeErrorListeners();
+        parser.addErrorListener(new ParserErrorListener());
         //dumpTree(parser);
+
 
         return parser.script();
     }
