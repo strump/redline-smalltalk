@@ -49,8 +49,7 @@ public class Compiler {
     }
 
     private ParseTree parse(String input) {
-        final ANTLRInputStream inputStream = new ANTLRInputStream(input);
-        inputStream.name = source.fullClassName();
+        final CharStream inputStream = CharStreams.fromString(input, source.fullClassName());
 
         SmalltalkLexer lexer = new SmalltalkLexer(inputStream);
         SmalltalkParser parser = new SmalltalkParser(new CommonTokenStream(lexer));

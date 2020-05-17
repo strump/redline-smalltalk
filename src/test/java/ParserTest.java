@@ -50,10 +50,10 @@ public class ParserTest {
                 final Compiler compiler = new Compiler(loadTestSource(SMALLTALK_FOLDER + "/" + filename));
                 final ParseTree parseTree = compiler.parsedSourceContents();
                 assertNotNull(parseTree);
-                System.out.println(counter+"/"+totalTestFiles+". "+SMALLTALK_FOLDER + "/" + filename + " OK");
+                System.out.println(counter+"/"+totalTestFiles+". "+SMALLTALK_FOLDER + "/" + filename + " - OK");
             }
             catch (SmalltalkParserException ex) {
-                System.err.println(counter+"/"+totalTestFiles+". "+SMALLTALK_FOLDER + "/" + filename + " failed\n\t" + ex.getMessage());
+                System.err.println(counter+"/"+totalTestFiles+". "+SMALLTALK_FOLDER + "/" + filename + " - failed\n\t" + ex.getMessage());
                 hasFailures = true;
             }
             counter ++;
