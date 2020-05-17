@@ -1,17 +1,14 @@
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import st.redline.classloader.Source;
 import st.redline.compiler.Compiler;
 import st.redline.compiler.SmalltalkParserException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,17 +18,16 @@ import static org.junit.Assert.fail;
 public class ParserTest {
     public static final String SMALLTALK_FOLDER = "smalltalk";
 
-    private List<String> parserTestFiles;
+    private static List<String> parserTestFiles;
 
-    @Before
-    public void init() throws IOException {
+    @BeforeClass
+    public static void init() throws IOException {
         parserTestFiles = new LinkedList<>();
-        final InputStream smalltalkStream = getClass().getClassLoader().getResourceAsStream(SMALLTALK_FOLDER);
-        BufferedReader br = new BufferedReader(new InputStreamReader(smalltalkStream));
+        final URL smalltalkStream = ParserTest.class.getClassLoader().getResource(SMALLTALK_FOLDER);
+        final File[] files = new File(smalltalkStream.getPath()).listFiles();
 
-        String resource;
-        while ((resource = br.readLine()) != null) {
-            parserTestFiles.add(resource);
+        for(File resourceFile : files) {
+            parserTestFiles.add(resourceFile.getName());
         }
     }
 
@@ -44,15 +40,27 @@ public class ParserTest {
 
     @Test
     public void testSmalltalkParser() throws IOException {
+        int totalTestFiles = parserTestFiles.size();
+        int counter = 1;
+        boolean hasFailures = false;
+
+        System.out.println("Parsing " + totalTestFiles + " test files:");
         for(String filename : parserTestFiles) {
             try {
                 final Compiler compiler = new Compiler(loadTestSource(SMALLTALK_FOLDER + "/" + filename));
                 final ParseTree parseTree = compiler.parsedSourceContents();
                 assertNotNull(parseTree);
+                System.out.println(counter+"/"+totalTestFiles+". "+SMALLTALK_FOLDER + "/" + filename + " OK");
             }
             catch (SmalltalkParserException ex) {
-                fail("Failed to parse file "+SMALLTALK_FOLDER + "/" + filename + "\n\t" + ex.getMessage());
+                System.err.println(counter+"/"+totalTestFiles+". "+SMALLTALK_FOLDER + "/" + filename + " failed\n\t" + ex.getMessage());
+                hasFailures = true;
             }
+            counter ++;
+        }
+
+        if (hasFailures) {
+            fail("Some test Smalltalk files are not parsed successfully");
         }
     }
 
