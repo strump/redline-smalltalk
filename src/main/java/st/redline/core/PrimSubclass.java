@@ -1,16 +1,19 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import st.redline.classloader.SmalltalkClassLoader;
 
 public class PrimSubclass extends PrimObject {
+    private static final Logger log = LoggerFactory.getLogger(PrimSubclass.class);
 
     public static final PrimObject PRIM_SUBCLASS = new PrimSubclass();
 
     private PrimObject theMetaclass;
 
     protected PrimObject invoke(PrimObject receiver, PrimContext primContext) {
-        System.out.println("PrimSubclass invoke: " + String.valueOf(primContext.argumentJavaValueAt(0)));
+        log.info("PrimSubclass invoke: {}", primContext.argumentJavaValueAt(0));
         assert receiver.equals(primContext.receiver());
 
         String subclassName = String.valueOf(primContext.argumentJavaValueAt(0));
@@ -33,7 +36,7 @@ public class PrimSubclass extends PrimObject {
         }
 
         // TODO - Add other definitions to appropriate objects.
-        //System.out.println("TODO - Add other definitions to appropriate objects.");
+        //log.warn("TODO - Add other definitions to appropriate objects.");
 
         if (!bootstrapping) {
             SmalltalkClassLoader classLoader = classLoader();

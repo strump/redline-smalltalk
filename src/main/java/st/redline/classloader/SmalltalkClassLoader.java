@@ -1,6 +1,8 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.classloader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import st.redline.compiler.Compiler;
 import st.redline.core.PrimObject;
 
@@ -10,6 +12,7 @@ import java.util.*;
 import static st.redline.compiler.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
 
 public class SmalltalkClassLoader extends ClassLoader {
+    private static final Logger log = LoggerFactory.getLogger(SmalltalkClassLoader.class);
 
     // Special Object instance values set during bootstrapping.
     private static PrimObject NIL;
@@ -36,7 +39,7 @@ public class SmalltalkClassLoader extends ClassLoader {
     }
 
     public PrimObject findObject(String name) {
-//        System.out.println("** findObject " + name);
+        log.trace("** findObject {}", name);
         PrimObject cls = cachedObject(name);
         if (cls != null)
             return cls;
@@ -79,17 +82,17 @@ public class SmalltalkClassLoader extends ClassLoader {
     }
 
     protected PrimObject cachedObject(String name) {
-        //System.out.println("** cachedObject " + name);
+        log.trace("** cachedObject {}", name);
         return objectCache.get(name);
     }
 
     public void cacheObject(String name, PrimObject object) {
-        //System.out.println("** cacheObject " + object + " as " + name);
+        log.trace("** cacheObject {} as {}", object, name);
         objectCache.put(name, object);
     }
 
     public Class findClass(String name) throws ClassNotFoundException {
-//        System.out.println("** findClass " + name);
+        log.trace("** findClass {}", name);
         Class cls = cachedClass(name);
         if (cls != null)
             return cls;
@@ -114,7 +117,7 @@ public class SmalltalkClassLoader extends ClassLoader {
     }
 
     private void cacheClass(Class cls, String name) {
-        //System.out.println("** cacheClass " + cls + " as " + name);
+        log.trace("** cacheClass {} as {}", cls, name);
         classCache.put(name, cls);
     }
 
@@ -201,7 +204,7 @@ public class SmalltalkClassLoader extends ClassLoader {
 
     @SuppressWarnings("unchecked")
     public String importForBy(String name, String packageName) {
-        //System.out.println("** importFor: " + name + " in " + packageName);
+        log.trace("** importFor: {} in {}", name, packageName);
         Map<String, Source> imports = packageCache.getOrDefault(packageName, Collections.EMPTY_MAP);
         Source source = imports.get(name);
         if (source != null)
@@ -216,14 +219,14 @@ public class SmalltalkClassLoader extends ClassLoader {
     }
 
     public void importAll(String packageName) {
-        //System.out.println("** importAll: " + packageName + " " + packageCache.containsKey(packageName));
+        log.trace("** importAll: {} {}", packageName, packageCache.containsKey(packageName));
         if (!packageCache.containsKey(packageName))
             for (Source source : sourceFinder.findIn(packageName))
                 addImport(packageName, source);
     }
 
     private void addImport(String packageName, Source source) {
-        //System.out.println("** addImport: " + packageName + " " + source.className() + " : " + source.fullClassName());
+        log.trace("** addImport: {} {}:{}", packageName, source.className(), source.fullClassName());
         Map<String, Source> objects = packageCache.getOrDefault(packageName, new HashMap<>());
         objects.put(source.className(), source);
         packageCache.put(packageName, objects);

@@ -5,6 +5,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import st.redline.classloader.SmalltalkClassLoader;
 import st.redline.classloader.Source;
 import st.redline.compiler.generated.SmalltalkBaseVisitor;
@@ -15,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> implements SmalltalkVisitor<Void>, Opcodes {
+    private static final Logger log = LoggerFactory.getLogger(SmalltalkGeneratingVisitor.class);
 
     public static final String DEFAULT_IMPORTED_PACKAGE = "st.redline.kernel";
 
@@ -65,11 +68,6 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
 
     private SmalltalkVisitor<Void> popCurrentVisitor() {
         return visitors.pop();
-    }
-
-    private void log(String output) {
-        System.out.println(output);
-        System.out.flush();
     }
 
     private String className() {
@@ -464,7 +462,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         private void openJavaClass() {
-            System.out.println("\nopenJavaClass: " + fullClassName());
+            log.info("openJavaClass: {}", fullClassName());
             cw.visit(BYTECODE_VERSION, ACC_PUBLIC + ACC_SUPER, fullClassName(), null, superclassName(), null);
             cw.visitSource(className() + sourceFileExtension(), null);
             cw.visitInnerClass("java/lang/invoke/MethodHandles$Lookup", "java/lang/invoke/MethodHandles", "Lookup", ACC_PUBLIC + ACC_FINAL + ACC_STATIC);
@@ -472,7 +470,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         private void closeJavaClass() {
-            System.out.println("closeJavaClass: " + fullClassName());
+            log.info("closeJavaClass: {}", fullClassName());
             cw.visitEnd();
             classBytes = cw.toByteArray();
         }
@@ -528,7 +526,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitSequence(SmalltalkParser.SequenceContext ctx) {
-            log("visitSequence");
+            log.info("visitSequence");
             SmalltalkParser.TempsContext temps = ctx.temps();
             if (temps != null)
                 temps.accept(currentVisitor());
@@ -649,7 +647,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         protected void addArgumentToMap(ExtendedTerminalNode node) {
-            log("addArgumentToMap " + node.getText());
+            log.info("addArgumentToMap {}", node.getText());
             assert !arguments.containsKey(node.getText());
             String key = node.getText();
             if (key.startsWith(":"))  // <- block arguments are prefixed with ':'
@@ -658,20 +656,20 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitStatementExpressions(@NotNull SmalltalkParser.StatementExpressionsContext ctx) {
-            log("visitStatementExpressions");
+            log.info("  visitStatementExpressions");
             ctx.expressions().accept(currentVisitor());
             return null;
         }
 
         public Void visitStatementExpressionsAnswer(@NotNull SmalltalkParser.StatementExpressionsAnswerContext ctx) {
-            log("visitStatementExpressionsAnswer");
+            log.info("  visitStatementExpressionsAnswer");
             ctx.expressions().accept(currentVisitor());
             ctx.answer().accept(currentVisitor());
             return null;
         }
 
         public Void visitStatementAnswer(@NotNull SmalltalkParser.StatementAnswerContext ctx) {
-            log("visitStatementAnswer");
+            log.info("  visitStatementAnswer");
             SmalltalkParser.AnswerContext answer = ctx.answer();
             visitLine(mv, answer.CARROT().getSymbol().getLine());
             SmalltalkParser.ExpressionContext expression = answer.expression();
@@ -681,7 +679,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitAnswer(@NotNull SmalltalkParser.AnswerContext ctx) {
-            log("visitAnswer");
+            log.info("  visitAnswer");
             TerminalNode carrot = ctx.CARROT();
             visitLine(mv, carrot.getSymbol().getLine());
             SmalltalkParser.ExpressionContext expression = ctx.expression();
@@ -691,7 +689,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitExpression(@NotNull SmalltalkParser.ExpressionContext ctx) {
-            log("\nvisitExpression");
+            log.info("  visitExpression");
             referencedJVM = false;
             removeJVMGeneratorVisitor();
             SmalltalkParser.BinarySendContext binarySend = ctx.binarySend();
@@ -718,12 +716,12 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitPrimitive(@NotNull SmalltalkParser.PrimitiveContext ctx) {
-            log("visitPrimitive");
+            log.info("  visitPrimitive");
             throw new RuntimeException("Smalltalk <primitive> should be replaced with JVM primitive: id.");
         }
 
         public Void visitUnarySend(@NotNull SmalltalkParser.UnarySendContext ctx) {
-            log("visitUnarySend");
+            log.info("  visitUnarySend");
             ctx.operand().accept(currentVisitor());
             SmalltalkParser.UnaryTailContext unaryTail = ctx.unaryTail();
             if (unaryTail != null)
@@ -732,7 +730,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitUnaryTail(@NotNull SmalltalkParser.UnaryTailContext ctx) {
-            log("visitUnaryTail");
+            log.info("  visitUnaryTail");
             ctx.unaryMessage().accept(currentVisitor());
             SmalltalkParser.UnaryTailContext unaryTail = ctx.unaryTail();
             if (unaryTail != null)
@@ -741,7 +739,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitUnarySelector(@NotNull SmalltalkParser.UnarySelectorContext ctx) {
-            log("visitUnarySelector " + ctx.IDENTIFIER().getSymbol().getText());
+            log.info("  visitUnarySelector {}", ctx.IDENTIFIER().getSymbol().getText());
             TerminalNode selectorNode = ctx.IDENTIFIER();
             visitLine(mv, selectorNode.getSymbol().getLine());
             invokePerform(mv, selectorNode.getSymbol().getText(), 0, sendToSuper);
@@ -750,7 +748,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitBinarySend(@NotNull SmalltalkParser.BinarySendContext ctx) {
-            log("visitBinarySend");
+            log.info("  visitBinarySend");
             ctx.unarySend().accept(currentVisitor());
             SmalltalkParser.BinaryTailContext binaryTail = ctx.binaryTail();
             if (binaryTail != null)
@@ -759,7 +757,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitBinaryTail(@NotNull SmalltalkParser.BinaryTailContext ctx) {
-            log("visitBinaryTail");
+            log.info("  visitBinaryTail");
             ctx.binaryMessage().accept(currentVisitor());
             SmalltalkParser.BinaryTailContext binaryTail = ctx.binaryTail();
             if (binaryTail != null)
@@ -768,7 +766,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitKeywordSend(@NotNull SmalltalkParser.KeywordSendContext ctx) {
-            log("visitKeywordSend");
+            log.info("  visitKeywordSend");
             ctx.binarySend().accept(currentVisitor());
             if (referencedJVM)
                 pushCurrentVisitor(new JVMGeneratorVisitor(cw, mv));
@@ -777,7 +775,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitCascade(@NotNull SmalltalkParser.CascadeContext ctx) {
-            log("visitCascade");
+            log.info("  visitCascade");
             SmalltalkParser.BinarySendContext binarySend = ctx.binarySend();
             if (binarySend != null)
                 binarySend.accept(currentVisitor());
@@ -790,7 +788,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitAssignment(@NotNull SmalltalkParser.AssignmentContext ctx) {
-            log("visitAssignment");
+            log.info("  visitAssignment");
             SmalltalkParser.ExpressionContext expression = ctx.expression();
             if (expression == null)
                 throw new RuntimeException("visitAssignment expression expected.");
@@ -816,7 +814,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitMessage(@NotNull SmalltalkParser.MessageContext ctx) {
-            log("visitMessage");
+            log.info("  visitMessage");
             SmalltalkParser.UnaryMessageContext unaryMessage = ctx.unaryMessage();
             if (unaryMessage != null)
                 return unaryMessage.accept(currentVisitor());
@@ -830,7 +828,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitUnaryMessage(@NotNull SmalltalkParser.UnaryMessageContext ctx) {
-            log("visitUnaryMessage");
+            log.info("  visitUnaryMessage");
             SmalltalkParser.UnarySelectorContext unarySelector = ctx.unarySelector();
             if (unarySelector != null)
                 unarySelector.accept(currentVisitor());
@@ -838,7 +836,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitBinaryMessage(@NotNull SmalltalkParser.BinaryMessageContext ctx) {
-            log("visitBinaryMessage " + ctx.BINARY_SELECTOR().getSymbol().getText());
+            log.info("  visitBinaryMessage {}", ctx.BINARY_SELECTOR().getSymbol().getText());
             TerminalNode binarySelector = ctx.BINARY_SELECTOR();
             SmalltalkParser.UnarySendContext unarySend = ctx.unarySend();
             if (unarySend != null)
@@ -853,7 +851,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitKeywordMessage(@NotNull SmalltalkParser.KeywordMessageContext ctx) {
-            log("visitKeywordMessage");
+            log.info("  visitKeywordMessage");
             initializeKeyword();
             initializeTryCatch();
             for (SmalltalkParser.KeywordPairContext keywordPair : ctx.keywordPair())
@@ -876,7 +874,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         private void setupTryBlock() {
             if (tryCatchRecords.isEmpty())
                 return;
-            log("setupTryBlock");
+            log.info("  setupTryBlock");
             for (BlockAnswerRecord record : tryCatchRecords)
                 mv.visitTryCatchBlock(tryStartLabel, tryEndLabel, record.handlerLabel, record.exceptionName);
             mv.visitLabel(tryStartLabel);
@@ -885,7 +883,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         private void setupCatchBlock() {
             if (tryCatchRecords.isEmpty())
                 return;
-            log("setupCatchBlock");
+            log.info("  setupCatchBlock");
             for (BlockAnswerRecord record : tryCatchRecords) {
                 mv.visitJumpInsn(GOTO, tryEndLabel);
                 mv.visitLabel(record.handlerLabel);
@@ -896,7 +894,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitKeywordPair(@NotNull SmalltalkParser.KeywordPairContext ctx) {
-            log("visitKeywordPair " + ctx.KEYWORD().getSymbol().getText());
+            log.info("  visitKeywordPair {}", ctx.KEYWORD().getSymbol().getText());
             TerminalNode keyword = ctx.KEYWORD();
             String part = keyword.getSymbol().getText();
             visitLine(mv, keyword.getSymbol().getLine());
@@ -908,7 +906,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitOperand(@NotNull SmalltalkParser.OperandContext ctx) {
-            log("visitOperand");
+            log.info("  visitOperand");
             SmalltalkParser.LiteralContext literal = ctx.literal();
             if (literal != null)
                 return literal.accept(currentVisitor());
@@ -922,7 +920,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitLiteral(@NotNull SmalltalkParser.LiteralContext ctx) {
-            log("visitLiteral");
+            log.info("  visitLiteral");
             SmalltalkParser.ParsetimeLiteralContext parsetimeLiteral = ctx.parsetimeLiteral();
             if (parsetimeLiteral != null)
                 return parsetimeLiteral.accept(currentVisitor());
@@ -933,7 +931,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitRuntimeLiteral(@NotNull SmalltalkParser.RuntimeLiteralContext ctx) {
-            log("visitRuntimeLiteral");
+            log.info("  visitRuntimeLiteral");
             SmalltalkParser.BlockContext block = ctx.block();
             if (block != null)
                 return block.accept(currentVisitor());
@@ -947,7 +945,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitParsetimeLiteral(@NotNull SmalltalkParser.ParsetimeLiteralContext ctx) {
-            log("visitParsetimeLiteral");
+            log.info("  visitParsetimeLiteral");
             SmalltalkParser.PseudoVariableContext pseudoVariable = ctx.pseudoVariable();
             if (pseudoVariable != null)
                 return pseudoVariable.accept(currentVisitor());
@@ -970,7 +968,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitPseudoVariable(@NotNull SmalltalkParser.PseudoVariableContext ctx) {
-            log("visitPseudoVariable " + ctx.RESERVED_WORD().getSymbol().getText());
+            log.info("  visitPseudoVariable {}", ctx.RESERVED_WORD().getSymbol().getText());
             TerminalNode pseudoVariable = ctx.RESERVED_WORD();
             String name = pseudoVariable.getSymbol().getText();
             if ("self".equals(name))
@@ -989,13 +987,13 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitLiteralArray(@NotNull SmalltalkParser.LiteralArrayContext ctx) {
-            log("visitLiteralArray ");
+            log.info("  visitLiteralArray");
             pushNewObject(mv, "smalltalkArray", "", ctx.LITARR_START().getSymbol().getLine());
             return visitChildren(ctx);
         }
 
         public Void visitLiteralArrayRest(@NotNull SmalltalkParser.LiteralArrayRestContext ctx) {
-            log("visitLiteralArrayRest ");
+            log.info("  visitLiteralArrayRest");
             if (ctx.parsetimeLiteral() != null)
                 for (SmalltalkParser.ParsetimeLiteralContext literal : ctx.parsetimeLiteral()) {
                     throw new RuntimeException("Handle LiteralArray element");
@@ -1004,7 +1002,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitCharConstant(@NotNull SmalltalkParser.CharConstantContext ctx) {
-            log("visitCharConstant " + ctx.CHARACTER_CONSTANT().getSymbol().getText());
+            log.info("  visitCharConstant {}", ctx.CHARACTER_CONSTANT().getSymbol().getText());
             TerminalNode constant = ctx.CHARACTER_CONSTANT();
             String value = constant.getSymbol().getText().substring(1);
             pushNewObject(mv, "smalltalkCharacter", value, constant.getSymbol().getLine());
@@ -1012,7 +1010,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitStInteger(@NotNull SmalltalkParser.StIntegerContext ctx) {
-            log("visitInteger " + (ctx.MINUS() != null  ? "-" + nodeFor(ctx.DIGIT()).getText() : nodeFor(ctx.DIGIT()).getText()));
+            log.info("  visitInteger {}{}", ctx.MINUS() != null  ? "-" : "", nodeFor(ctx.DIGIT()).getText());
             boolean minus = ctx.MINUS() != null;
             BasicNode number = nodeFor(ctx.DIGIT());
             String value = minus ? "-" + number.getText() : number.getText();
@@ -1021,12 +1019,12 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitStFloat(@NotNull SmalltalkParser.StFloatContext ctx) {
-            log("visitFloat ");
+            log.info("  visitFloat");
             throw new RuntimeException("visitFloat handle me.");
         }
 
         public Void visitString(@NotNull SmalltalkParser.StringContext ctx) {
-            log("visitString " + ctx.STRING().getSymbol().getText());
+            log.info("  visitString {}", ctx.STRING().getSymbol().getText());
             TerminalNode node = ctx.STRING();
             String value = node.getSymbol().getText();
             value = value.substring(1, value.length() - 1);
@@ -1035,7 +1033,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitSymbol(@NotNull SmalltalkParser.SymbolContext ctx) {
-            log("visitSymbol #" + nodeFor(ctx).getText());
+            log.info("  visitSymbol #{}", nodeFor(ctx).getText());
             BasicNode node = nodeFor(ctx);
             String symbol = node.getText();
             if (haveKeyword())
@@ -1070,7 +1068,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitReference(@NotNull SmalltalkParser.ReferenceContext ctx) {
-            log("visitReference " + ctx.variable().IDENTIFIER().getSymbol().getText());
+            log.info("  visitReference {}", ctx.variable().IDENTIFIER().getSymbol().getText());
             TerminalNode identifier = ctx.variable().IDENTIFIER();
             String name = identifier.getSymbol().getText();
             visitLine(mv, identifier.getSymbol().getLine());
@@ -1094,7 +1092,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitBlock(@NotNull SmalltalkParser.BlockContext ctx) {
-            log("visitBlock " + peekKeyword() + " " + blockNumber);
+            log.info("  visitBlock {} {}", peekKeyword(), blockNumber);
             KeywordRecord keywordRecord = peekKeyword();
             String name = makeBlockMethodName(keywordRecord);
             boolean methodBlock = keywordRecord.keyword.toString().endsWith("withMethod:");
@@ -1125,7 +1123,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         private void loadBlockAnswerClass(String blockAnswerClassName) {
-            log("loadBlockAnswerClass: " + blockAnswerClassName);
+            log.info("  loadBlockAnswerClass: {}", blockAnswerClassName);
             byte[] classBytes = createBlockAnswerClass(blockAnswerClassName);
             SmalltalkClassLoader classLoader = classLoader();
             classLoader.defineClass(classBytes);
@@ -1154,7 +1152,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitSubexpression(@NotNull SmalltalkParser.SubexpressionContext ctx) {
-            log("visitSubexpression");
+            log.info("  visitSubexpression");
             // 2 + (  (3 * 4) - 1  )
             // evaluated last (   (evaluated first)  evaluated second  )
             SmalltalkParser.ExpressionContext expression = ctx.expression();
@@ -1208,7 +1206,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
 
         /* Generate java lambda body with Smalltalk block code inside. */
         public void handleBlock(@NotNull SmalltalkParser.BlockContext ctx) {
-            log("handleBlock " + blockName + " " + blockNumber);
+            log.info("  handleBlock {} {}", blockName, blockNumber);
             openBlockLambdaMethod();
             SmalltalkParser.BlockParamListContext blockParamList = ctx.blockParamList();
             if (blockParamList != null)
@@ -1242,7 +1240,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitBlockParamList(@NotNull SmalltalkParser.BlockParamListContext ctx) {
-            log("visitBlockParamList");
+            log.info("  visitBlockParamList");
             int index = 0;
             int n = ctx.getChildCount();
             for(int i = 0; i < n; ++i) {
@@ -1254,7 +1252,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         private void closeBlockLambdaMethod(boolean returnRequired) {
-            log("closeBlockLambdaMethod: " + blockName + " " + returnRequired);
+            log.info("  closeBlockLambdaMethod: {} {}", blockName, returnRequired);
             if (returnRequired)
                 mv.visitInsn(ARETURN);
             mv.visitMaxs(0, 0);
@@ -1262,7 +1260,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         private void openBlockLambdaMethod() {
-            log("openBlockLambdaMethod: " + blockName);
+            log.info("  openBlockLambdaMethod: {}", blockName);
             mv = cw.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, blockName, LAMBDA_BLOCK_SIG, null, null);
             mv.visitCode();
         }
@@ -1280,7 +1278,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitMessage(@NotNull SmalltalkParser.MessageContext ctx) {
-            log("visitMessage");
+            log.info("  visitMessage");
             SmalltalkParser.KeywordMessageContext keywordMessage = ctx.keywordMessage();
             if (keywordMessage != null)
                 return keywordMessage.accept(currentVisitor());
@@ -1288,7 +1286,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitKeywordMessage(@NotNull SmalltalkParser.KeywordMessageContext ctx) {
-            log("visitKeywordMessage");
+            log.info("  visitKeywordMessage");
             initializeKeyword();
             for (SmalltalkParser.KeywordPairContext keywordPair : ctx.keywordPair())
                 keywordPair.accept(currentVisitor());
@@ -1307,7 +1305,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
 
         public Void visitKeywordPair(@NotNull SmalltalkParser.KeywordPairContext ctx) {
-            log("visitKeywordPair " + ctx.KEYWORD().getSymbol().getText());
+            log.info("  visitKeywordPair {}", ctx.KEYWORD().getSymbol().getText());
             TerminalNode keyword = ctx.KEYWORD();
             String part = keyword.getSymbol().getText();
             visitLine(mv, keyword.getSymbol().getLine());

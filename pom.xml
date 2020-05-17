@@ -41,6 +41,7 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <slf4jVersion>1.7.30</slf4jVersion>
   </properties>
   
   <dependencies>
@@ -59,6 +60,16 @@
       <artifactId>asm</artifactId>
       <version>6.2</version>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4jVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4jVersion}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -69,6 +80,9 @@
         <includes>
           <include>**/*.st</include>
         </includes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
       </resource>
     </resources>
     <testResources>

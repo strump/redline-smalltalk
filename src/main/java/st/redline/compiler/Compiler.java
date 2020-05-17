@@ -4,11 +4,15 @@ package st.redline.compiler;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import st.redline.classloader.Source;
 import st.redline.compiler.generated.SmalltalkLexer;
 import st.redline.compiler.generated.SmalltalkParser;
 
 public class Compiler {
+    private static final Logger log = LoggerFactory.getLogger(Compiler.class);
+
 
     private final Source source;
 
@@ -56,7 +60,7 @@ public class Compiler {
     private String sourceContents() {
         String src = source.contents();
         // dump pre-processed source
-        System.out.print(src);
+        //log.info(src);
         return src;
     }
 
