@@ -16,7 +16,6 @@ import java.util.List;
 public class Compiler {
     private static final Logger log = LoggerFactory.getLogger(Compiler.class);
 
-
     private final Source source;
 
     public Compiler(Source source) {
@@ -77,17 +76,17 @@ public class Compiler {
     }
 
     private void dumpTree(SmalltalkParser parser, SmalltalkParser.ScriptContext scriptContext) {
-        final String filename = "D:\\tmp\\redline\\" + source.fullClassName().replaceAll("/", ".") + ".tree";
+        final String fullClassName = source.fullClassName().replaceAll("/", ".");
+        log.info("Dumping AST of class {} to file", fullClassName);
+        final String filename = "D:\\tmp\\redline\\" + fullClassName + ".tree";
 
         try (FileOutputStream fos = new FileOutputStream(filename)) {
             final List<String> ruleNamesList = Arrays.asList(parser.getRuleNames());
             final String treeStr = TreeUtils.toPrettyTree(scriptContext, ruleNamesList);
             fos.write(treeStr.getBytes());
-        } catch (SmalltalkParserException e) {
-            throw e;
         }
         catch (Exception exc) {
-            log.error("Can't save tree dump", exc);
+            log.error("Can't save tree dump. Skipping", exc);
         }
     }
 }
