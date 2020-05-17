@@ -58,17 +58,21 @@ binaryTail : binaryMessage binaryTail?;
 binaryMessage : ws BINARY_SELECTOR ws (unarySend | operand);
 
 //Methods declaration
-methodGroup : EXCLAMATION SEP* IDENTIFIER SEP+ (IDENTIFIER SEP+)? 'methodFor:' SEP* STRING SEP* EXCLAMATION
-              (methodDeclaration)+
-              ws EXCLAMATION
+methodGroup : EXCLAMATION SEP* IDENTIFIER SEP+ (IDENTIFIER SEP+)? 'methodsFor:' SEP* STRING SEP* EXCLAMATION
+              ws (methodDeclaration ws)+
+              EXCLAMATION
              ;
 
-methodDeclaration : methodHeader SEP* LINE_END
+methodDeclaration : methodHeader SEP* EOL
                     sequence
                     ws EXCLAMATION
                    ;
 
-methodHeader : IDENTIFIER | (BINARY_SELECTOR SEP* IDENTIFIER) | (KEYWORD SEP* IDENTIFIER (SEP+ KEYWORD SEP* IDENTIFIER)+);
+methodHeader : IDENTIFIER | binaryMethodHeader | keywordMethodHeader;
+
+binaryMethodHeader : BINARY_SELECTOR SEP* IDENTIFIER;
+
+keywordMethodHeader : KEYWORD SEP* IDENTIFIER (SEP+ KEYWORD SEP* IDENTIFIER)*;
 
 EXCLAMATION : '!';
 EOL : '\r'? '\n';
