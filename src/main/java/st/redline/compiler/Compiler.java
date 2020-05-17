@@ -58,9 +58,11 @@ public class Compiler {
         //parser.setErrorHandler(new BailErrorStrategy());
         parser.removeErrorListeners();
         parser.addErrorListener(new SmalltalkParserErrorListener());
-        dumpTree(parser);
 
-        return parser.script();
+        final SmalltalkParser.ScriptContext script = parser.script();
+        dumpTree(parser, script);
+
+        return script;
     }
 
     private String sourceContents() {
@@ -74,12 +76,12 @@ public class Compiler {
         return source != null && source.hasContent();
     }
 
-    private void dumpTree(SmalltalkParser parser) {
+    private void dumpTree(SmalltalkParser parser, SmalltalkParser.ScriptContext scriptContext) {
         final String filename = "D:\\tmp\\redline\\" + source.fullClassName().replaceAll("/", ".") + ".tree";
 
-        try (FileOutputStream fos = new FileOutputStream(filename)){
+        try (FileOutputStream fos = new FileOutputStream(filename)) {
             final List<String> ruleNamesList = Arrays.asList(parser.getRuleNames());
-            final String treeStr = TreeUtils.toPrettyTree(parser.script(), ruleNamesList);
+            final String treeStr = TreeUtils.toPrettyTree(scriptContext, ruleNamesList);
             fos.write(treeStr.getBytes());
         } catch (SmalltalkParserException e) {
             throw e;

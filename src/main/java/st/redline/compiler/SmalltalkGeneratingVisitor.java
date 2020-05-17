@@ -425,13 +425,6 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             return null;
         }
 
-        @Override
-        public Void visitRootSequence(SmalltalkParser.RootSequenceContext ctx) {
-            log.info("  visitRootSequence");
-            throw new UnsupportedOperationException("visitRootSequence is not implemented yet");
-            //return null;
-        }
-
         private void closeSendMessagesMethod() {
             mv.visitInsn(ARETURN);
             mv.visitMaxs(0, 0);
@@ -531,6 +524,21 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             mv.visitInsn(RETURN);
             mv.visitMaxs(0, 0);
             mv.visitEnd();
+        }
+
+        @Override
+        public Void visitRootSequence(SmalltalkParser.RootSequenceContext ctx) {
+            log.info("visitRootSequence");
+            SmalltalkParser.TempsContext temps = ctx.temps();
+            if (temps != null)
+                temps.accept(currentVisitor());
+            SmalltalkParser.RootStatementsContext statements = ctx.rootStatements();
+            if (statements != null)
+                statements.accept(currentVisitor());
+            SmalltalkParser.TerminatingExpressionContext terminatingExpression = ctx.terminatingExpression();
+            if (terminatingExpression != null)
+                terminatingExpression.accept(currentVisitor());
+            return null;
         }
 
         @Override

@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 grammar Smalltalk;
 
 script : rootSequence ws EOF;
-rootSequence : temps? ws rootStatements (expression | answer)?;
+rootSequence : temps? ws rootStatements ws terminatingExpression?;
 rootStatements : (rootTerminatedExpression | methodGroup ws)* ;
 rootTerminatedExpression : expression ws PERIOD ws;
+terminatingExpression : expression | answer;
 
 sequence : temps? ws statements? ws;
 ws : (SEP | EOL | COMMENT)*;
