@@ -7,7 +7,7 @@ grammar Smalltalk;
 
 script : sequence ws EOF;
 sequence : temps? ws statements? ws;
-ws : (SEPARATOR | COMMENT)*;
+ws : (SEP | LINE_END | COMMENT)*;
 temps : ws PIPE (ws IDENTIFIER)+ ws PIPE;
 statements : answer ws # StatementAnswer
            | expressions ws PERIOD ws answer # StatementExpressionsAnswer
@@ -57,7 +57,25 @@ reference : variable;
 binaryTail : binaryMessage binaryTail?;
 binaryMessage : ws BINARY_SELECTOR ws (unarySend | operand);
 
-SEPARATOR : [ \t\r\n];
+//Methods declaration
+methodGroup : EXCLAMATION SEP* IDENTIFIER SEP+ (CLASS SEP+)? 'methodFor:' SEP* STRING SEP* EXCLAMATION
+              (methodDeclaration)+
+              ws EXCLAMATION
+             ;
+
+methodDeclaration : methodHeader SEP* LINE_END
+                    sequence
+                    ws EXCLAMATION
+                   ;
+
+methodHeader : IDENTIFIER | (BINARY_SELECTOR SEP* IDENTIFIER) | (KEYWORD SEP* IDENTIFIER (SEP+ KEYWORD SEP* IDENTIFIER)+);
+
+EXCLAMATION : '!';
+LINE_END : '\r'? '\n';
+CLASS : 'class';
+SEP : [ \t];
+
+//SEPARATOR : [ \t\r\n];
 STRING : '\'' (.)*? '\'';
 COMMENT : '"' (.)*? '"';
 BLOCK_START : '[';
@@ -67,7 +85,7 @@ OPEN_PAREN : '(';
 PIPE : '|';
 PERIOD : '.';
 SEMI_COLON : ';';
-BINARY_SELECTOR : ('\\' | '+' | '*' | '/' | '=' | '>' | '<' | ',' | '@' | '%' | '~' | PIPE | '&' | '-' | '?')+;
+BINARY_SELECTOR : ('\\' | '+' | '*' | '/' | '=' | '>' | '<' | ',' | '@' | '%' | '~' | '&' | '-' | '?')+; //Do we need PIPE here?
 LT : '<';
 GT : '>';
 MINUS : '-';

@@ -1177,6 +1177,21 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
                 name.append(keywordRecord.firstArgument.toString());
             return name.toString();
         }
+
+        @Override
+        public Void visitMethodGroup(SmalltalkParser.MethodGroupContext ctx) {
+            throw new UnsupportedOperationException("Method group is not supported yet");
+        }
+
+        @Override
+        public Void visitMethodDeclaration(SmalltalkParser.MethodDeclarationContext ctx) {
+            throw new UnsupportedOperationException("Method declaration is not supported yet");
+        }
+
+        @Override
+        public Void visitMethodHeader(SmalltalkParser.MethodHeaderContext ctx) {
+            throw new UnsupportedOperationException("Method header is not supported yet");
+        }
     }
 
 

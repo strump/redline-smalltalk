@@ -10,6 +10,10 @@ import st.redline.classloader.Source;
 import st.redline.compiler.generated.SmalltalkLexer;
 import st.redline.compiler.generated.SmalltalkParser;
 
+import java.io.FileOutputStream;
+import java.util.Arrays;
+import java.util.List;
+
 public class Compiler {
     private static final Logger log = LoggerFactory.getLogger(Compiler.class);
 
@@ -50,9 +54,7 @@ public class Compiler {
         SmalltalkLexer lexer = new SmalltalkLexer(new ANTLRInputStream(input));
         SmalltalkParser parser = new SmalltalkParser(new CommonTokenStream(lexer));
 
-        // dump tree
-        // System.out.println(parser.script().toStringTree(parser));
-        // System.out.flush();
+        //dumpTree(parser);
 
         return parser.script();
     }
@@ -66,5 +68,17 @@ public class Compiler {
 
     private boolean haveSource() {
         return source != null && source.hasContent();
+    }
+
+    private void dumpTree(SmalltalkParser parser) {
+        final String filename = "D:\\tmp\\redline\\" + source.fullClassName().replaceAll("/", ".") + ".tree";
+
+        try (FileOutputStream fos = new FileOutputStream(filename)){
+            final List<String> ruleNamesList = Arrays.asList(parser.getRuleNames());
+            final String treeStr = TreeUtils.toPrettyTree(parser.script(), ruleNamesList);
+            fos.write(treeStr.getBytes());
+        } catch (Exception e) {
+            log.error("Can't save tree dump", e);
+        }
     }
 }
