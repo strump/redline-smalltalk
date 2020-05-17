@@ -5,7 +5,11 @@
  */
 grammar Smalltalk;
 
-script : sequence ws EOF;
+script : rootSequence ws EOF;
+rootSequence : temps? ws rootStatements (expression | answer)?;
+rootStatements : (rootTerminatedExpression | methodGroup ws)* ;
+rootTerminatedExpression : expression ws PERIOD ws;
+
 sequence : temps? ws statements? ws;
 ws : (SEP | EOL | COMMENT)*;
 temps : ws PIPE (ws IDENTIFIER)+ ws PIPE;

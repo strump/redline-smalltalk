@@ -419,10 +419,17 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             createPackageNameMethod();
             createImportForMethod();
             openSendMessagesMethod();
-            ctx.sequence().accept(currentVisitor());
+            ctx.rootSequence().accept(currentVisitor());
             closeSendMessagesMethod();
             closeJavaClass();
             return null;
+        }
+
+        @Override
+        public Void visitRootSequence(SmalltalkParser.RootSequenceContext ctx) {
+            log.info("  visitRootSequence");
+            throw new UnsupportedOperationException("visitRootSequence is not implemented yet");
+            //return null;
         }
 
         private void closeSendMessagesMethod() {
