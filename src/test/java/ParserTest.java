@@ -1,21 +1,59 @@
-import static org.junit.Assert.*;
-
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.io.IOUtils;
+import org.junit.Before;
 import org.junit.Test;
 import st.redline.classloader.Source;
 import st.redline.compiler.Compiler;
+import st.redline.compiler.SmalltalkParserException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class ParserTest {
+    public static final String SMALLTALK_FOLDER = "smalltalk";
+
+    private List<String> parserTestFiles;
+
+    @Before
+    public void init() throws IOException {
+        parserTestFiles = new LinkedList<>();
+        final InputStream smalltalkStream = getClass().getClassLoader().getResourceAsStream(SMALLTALK_FOLDER);
+        BufferedReader br = new BufferedReader(new InputStreamReader(smalltalkStream));
+
+        String resource;
+        while ((resource = br.readLine()) != null) {
+            parserTestFiles.add(resource);
+        }
+    }
+
     @Test
-    public void test_Add_class_method() throws IOException {
-        final Compiler compiler = new Compiler(loadTestSource("Add_method.st"));
+    public void test_Add_method() throws IOException {
+        final Compiler compiler = new Compiler(loadTestSource(SMALLTALK_FOLDER+"/Add_method.st"));
         final ParseTree parseTree = compiler.parsedSourceContents();
         assertNotNull(parseTree);
+    }
+
+    @Test
+    public void testSmalltalkParser() throws IOException {
+        for(String filename : parserTestFiles) {
+            try {
+                final Compiler compiler = new Compiler(loadTestSource(SMALLTALK_FOLDER + "/" + filename));
+                final ParseTree parseTree = compiler.parsedSourceContents();
+                assertNotNull(parseTree);
+            }
+            catch (SmalltalkParserException ex) {
+                fail("Failed to parse file "+SMALLTALK_FOLDER + "/" + filename + "\n\t" + ex.getMessage());
+            }
+        }
     }
 
     /* Load "*.st" file from str/test/resources and wrap it with Source class */
