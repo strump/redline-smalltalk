@@ -20,9 +20,9 @@
   </licenses>
 
   <scm>
-    <url>git@github.com:redline-smalltalk/redline-smalltalk.git</url>
-    <developerConnection>scm:git:git@github.com:redline-smalltalk/redline-smalltalk.git</developerConnection>
-    <connection>scm:git:git@github.com:redline-smalltalk/redline-smalltalk.git</connection>
+    <url>git@github.com:strump/redline-smalltalk.git</url>
+    <developerConnection>scm:git:git@github.com:strump/redline-smalltalk.git</developerConnection>
+    <connection>scm:git:git@github.com:strump/redline-smalltalk.git</connection>
   </scm>
 
   <developers>
