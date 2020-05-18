@@ -25,7 +25,7 @@ public class ClassGenerator {
 
     private void initVisitorsStack() {
         visitors = new Stack<>();
-        //visitors.push(new SmalltalkGeneratingVisitor.ClassGeneratorVisitor());
+        visitors.push(new ClassGeneratorVisitor(this));
     }
 
     public void pushCurrentVisitor(SmalltalkVisitor<Void> currentVisitor) {
