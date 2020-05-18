@@ -40,8 +40,8 @@ public class Compiler {
         return createGenerator(tree).generate();
     }
 
-    private Generator createGenerator(ParseTree tree) {
-        return new Generator(tree, createVisitor());
+    private ClassGenerator createGenerator(ParseTree tree) {
+        return new ClassGenerator(tree, createVisitor());
     }
 
     private SmalltalkGeneratingVisitor createVisitor() {

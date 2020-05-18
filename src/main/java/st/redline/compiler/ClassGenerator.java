@@ -4,12 +4,12 @@ package st.redline.compiler;
 import org.antlr.v4.runtime.tree.ParseTree;
 import st.redline.compiler.generated.SmalltalkVisitor;
 
-public class Generator {
+public class ClassGenerator {
 
     private final ParseTree tree;
     private final SmalltalkGeneratingVisitor visitor;
 
-    public Generator(ParseTree tree, SmalltalkGeneratingVisitor visitor) {
+    public ClassGenerator(ParseTree tree, SmalltalkGeneratingVisitor visitor) {
         this.tree = tree;
         this.visitor = visitor;
     }
