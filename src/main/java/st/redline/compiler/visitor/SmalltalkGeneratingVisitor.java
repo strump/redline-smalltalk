@@ -1,11 +1,12 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
-package st.redline.compiler;
+package st.redline.compiler.visitor;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.generated.SmalltalkBaseVisitor;
 import st.redline.compiler.generated.SmalltalkParser;
 import st.redline.compiler.generated.SmalltalkVisitor;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+/* Base class for all other visitors. Contains common method for bytecode generation. */
 public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> implements SmalltalkVisitor<Void>, Opcodes {
     private static final Logger log = LoggerFactory.getLogger(SmalltalkGeneratingVisitor.class);
 

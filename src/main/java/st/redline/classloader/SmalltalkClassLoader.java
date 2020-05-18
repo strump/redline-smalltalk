@@ -9,7 +9,7 @@ import st.redline.core.PrimObject;
 import java.io.*;
 import java.util.*;
 
-import static st.redline.compiler.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
+import static st.redline.compiler.visitor.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
 
 public class SmalltalkClassLoader extends ClassLoader {
     private static final Logger log = LoggerFactory.getLogger(SmalltalkClassLoader.class);

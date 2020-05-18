@@ -1,4 +1,4 @@
-package st.redline.compiler;
+package st.redline.compiler.visitor;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -6,6 +6,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.generated.SmalltalkParser;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
-package st.redline.compiler;
+package st.redline.compiler.visitor;
 
-import st.redline.classloader.Source;
+import st.redline.compiler.ClassGenerator;
 
 public class SmalltalkMethodGroupVisitor extends SmalltalkGeneratingVisitor {
     private String className;

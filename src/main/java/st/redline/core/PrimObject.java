@@ -5,7 +5,7 @@ import st.redline.classloader.SmalltalkClassLoader;
 
 import java.util.ArrayList;
 
-import static st.redline.compiler.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
+import static st.redline.compiler.visitor.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
 import static st.redline.core.PrimDoesNotUnderstand.PRIM_DOES_NOT_UNDERSTAND;
 import static st.redline.core.PrimSubclass.PRIM_SUBCLASS;
 

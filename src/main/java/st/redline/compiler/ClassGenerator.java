@@ -4,6 +4,8 @@ package st.redline.compiler;
 import org.antlr.v4.runtime.tree.ParseTree;
 import st.redline.classloader.Source;
 import st.redline.compiler.generated.SmalltalkVisitor;
+import st.redline.compiler.visitor.ClassGeneratorVisitor;
+import st.redline.compiler.visitor.SmalltalkGeneratingVisitor;
 
 import java.util.Stack;
 
