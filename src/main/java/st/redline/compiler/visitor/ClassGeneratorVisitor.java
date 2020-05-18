@@ -23,10 +23,11 @@ import java.util.Stack;
 public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     private static final Logger log = LoggerFactory.getLogger(ClassGeneratorVisitor.class);
 
-    protected final String LAMBDA_BLOCK_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
+    protected final static String LAMBDA_BLOCK_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
+    private final static String SEND_MESSAGES_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
+
     protected MethodVisitor mv;
-    private final String SEND_MESSAGES_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
-    private final ClassWriter cw;
+    protected final ClassWriter cw;
     private HashMap<String, ExtendedTerminalNode> temporaries = new HashMap<>();
     protected HashMap<String, ExtendedTerminalNode> homeTemporaries;
     private HashMap<String, ExtendedTerminalNode> arguments = new HashMap<>();

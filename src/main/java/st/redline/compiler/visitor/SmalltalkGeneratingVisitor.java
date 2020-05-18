@@ -40,7 +40,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
     }
 
-    //Link to ClassGenerator
+    //Link to ClassGenerator with generator context
     protected final ClassGenerator classGen;
 
     public SmalltalkGeneratingVisitor(ClassGenerator classGenerator) {

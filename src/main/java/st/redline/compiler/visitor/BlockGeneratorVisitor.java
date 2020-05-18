@@ -18,7 +18,6 @@ import java.util.List;
 public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
     private static final Logger log = LoggerFactory.getLogger(BlockGeneratorVisitor.class);
 
-    private final ClassWriter cw;
     private String blockName;
     private boolean returnRequired;
 
@@ -27,7 +26,6 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
                                  HashMap<String, ExtendedTerminalNode> homeArguments,
                                  HashMap<String, ExtendedTerminalNode> outerArguments) {
         super(classGenerator, cw);
-        this.cw = cw;
         this.blockName = name;
         this.returnRequired = false;
         this.blockNumber = blockNumber;

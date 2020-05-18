@@ -17,12 +17,10 @@ import java.util.Map;
 public class JVMGeneratorVisitor extends ClassGeneratorVisitor {
     private static final Logger log = LoggerFactory.getLogger(JVMGeneratorVisitor.class);
 
-    private final MethodVisitor mv;
     private List<Object> arguments = new ArrayList<Object>();
 
     public JVMGeneratorVisitor(ClassGenerator classGenerator, ClassWriter cw, MethodVisitor mv) {
         super(classGenerator, cw, mv);
-        this.mv = mv;
     }
 
     @Override
