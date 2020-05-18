@@ -1233,6 +1233,26 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
 
         @Override
         public Void visitMethodGroup(SmalltalkParser.MethodGroupContext ctx) {
+            final String className = ctx.className().getText();
+            boolean isClassMethod = false;
+            if (ctx.classSelector() != null) {
+                final String classSelector = ctx.classSelector().getText();
+                if (!classSelector.equals("class")) {
+                    throw new SmalltalkCompilationError("Unknown selector '"+classSelector+"'");
+                }
+                isClassMethod = true;
+            }
+            final String methodGroupName = ctx.methodGroupName().getText();
+
+            SmalltalkMethodGroupVisitor methodGroupVisitor = new SmalltalkMethodGroupVisitor(className, methodGroupName, isClassMethod);
+
+            final List<SmalltalkParser.MethodDeclarationContext> methods = ctx.methodDeclaration();
+            if (methods != null) {
+                for (SmalltalkParser.MethodDeclarationContext methodDecl : methods) {
+                    methodDecl.accept(methodGroupVisitor);
+                }
+            }
+
             throw new UnsupportedOperationException("Method group is not supported yet");
         }
 
