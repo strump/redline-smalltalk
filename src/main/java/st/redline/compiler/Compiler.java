@@ -41,11 +41,7 @@ public class Compiler {
     }
 
     private ClassGenerator createGenerator(ParseTree tree) {
-        return new ClassGenerator(tree, createVisitor());
-    }
-
-    private SmalltalkGeneratingVisitor createVisitor() {
-        return new SmalltalkGeneratingVisitor(source);
+        return new ClassGenerator(tree, source);
     }
 
     private ParseTree parse(String input) {
