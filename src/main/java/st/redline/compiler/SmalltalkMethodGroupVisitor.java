@@ -7,8 +7,8 @@ public class SmalltalkMethodGroupVisitor extends SmalltalkGeneratingVisitor {
     private String methodGroupName;
     private boolean isClassMethod = false;
 
-    public SmalltalkMethodGroupVisitor(Source source) {
-        super(source);
+    public SmalltalkMethodGroupVisitor(ClassGenerator classGenerator) {
+        super(classGenerator);
     }
 
     public SmalltalkMethodGroupVisitor(String className, String methodGroupName, boolean isClassMethod) {

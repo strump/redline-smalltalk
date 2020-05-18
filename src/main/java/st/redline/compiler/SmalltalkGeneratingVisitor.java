@@ -8,7 +8,6 @@ import org.objectweb.asm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import st.redline.classloader.SmalltalkClassLoader;
-import st.redline.classloader.Source;
 import st.redline.compiler.generated.SmalltalkBaseVisitor;
 import st.redline.compiler.generated.SmalltalkVisitor;
 import st.redline.compiler.generated.SmalltalkParser;
@@ -40,50 +39,31 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         }
     }
 
-    private final Stack<SmalltalkVisitor<Void>> visitors = new Stack<SmalltalkVisitor<Void>>();
-    private final Source source;
-    private byte[] classBytes = null;
+    private final ClassGenerator classGen;
 
-    public SmalltalkGeneratingVisitor(Source source) {
-        this.source = source;
-        makeClassGeneratorCurrentVisitor();
-    }
-
-    private void makeClassGeneratorCurrentVisitor() {
-        pushCurrentVisitor(new ClassGeneratorVisitor());
+    public SmalltalkGeneratingVisitor(ClassGenerator classGenerator) {
+        this.classGen = classGenerator;
     }
 
     public Void visitScript(@NotNull SmalltalkParser.ScriptContext ctx) {
-        currentVisitor().visitScript(ctx);
+        classGen.currentVisitor().visitScript(ctx);
         return null;
     }
 
-    private void pushCurrentVisitor(SmalltalkVisitor<Void> visitor) {
-        visitors.push(visitor);
-    }
-
-    private SmalltalkVisitor<Void> currentVisitor() {
-        return visitors.peek();
-    }
-
-    private SmalltalkVisitor<Void> popCurrentVisitor() {
-        return visitors.pop();
-    }
-
     private String className() {
-        return source.className();
+        return classGen.className();
     }
 
     private String sourceFileExtension() {
-        return source.fileExtension();
+        return classGen.fileExtension();
     }
 
     private String fullClassName() {
-        return source.fullClassName();
+        return classGen.fullClassName();
     }
 
     private String packageName() {
-        return source.packageName();
+        return classGen.packageName();
     }
 
     private String superclassName() {
@@ -94,8 +74,8 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         return "st/redline/core/PrimContext";
     }
 
-    public byte[] generatedClassBytes() {
-        return classBytes;
+    private SmalltalkVisitor<Void> currentVisitor() {
+        return classGen.currentVisitor();
     }
 
     private int opcodeValue(String opcode) {
@@ -380,7 +360,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     /* Generator of class bytecode. Such generator is created once for every *.st source file assuming that
      * single .st file contains one class definition (see source.fullClassName()).
      */
-    private class ClassGeneratorVisitor extends SmalltalkBaseVisitor<Void> implements SmalltalkVisitor<Void>, Opcodes {
+    public class ClassGeneratorVisitor extends SmalltalkBaseVisitor<Void> implements SmalltalkVisitor<Void>, Opcodes {
 
         protected final String LAMBDA_BLOCK_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
         protected MethodVisitor mv;
@@ -473,7 +453,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         private void closeJavaClass() {
             log.info("closeJavaClass: {}", fullClassName());
             cw.visitEnd();
-            classBytes = cw.toByteArray();
+            classGen.setClassBytes(cw.toByteArray());
         }
 
         /* Generate constructor
@@ -735,7 +715,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
 
         private void removeJVMGeneratorVisitor() {
             if (currentVisitor() instanceof JVMGeneratorVisitor)
-                popCurrentVisitor();
+                classGen.popCurrentVisitor();
         }
 
         @Override
@@ -799,7 +779,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             log.info("  visitKeywordSend");
             ctx.binarySend().accept(currentVisitor());
             if (referencedJVM)
-                pushCurrentVisitor(new JVMGeneratorVisitor(cw, mv));
+                classGen.pushCurrentVisitor(new JVMGeneratorVisitor(cw, mv));
             ctx.keywordMessage().accept(currentVisitor());
             return null;
         }
@@ -1154,11 +1134,11 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             if (homeArgs == null && !methodBlock)
                 homeArgs = arguments;
             BlockGeneratorVisitor blockGeneratorVisitor = new BlockGeneratorVisitor(cw, name, blockNumber, homeTemps, homeArgs, arguments);
-            pushCurrentVisitor(blockGeneratorVisitor);
+            classGen.pushCurrentVisitor(blockGeneratorVisitor);
             blockGeneratorVisitor.handleBlock(ctx);
             blockNumber = blockGeneratorVisitor.blockNumber;
             removeJVMGeneratorVisitor();
-            popCurrentVisitor();
+            classGen.popCurrentVisitor();
             int line = ctx.BLOCK_START().getSymbol().getLine();
             if (methodBlock)
                 pushNewMethod(mv, fullClassName(), name, LAMBDA_BLOCK_SIG, line);
