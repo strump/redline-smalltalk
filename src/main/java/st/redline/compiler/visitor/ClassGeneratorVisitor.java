@@ -889,7 +889,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         }
         final String methodGroupName = ctx.methodGroupName().getText();
 
-        SmalltalkMethodGroupVisitor methodGroupVisitor = new SmalltalkMethodGroupVisitor(className, methodGroupName, isClassMethod);
+        SmalltalkMethodDeclarationVisitor methodGroupVisitor = new SmalltalkMethodDeclarationVisitor(className, methodGroupName, isClassMethod);
 
         final List<SmalltalkParser.MethodDeclarationContext> methods = ctx.methodDeclaration();
         if (methods != null) {

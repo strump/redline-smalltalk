@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SmalltalkMethodGroupVisitor extends SmalltalkGeneratingVisitor {
+public class SmalltalkMethodDeclarationVisitor extends SmalltalkGeneratingVisitor {
     private String className;
     private String methodGroupName;
     private boolean isClassMethod = false;
@@ -15,7 +15,7 @@ public class SmalltalkMethodGroupVisitor extends SmalltalkGeneratingVisitor {
     private String methodSelector;
     private List<String> methodArgs = null;
 
-    public SmalltalkMethodGroupVisitor(String className, String methodGroupName, boolean isClassMethod) {
+    public SmalltalkMethodDeclarationVisitor(String className, String methodGroupName, boolean isClassMethod) {
         super(null);
         this.className = className;
         this.methodGroupName = methodGroupName;
