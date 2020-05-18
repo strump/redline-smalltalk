@@ -881,7 +881,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         final String className = ctx.className().getText();
         boolean isClassMethod = false;
         if (ctx.classSelector() != null) {
-            final String classSelector = ctx.classSelector().getText();
+            final String classSelector = ctx.classSelector().getText().trim();
             if (!classSelector.equals("class")) {
                 throw new SmalltalkCompilationError("Unknown selector '"+classSelector+"'");
             }
@@ -898,7 +898,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
             }
         }
 
-        throw new UnsupportedOperationException("Method group is not supported yet");
+        return null;
     }
 
     @Override

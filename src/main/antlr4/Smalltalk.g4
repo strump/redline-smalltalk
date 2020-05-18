@@ -62,22 +62,15 @@ methodGroup : EXCLAMATION SEP* className SEP+ classSelector? 'methodsFor:' SEP* 
               ws (methodDeclaration ws)+
               EXCLAMATION
              ;
-
 className : IDENTIFIER;
-
 classSelector : IDENTIFIER SEP+;
-
 methodGroupName : STRING;
-
 methodDeclaration : methodHeader SEP* EOL
                     sequence
                     ws EXCLAMATION
                    ;
-
 methodHeader : IDENTIFIER | binaryMethodHeader | keywordMethodHeader;
-
 binaryMethodHeader : BINARY_SELECTOR SEP* IDENTIFIER;
-
 keywordMethodHeader : KEYWORD SEP* IDENTIFIER (SEP+ KEYWORD SEP* IDENTIFIER)*;
 
 EXCLAMATION : '!';
