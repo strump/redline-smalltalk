@@ -34,7 +34,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     protected HashMap<String, ExtendedTerminalNode> outerArguments;
     protected HashMap<String, ExtendedTerminalNode> homeArguments;
     private Stack<KeywordRecord> keywords = new Stack<>();
-    protected int blockNumber = 0;
+    protected int blockNumber = 0; //TODO: Move this field to ClassGenerator
     private boolean referencedJVM = false;
     private boolean sendToSuper = false;
     private List<SmalltalkGeneratingVisitor.BlockAnswerRecord> tryCatchRecords;
@@ -789,15 +789,15 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     public Void visitBlock(@NotNull SmalltalkParser.BlockContext ctx) {
         log.info("  visitBlock {} {}", peekKeyword(), blockNumber);
         SmalltalkGeneratingVisitor.KeywordRecord keywordRecord = peekKeyword();
-        String name = makeBlockMethodName(keywordRecord);
-        boolean methodBlock = keywordRecord.keyword.toString().endsWith("withMethod:");
+        String blockName = makeBlockMethodName(keywordRecord);
+        boolean methodBlock = keywordRecord.keyword.toString().endsWith("withMethod:"); //TODO: what does this mean?
         HashMap<String, SmalltalkGeneratingVisitor.ExtendedTerminalNode> homeTemps = homeTemporaries;
         if (homeTemps == null && !methodBlock)
             homeTemps = temporaries;
         HashMap<String, SmalltalkGeneratingVisitor.ExtendedTerminalNode> homeArgs = homeArguments;
         if (homeArgs == null && !methodBlock)
             homeArgs = arguments;
-        BlockGeneratorVisitor blockGeneratorVisitor = new BlockGeneratorVisitor(classGen, cw, name, blockNumber,
+        BlockGeneratorVisitor blockGeneratorVisitor = new BlockGeneratorVisitor(classGen, cw, blockName, blockNumber,
                 homeTemps, homeArgs, arguments);
         classGen.pushCurrentVisitor(blockGeneratorVisitor);
         blockGeneratorVisitor.handleBlock(ctx);
@@ -806,10 +806,10 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         classGen.popCurrentVisitor();
         int line = ctx.BLOCK_START().getSymbol().getLine();
         if (methodBlock)
-            pushNewMethod(mv, fullClassName(), name, LAMBDA_BLOCK_SIG, line);
+            pushNewMethod(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line);
         else {
-            String blockAnswerClassName = makeBlockAnswerClassName(name);
-            pushNewBlock(mv, fullClassName(), name, LAMBDA_BLOCK_SIG, line, blockGeneratorVisitor.isAnswerBlock(), blockAnswerClassName);
+            String blockAnswerClassName = makeBlockAnswerClassName(blockName);
+            pushNewBlock(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line, blockGeneratorVisitor.isAnswerBlock(), blockAnswerClassName);
             if (blockGeneratorVisitor.isAnswerBlock()) {
                 loadBlockAnswerClass(blockAnswerClassName);
                 tryCatchRecords.add(new SmalltalkGeneratingVisitor.BlockAnswerRecord(blockAnswerClassName));
@@ -889,12 +889,17 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         }
         final String methodGroupName = ctx.methodGroupName().getText();
 
-        SmalltalkMethodDeclarationVisitor methodGroupVisitor = new SmalltalkMethodDeclarationVisitor(className, methodGroupName, isClassMethod);
+        SmalltalkMethodDeclarationVisitor methodGroupVisitor = new SmalltalkMethodDeclarationVisitor(classGen,
+                className, methodGroupName, isClassMethod, cw, blockNumber, homeTemporaries, homeArguments,
+                outerArguments);
 
         final List<SmalltalkParser.MethodDeclarationContext> methods = ctx.methodDeclaration();
         if (methods != null) {
             for (SmalltalkParser.MethodDeclarationContext methodDecl : methods) {
+                String blockName = makeBlockMethodName(peekKeyword());
+                methodGroupVisitor.blockNumber = blockNumber;
                 methodDecl.accept(methodGroupVisitor);
+                blockNumber = methodGroupVisitor.blockNumber;
             }
         }
 

@@ -18,15 +18,15 @@ import java.util.List;
 public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
     private static final Logger log = LoggerFactory.getLogger(BlockGeneratorVisitor.class);
 
-    private String blockName;
+    protected String blockName;
     private boolean returnRequired;
 
-    public BlockGeneratorVisitor(ClassGenerator classGenerator, ClassWriter cw, String name, int blockNumber,
+    public BlockGeneratorVisitor(ClassGenerator classGenerator, ClassWriter cw, String blockName, int blockNumber,
                                  HashMap<String, ExtendedTerminalNode> homeTemporaries,
                                  HashMap<String, ExtendedTerminalNode> homeArguments,
                                  HashMap<String, ExtendedTerminalNode> outerArguments) {
         super(classGenerator, cw);
-        this.blockName = name;
+        this.blockName = blockName;
         this.returnRequired = false;
         this.blockNumber = blockNumber;
         this.homeTemporaries = homeTemporaries;
@@ -52,7 +52,7 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
         return !returnRequired;
     }
 
-    private boolean returnRequired(SmalltalkParser.SequenceContext blockSequence) {
+    protected boolean returnRequired(SmalltalkParser.SequenceContext blockSequence) {
         if (blockSequence == null)
             return true;
         SmalltalkParser.StatementsContext statements = blockSequence.statements();
@@ -82,7 +82,7 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
         return null;
     }
 
-    private void closeBlockLambdaMethod(boolean returnRequired) {
+    protected void closeBlockLambdaMethod(boolean returnRequired) {
         log.info("  closeBlockLambdaMethod: {} {}", blockName, returnRequired);
         if (returnRequired)
             mv.visitInsn(ARETURN);
@@ -90,7 +90,7 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
         mv.visitEnd();
     }
 
-    private void openBlockLambdaMethod() {
+    protected void openBlockLambdaMethod() {
         log.info("  openBlockLambdaMethod: {}", blockName);
         mv = cw.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, blockName, LAMBDA_BLOCK_SIG, null, null);
         mv.visitCode();
