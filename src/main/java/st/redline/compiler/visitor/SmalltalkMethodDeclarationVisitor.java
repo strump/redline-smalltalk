@@ -2,15 +2,17 @@ package st.redline.compiler.visitor;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.generated.SmalltalkParser;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
+    private static final Logger log = LoggerFactory.getLogger(SmalltalkMethodDeclarationVisitor.class);
+
     private String className;
     private String methodGroupName;
     private boolean isClassMethod = false;
@@ -19,11 +21,11 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
     //private List<String> methodArgs = null;
 
     public SmalltalkMethodDeclarationVisitor(ClassGenerator classGenerator, String className, String methodGroupName,
-                                             boolean isClassMethod, ClassWriter cw, int blockNumber,
+                                             boolean isClassMethod, ClassWriter cw, MethodVisitor mv, int blockNumber,
                                              HashMap<String, ExtendedTerminalNode> homeTemporaries,
                                              HashMap<String, ExtendedTerminalNode> homeArguments,
                                              HashMap<String, ExtendedTerminalNode> outerArguments) {
-        super(classGenerator, cw, null, blockNumber, homeTemporaries, homeArguments, outerArguments);
+        super(classGenerator, cw, mv, null, blockNumber, homeTemporaries, homeArguments, outerArguments);
 
         this.className = className;
         this.methodGroupName = methodGroupName;
@@ -36,10 +38,20 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
                 "Use BlockGeneratorVisitor instead.");
     }
 
+    /* Generate method block and add it to class:
+       <code>
+       reference(className).addMethod(methodSelector, smalltalkMethod(() -> {
+           // Method body
+       }));
+       </code>
+     */
     @Override
     public Void visitMethodDeclaration(SmalltalkParser.MethodDeclarationContext ctx) {
+        //TODO: add pushLine(...)
+        int line = ctx.start.getLine();
         visitMethodHeader(ctx.methodHeader());
         initBlockName();
+        log.info("visitMethodDeclaration: class {}, selector {}, method {}", className, methodSelector, blockName);
 
         //Generating Java method from method declaration `sequence`.
         openBlockLambdaMethod();
@@ -49,17 +61,28 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
         boolean returnRequired = returnRequired(blockSequence);
         closeBlockLambdaMethod(returnRequired);
 
+        //Generate: <code> reference(className) </code>
+        pushReference(mv, className);
+        mv.visitVarInsn(ALOAD, 1); // Class reference
+        addCheckCast(mv, "st/redline/core/PrimClass");
+        pushLiteral(mv, methodSelector); //Put first argument of "addMethod" call
+        pushNewLambda(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line); //Put first argument of "addMethod" call
+        pushAddMethodCall(mv);
+
         return null;
     }
 
     private void initBlockName() {
-        if (isClassMethod) {
+        /*if (isClassMethod) {
             blockName = className + "$$"; //Class methods has additional $ sign in JVM method name
         }
         else {
             blockName = className + "$";
         }
-        blockName += methodSelector.replaceAll(":", "_");
+        blockName += methodSelector.replaceAll(":", "_");*/
+
+        blockNumber ++;
+        blockName = "B" + blockNumber;
     }
 
     @Override
@@ -85,5 +108,13 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
             }
         }
         return null;
+    }
+
+    private void pushAddMethodCall(MethodVisitor mv) {
+        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimClass", "addMethod", "(Ljava/lang/String;Lst/redline/core/PrimObject;)Lst/redline/core/PrimObject;", false);
+    }
+
+    private void addCheckCast(MethodVisitor mv, String typeName) {
+        mv.visitTypeInsn(CHECKCAST, typeName);
     }
 }

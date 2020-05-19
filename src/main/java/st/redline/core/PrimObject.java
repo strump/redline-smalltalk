@@ -1,6 +1,8 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import st.redline.classloader.SmalltalkClassLoader;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import static st.redline.core.PrimDoesNotUnderstand.PRIM_DOES_NOT_UNDERSTAND;
 import static st.redline.core.PrimSubclass.PRIM_SUBCLASS;
 
 public class PrimObject {
+    private static final Logger log = LoggerFactory.getLogger(PrimObject.class);
 
     private PrimObject selfClass;
     private Object javaValue;
@@ -240,10 +243,10 @@ public class PrimObject {
     }
 
     protected PrimObject apply(PrimObject method, PrimObject foundInClass, String selector, PrimObject ... arguments) {
-//        System.out.println("** apply: #" + selector + " found in " + foundInClass + " to " + this);
+        log.info("** apply: #{} found in {} to {}", selector, foundInClass, this);
         PrimObject result = method.invoke(this, new PrimContext(this, foundInClass, selector, arguments));
-        //System.out.println("** result: " + String.valueOf(result));
-        return result; // method.invoke(this, new PrimContext(this, foundInClass, outerContext, selector, arguments));
+        log.info("** result: {}", String.valueOf(result));
+        return result;
     }
 
     protected PrimObject invoke(PrimObject receiver, PrimContext context) {

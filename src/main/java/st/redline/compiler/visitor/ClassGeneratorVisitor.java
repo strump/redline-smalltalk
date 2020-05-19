@@ -890,18 +890,22 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         final String methodGroupName = ctx.methodGroupName().getText();
 
         SmalltalkMethodDeclarationVisitor methodGroupVisitor = new SmalltalkMethodDeclarationVisitor(classGen,
-                className, methodGroupName, isClassMethod, cw, blockNumber, homeTemporaries, homeArguments,
+                className, methodGroupName, isClassMethod, cw, mv, blockNumber, homeTemporaries, homeArguments,
                 outerArguments);
+
+        classGen.pushCurrentVisitor(methodGroupVisitor);
 
         final List<SmalltalkParser.MethodDeclarationContext> methods = ctx.methodDeclaration();
         if (methods != null) {
             for (SmalltalkParser.MethodDeclarationContext methodDecl : methods) {
-                String blockName = makeBlockMethodName(peekKeyword());
                 methodGroupVisitor.blockNumber = blockNumber;
                 methodDecl.accept(methodGroupVisitor);
+                removeJVMGeneratorVisitor();
                 blockNumber = methodGroupVisitor.blockNumber;
             }
         }
+
+        classGen.popCurrentVisitor();
 
         return null;
     }

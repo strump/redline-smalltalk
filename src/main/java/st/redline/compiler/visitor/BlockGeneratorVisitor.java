@@ -3,6 +3,7 @@ package st.redline.compiler.visitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import st.redline.compiler.ClassGenerator;
@@ -32,6 +33,14 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
         this.homeTemporaries = homeTemporaries;
         this.homeArguments = homeArguments;
         this.outerArguments = outerArguments;
+    }
+
+    public BlockGeneratorVisitor(ClassGenerator classGenerator, ClassWriter cw, MethodVisitor mv, String blockName, int blockNumber,
+                                 HashMap<String, ExtendedTerminalNode> homeTemporaries,
+                                 HashMap<String, ExtendedTerminalNode> homeArguments,
+                                 HashMap<String, ExtendedTerminalNode> outerArguments) {
+        this(classGenerator, cw, blockName, blockNumber, homeTemporaries, homeArguments, outerArguments);
+        this.mv = mv;
     }
 
     /* Generate java lambda body with Smalltalk block code inside. */
@@ -82,17 +91,17 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
         return null;
     }
 
+    protected void openBlockLambdaMethod() {
+        log.info(" openBlockLambdaMethod: {}", blockName);
+        mv = cw.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, blockName, LAMBDA_BLOCK_SIG, null, null);
+        mv.visitCode();
+    }
+
     protected void closeBlockLambdaMethod(boolean returnRequired) {
-        log.info("  closeBlockLambdaMethod: {} {}", blockName, returnRequired);
+        log.info(" closeBlockLambdaMethod: {} {}", blockName, returnRequired);
         if (returnRequired)
             mv.visitInsn(ARETURN);
         mv.visitMaxs(0, 0);
         mv.visitEnd();
-    }
-
-    protected void openBlockLambdaMethod() {
-        log.info("  openBlockLambdaMethod: {}", blockName);
-        mv = cw.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, blockName, LAMBDA_BLOCK_SIG, null, null);
-        mv.visitCode();
     }
 }

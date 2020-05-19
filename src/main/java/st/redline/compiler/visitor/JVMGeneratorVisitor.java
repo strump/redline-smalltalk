@@ -42,7 +42,7 @@ public class JVMGeneratorVisitor extends ClassGeneratorVisitor {
         String keyword = removeKeyword();
         JVMWriter jvmWriter = JVM_WRITERS.get(keyword);
         if (jvmWriter == null)
-            throw new RuntimeException("JVM keyword not recognized.");
+            throw new RuntimeException("JVM keyword '"+keyword+"' not recognized.");
         jvmWriter.write(mv, arguments);
         return null;
     }
