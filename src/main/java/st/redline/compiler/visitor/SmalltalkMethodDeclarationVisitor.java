@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
     private static final Logger log = LoggerFactory.getLogger(SmalltalkMethodDeclarationVisitor.class);
+    public static final String PRIM_CLASS_FULL_NAME = "st/redline/core/PrimClass";
 
     private String className;
     private String methodGroupName;
@@ -42,15 +43,14 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
 
     /* Generate method block and add it to class:
        <code>
-       reference(className).addMethod(methodSelector, smalltalkMethod(() -> {
+       reference(className).addMethod(methodSelector, () -> {
            // Method body
-       }));
+       });
        </code>
      */
     @Override
     public Void visitMethodDeclaration(SmalltalkParser.MethodDeclarationContext ctx) {
         //TODO: add pushLine(...)
-        int line = ctx.start.getLine();
         visitMethodHeader(ctx.methodHeader());
         initBlockName();
         log.info("visitMethodDeclaration: class {}, selector {}, method {}", className, methodSelector, blockName);
@@ -65,11 +65,13 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
 
         //Lambda method is finished. Switching to previous MethodVisitor
         this.mv = parentMV;
+        int line = ctx.start.getLine();
+        visitLine(mv, line);
 
-        //Generate: <code> reference(className) </code>
-        mv.visitVarInsn(ALOAD, 1);
+        //Generate: <code> reference(className).addMethod(selector, lambda) </code>
+        line = ctx.sequence().start.getLine(); // first line in method code
         pushReference(mv, className);
-        addCheckCast(mv, "st/redline/core/PrimClass");
+        addCheckCast(mv, PRIM_CLASS_FULL_NAME); // Cast PrimObject to PrimClass
         pushLiteral(mv, methodSelector); //Put first argument of "addMethod" call
         pushNewLambda(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line); //Put second argument of "addMethod" call
         pushAddMethodCall(mv);

@@ -323,6 +323,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
        `type` could be "smalltalkArray", "smalltalkCharacter", "smalltalkInteger", "smalltalkString" or "smalltalkSymbol"
      */
     public void pushNewBlock(MethodVisitor mv, String className, String name, String sig, int line, boolean answerBlock, String answerBlockClassName) {
+        pushReceiver(mv);
         pushNewLambda(mv, className, name, sig, line);
         pushContext(mv);
         if (!answerBlock) {
@@ -334,6 +335,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     }
 
     public void pushNewMethod(MethodVisitor mv, String className, String name, String sig, int line) {
+        pushReceiver(mv);
         pushNewLambda(mv, className, name, sig, line);
         mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "smalltalkMethod", "(Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
     }
@@ -348,7 +350,6 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
      */
     public void pushNewLambda(MethodVisitor mv, String className, String methodName, String sig, int line) {
         visitLine(mv, line);
-        pushReceiver(mv);
 
         final Handle bootstrapMethodHandle = new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory",
                 "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;", false);
