@@ -690,6 +690,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         log.info("  visitLiteralArrayRest");
         if (ctx.parsetimeLiteral() != null)
             for (SmalltalkParser.ParsetimeLiteralContext literal : ctx.parsetimeLiteral()) {
+                // TODO: Implement LiterArray handling
                 throw new RuntimeException("Handle LiteralArray element");
             }
         return null;
@@ -900,23 +901,25 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         }
         final String methodGroupName = ctx.methodGroupName().getText();
 
-        SmalltalkMethodDeclarationVisitor methodGroupVisitor = new SmalltalkMethodDeclarationVisitor(classGen,
-                className, methodGroupName, isClassMethod, cw, mv, blockNumber, homeTemporaries, homeArguments,
-                outerArguments);
-
-        classGen.pushCurrentVisitor(methodGroupVisitor);
 
         final List<SmalltalkParser.MethodDeclarationContext> methods = ctx.methodDeclaration();
         if (methods != null) {
             for (SmalltalkParser.MethodDeclarationContext methodDecl : methods) {
+                SmalltalkMethodDeclarationVisitor methodGroupVisitor = new SmalltalkMethodDeclarationVisitor(classGen,
+                        className, methodGroupName, isClassMethod, cw, mv, blockNumber, homeTemporaries, homeArguments,
+                        outerArguments);
+
+                classGen.pushCurrentVisitor(methodGroupVisitor);
+
                 methodGroupVisitor.blockNumber = blockNumber;
                 methodDecl.accept(methodGroupVisitor);
                 removeJVMGeneratorVisitor();
                 blockNumber = methodGroupVisitor.blockNumber;
+
+                classGen.popCurrentVisitor();
             }
         }
 
-        classGen.popCurrentVisitor();
 
         return null;
     }

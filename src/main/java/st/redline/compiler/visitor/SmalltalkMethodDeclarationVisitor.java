@@ -20,7 +20,6 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
     private MethodVisitor parentMV;
 
     private String methodSelector;
-    //private List<String> methodArgs = null;
 
     public SmalltalkMethodDeclarationVisitor(ClassGenerator classGenerator, String className, String methodGroupName,
                                              boolean isClassMethod, ClassWriter cw, MethodVisitor mv, int blockNumber,
