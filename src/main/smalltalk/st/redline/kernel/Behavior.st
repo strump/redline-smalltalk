@@ -10,24 +10,24 @@ Object subclass: #Behavior
        poolDictionaries: ''
        category: 'Kernel-Classes'.
 
-"Behavior methodsFor: 'initialize-release'"
+!Behavior methodsFor: 'initialize-release'!
 
-- obsolete
+obsolete
     "Invalidate and recycle local messages. Remove the receiver from its
     superclass' subclass list."
 
     methodDict := MethodDictionary new.
-    superclass == nil ifFalse: [superclass removeSubclass: self].
+    superclass == nil ifFalse: [superclass removeSubclass: self]. ! !
 
 
-"Behavior methodsFor: 'accessing'"
+!Behavior methodsFor: 'accessing'!
 
-- compilerClass
+compilerClass
     "Answer a compiler class appropriate for source methods of this class."
 
-    ^ Compiler.
+    ^ Compiler. !
 
-- confirmRemovalOf: aSelector
+confirmRemovalOf: aSelector
     "Determine if it is okay to remove the given selector.  Answer 1 if it should be removed, 2 if it should be removed
      followed by a senders browse, and 3 if it should not be removed."
 
@@ -36,7 +36,7 @@ Object subclass: #Behavior
       ifTrue:
         [aMenu := PopUpMenu labels: 'Remove it
   Remove, then browse senders
-  Don''t remove, but show me those senders
+  Don`t remove, but show me those senders
   Forget it -- do nothing -- sorry I asked'.
 
         caption := 'This message has ' + count printString + ' sender'.
@@ -50,31 +50,31 @@ Object subclass: #Behavior
         answer == 0 ifTrue: [answer := 3].  "If user didn't answer, treat it as cancel"
         ^ answer min: 3]
       ifFalse:
-        [^ 1].
+        [^ 1]. !
 
-- decompilerClass
+decompilerClass
     "Answer a decompiler class appropriate for compiled methods of this class."
 
-    ^ Decompiler.
+    ^ Decompiler. !
 
-- evaluatorClass
+evaluatorClass
     "Answer an evaluator class appropriate for evaluating expressions in the
     context of this class."
 
-    ^ Compiler.
+    ^ Compiler. !
 
-- format
+format
 	"Answer an Integer that encodes the kinds and numbers of variables of
 	instances of the receiver."
 
-	^ format.
+	^ format. !
 
-- parserClass
+parserClass
     "Answer a parser class to use for parsing method headers."
 
-    ^ self compilerClass parserClass.
+    ^ self compilerClass parserClass. !
 
-- sourceCodeTemplate
+sourceCodeTemplate
     "Answer an expression to be edited and evaluated in order to define
     methods in this class."
 
@@ -82,60 +82,60 @@ Object subclass: #Behavior
     "comment stating purpose of message"
 
     | temporary variable names |
-    statements.'.
+    statements.'. !
 
-- subclassDefinerClass
+subclassDefinerClass
     "Answer an evaluator class appropriate for evaluating definitions of new
     subclasses of this class."
 
-    ^ Compiler.
+    ^ Compiler. !
+!
 
+!Behavior methodsFor: 'testing'!
 
-"Behavior methodsFor: 'testing'"
-
-- instSize
+instSize
     "Answer the number of named instance variables
     (as opposed to indexed variables) of the receiver."
 
-    JVM primitive: 444.
+    JVM primitive: 444. !
 
-- instSpec
-	JVM primitive: 445.
+instSpec
+	JVM primitive: 445. !
 
-- isBits
+isBits
     "Answer whether the receiver contains just bits (not pointers)."
 
-    ^ self instSpec >= 6.
+    ^ self instSpec >= 6. !
 
-- isBytes
+isBytes
     "Answer whether the receiver has 8-bit instance variables."
 
-    ^ self instSpec >= 8.
+    ^ self instSpec >= 8. !
 
-- isFixed
+isFixed
     "Answer whether the receiver does not have a variable (indexable) part."
 
-    ^ self isVariable not.
+    ^ self isVariable not. !
 
-- isPointers
+isPointers
     "Answer whether the receiver contains just pointers (not bits)."
 
-    ^ self isBits not.
+    ^ self isBits not. !
 
-- isVariable
+isVariable
     "Answer whether the receiver has indexable variables."
 
-    ^ self instSpec >= 2.
+    ^ self instSpec >= 2. !
 
-- isWords
+isWords
     "Answer whether the receiver has 16-bit instance variables."
 
-    ^ self isBytes not.
+    ^ self isBytes not. !
+!
 
+!Behavior methodsFor: 'copying'!
 
-"Behavior methodsFor: 'copying'"
-
-- copy
+copy
     "Answer a copy of the receiver without a list of subclasses."
 
     | myCopy savedSubclasses |
@@ -143,16 +143,17 @@ Object subclass: #Behavior
     subclasses := nil.
     myCopy := self shallowCopy.
     subclasses := savedSubclasses.
-    ^ myCopy methodDictionary: methodDict copy.
+    ^ myCopy methodDictionary: methodDict copy. !
+!
 
-"Behavior methodsFor: 'printing'"
+!Behavior methodsFor: 'printing'!
 
-- defaultNameStemForInstances
+defaultNameStemForInstances
     "Answer a basis for names of default instances of the receiver"
 
-    ^ self name.
+    ^ self name. !
 
-- literalScannedAs: scannedLiteral notifying: requestor
+literalScannedAs: scannedLiteral notifying: requestor
     "Postprocesses a literal scanned by Scanner scanToken (esp. xLitQuote).
     If scannedLiteral is not an association, answer it.
     Else, if it is of the form:
@@ -183,9 +184,9 @@ Object subclass: #Behavior
             [Undeclared at: key put: nil.
              ^ Undeclared associationAt: key]].
     requestor notify: '## must be followed by a non-local variable name'.
-    ^ false.
+    ^ false. !
 
-- printHierarchy
+printHierarchy
     "Answer a description containing the names and instance variable names
     of all of the subclasses and superclasses of the receiver."
 
@@ -201,15 +202,15 @@ Object subclass: #Behavior
       aStream print: aClass instVarNames].
     aStream cr.
     self printSubclassesOn: aStream level: index.
-    ^ aStream contents.
+    ^ aStream contents. !
 
-- printOn: aStream
+printOn: aStream
     "Refer to the comment in Object|printOn:."
 
     aStream nextPutAll: 'a descendent of '.
-    superclass printOn: aStream.
+    superclass printOn: aStream. !
 
-- storeLiteral: aCodeLiteral on: aStream
+storeLiteral: aCodeLiteral on: aStream
     "Store aCodeLiteral on aStream, changing an Association to ##GlobalName
      or ###MetaclassSoleInstanceName format if appropriate"
 
@@ -227,11 +228,12 @@ Object subclass: #Behavior
       ifTrue:
         [aStream nextPutAll: '##'; nextPutAll: key.
          ^ self].
-    aCodeLiteral storeOn: aStream.
+    aCodeLiteral storeOn: aStream. !
+!
 
-"Behavior methodsFor: 'creating class hierarchy'"
+!Behavior methodsFor: 'creating class hierarchy'!
 
-- addSubclass: aSubclass
+addSubclass: aSubclass
     "Make the argument, aSubclass, be one of the subclasses of the receiver.
     Create an error notification if the argument's superclass is not the
     receiver."
@@ -240,39 +242,39 @@ Object subclass: #Behavior
       ifTrue: [self error: aSubclass name + ' is not my subclass']
       ifFalse: [subclasses == nil
             ifTrue:	[subclasses := Set with: aSubclass]
-            ifFalse: [subclasses add: aSubclass]].
+            ifFalse: [subclasses add: aSubclass]]. !
 
-
-- removeSubclass: aSubclass
+removeSubclass: aSubclass
     "If the argument, aSubclass, is one of the receiver's subclasses, remove it."
 
     subclasses == nil ifFalse:
       [subclasses remove: aSubclass ifAbsent: [].
       subclasses isEmpty ifTrue: [subclasses := nil]].
-    Object flushCache.
+    Object flushCache. !
 
-- superclass: aClass
+superclass: aClass
     "Change the receiver's superclass to be aClass."
 
-    JVM primitive: 308.
+    JVM primitive: 308. !
+!
 
-"Behavior methodsFor: 'creating method dictionary'"
+!Behavior methodsFor: 'creating method dictionary'!
 
-- addSelector: selector withMethod: compiledMethod
+addSelector: selector withMethod: compiledMethod
     "Add the message selector with the corresponding compiled method to the
     receiver's method dictionary."
 
-    self basicAddSelector: selector withMethod: compiledMethod.
+    self basicAddSelector: selector withMethod: compiledMethod. !
 
-- compile: code
+compile: code
     "Compile the argument, code, as source code in the context of the
     receiver. Create an error notification if the code can not be compiled.
     The argument is either a string or an object that converts to a string or a
     PositionableStream on an object that converts to a string."
 
-    ^ self compile: code notifying: nil.
+    ^ self compile: code notifying: nil. !
 
-- compile: code notifying: requestor
+compile: code notifying: requestor
     "Compile the argument, code, as source code in the context of the
     receiver and insEtall the result in the receiver's method dictionary. The
     second argument, requestor, is to be notified if an error occurs. The
@@ -290,34 +292,34 @@ Object subclass: #Behavior
          selector := sel.
          methodNode := parseNode].
     method putSource: code "a Text" fromParseNode: methodNode inFile: 2
-        withPreamble: [:f | f cr; nextPut: $!!; nextChunkPut: 'Behavior method'; cr].
-    ^ selector.
+        withPreamble: [:f | f cr; nextPut: $!; nextChunkPut: 'Behavior method'; cr].
+    ^ selector. !
 
-- compileAll
+compileAll
 
-  ^ self compileAllFrom: self.
+  ^ self compileAllFrom: self. !
 
-- compileAllFrom: oldClass
+compileAllFrom: oldClass
     "Compile all the methods in the receiver's method dictionary.
     This validates sourceCode and variable references and forces
     all methods to use the current bytecode set"
 
-    self selectorsDo: [:sel | self recompile: sel from: oldClass].
+    self selectorsDo: [:sel | self recompile: sel from: oldClass]. !
 
-- compress
+compress
     "Compact the method dictionary of the receiver."
 
-    methodDict rehash.
+    methodDict rehash. !
 
-- decompile: selector
+decompile: selector
     "Find the compiled code associated with the argument, selector, as a
     message selector in the receiver's method dictionary and decompile it.
     Answer the resulting source code as a string. Create an error notification
     if the selector is not in the receiver's method dictionary."
 
-    ^ self decompilerClass new decompile: selector in: self.
+    ^ self decompilerClass new decompile: selector in: self. !
 
-- defaultSelectorForMethod: aMethod
+defaultSelectorForMethod: aMethod
     "Given a method, invent and answer an appropriate message selector (a
     Symbol), that is, one that will parse with the correct number of
     arguments."
@@ -326,15 +328,15 @@ Object subclass: #Behavior
     aStream := WriteStream on: (String new: 16).
     aStream nextPutAll: 'DoIt'.
     1 to: aMethod numArgs do: [:i | aStream nextPutAll: 'with:'].
-    ^ aStream contents asSymbol.
+    ^ aStream contents asSymbol. !
 
-- methodDictionary: aDictionary
+methodDictionary: aDictionary
     "Store the argument, aDictionary, as the method dictionary of the
     receiver."
 
-    methodDict := aDictionary.
+    methodDict := aDictionary. !
 
-- recompile: selector from: oldClass
+recompile: selector from: oldClass
     "Compile the method associated with selector in the receiver's method dictionary."
     | method trailer methodNode |
     method := self compiledMethodAt: selector.
@@ -345,36 +347,38 @@ Object subclass: #Behavior
           notifying: nil
           ifFail: [^ self].   "Assume OK after proceed from SyntaxError"
     selector == methodNode selector ifFalse: [self error: 'selector changed!!'].
-    self addSelector: selector withMethod: (methodNode generate: trailer).
+    self addSelector: selector withMethod: (methodNode generate: trailer). !
 
-- recompileChanges
+recompileChanges
     "Compile all the methods that are in the changes file.
     This validates sourceCode and variable references and forces
     methods to use the current bytecode set"
 
     self selectorsDo:
       [:sel | (self compiledMethodAt: sel) fileIndex > 1 ifTrue:
-        [self recompile: sel from: self]].
+        [self recompile: sel from: self]]. !
 
-- removeSelector: selector
+removeSelector: selector
     "Assuming that the argument, selector (a Symbol), is a message selector
     in the receiver's method dictionary, remove it. If the selector is not in
     the method dictionary, create an error notification."
 
     methodDict removeKey: selector.
-    selector flushCache.
+    selector flushCache. !
+!
 
-"Behavior methodsFor: 'instance creation'"
+!Behavior methodsFor: 'instance creation'!
 
-- basicNew
+basicNew
     "Primitive. Answer an instance of the receiver (which is a class) with no
     indexable variables. Fail if the class is indexable. Essential. See Object
     documentation whatIsAPrimitive."
 
     JVM aload: 1;
         invokeVirtual: 'st/redline/core/PrimObject' method: 'primitiveNew' matching: '()Lst/redline/core/PrimObject;'.
+!
 
-- basicNew: anInteger
+basicNew: anInteger
     "Primitive. Answer an instance of the receiver (which is a class) with the
     number of indexable variables specified by the argument, anInteger. Fail
     if the class is not indexable or if the argument is not a positive Integer.
@@ -383,33 +387,35 @@ Object subclass: #Behavior
     JVM aload: 1;
         argLoad: 0;
         invokeVirtual: 'st/redline/core/PrimObject' method: 'primitiveNew' matching: '(Lst/redline/core/PrimObject;)Lst/redline/core/PrimObject;'.
+!
 
-- new
+new
 	"Answer a new instance of the receiver (which is a class) with no indexable variables. Fail if the class is indexable."
 	"Essential Primitive. See Object documentation whatIsAPrimitive."
 
-  ^ self basicNew initialize.
+  ^ self basicNew initialize. !
 
-- new: anInteger
+new: anInteger
     "Primitive. Answer an instance of the receiver (which is a class) with the
     number of indexable variables specified by the argument, anInteger. Fail
     if the class is not indexable or if the argument is not a positive Integer.
     Essential. See Object documentation whatIsAPrimitive."
 
-    ^ (self basicNew: anInteger) initialize.
+    ^ (self basicNew: anInteger) initialize. !
+!
 
-"Behavior methodsFor: 'accessing class hierarchy'"
+!Behavior methodsFor: 'accessing class hierarchy'!
 
-- allSubclasses
+allSubclasses
     "Answer a Set of the receiver's and the receiver's descendent's subclasses."
 
     | aSet |
     aSet := Set new.
     aSet addAll: self subclasses.
     self subclasses do: [:eachSubclass | aSet addAll: eachSubclass allSubclasses].
-    ^ aSet.
+    ^ aSet. !
 
-- allSubclassesWithLevelDo: classAndLevelBlock startingLevel: level
+allSubclassesWithLevelDo: classAndLevelBlock startingLevel: level
     "Walk the tree of subclasses, giving the class and its level"
     | subclassNames subclass |
     classAndLevelBlock value: self value: level.
@@ -420,9 +426,9 @@ Object subclass: #Behavior
     subclassNames do:
       [:name | (Smalltalk at: name)
         allSubclassesWithLevelDo: classAndLevelBlock
-        startingLevel: level+1].
+        startingLevel: level+1]. !
 
-- allSuperclasses
+allSuperclasses
     "Answer an OrderedCollection of the receiver's and the receiver's
     ancestor's superclasses. The first element is the receiver's immediate
     superclass, followed by its superclass; the last element is Object."
@@ -432,25 +438,25 @@ Object subclass: #Behavior
       ifTrue: [^ OrderedCollection new]
       ifFalse: [temp := superclass allSuperclasses.
           temp addFirst: superclass.
-          ^ temp].
+          ^ temp]. !
 
-- subclasses
+subclasses
     "Answer a Set containing the receiver's subclasses."
 
     subclasses == nil
       ifTrue: [^ Set new]
-      ifFalse: [^ subclasses copy].
+      ifFalse: [^ subclasses copy]. !
 
-- superclass
+superclass
 	"Answer the receiver's superclass, a Class."
 
-	JVM primitive: 306.
+	JVM primitive: 306. !
 
-- superclass: aClass
+superclass: aClass
 
-  JVM primitive: 307.
+  JVM primitive: 307. !
 
-- withAllSubclasses
+withAllSubclasses
     "Answer a Set of the receiver, the receiver's descendent's, and the
     receiver's descendent's subclasses."
 
@@ -458,9 +464,9 @@ Object subclass: #Behavior
     aSet := Set with: self.
     aSet addAll: self subclasses.
     self subclasses do: [:eachSubclass | aSet addAll: eachSubclass allSubclasses].
-    ^ aSet.
+    ^ aSet. !
 
-- withAllSuperclasses
+withAllSuperclasses
     "Answer an OrderedCollection of the receiver and the receiver's
     superclasses. The first element is the receiver,
     followed by its superclass; the last element is Object."
@@ -468,10 +474,10 @@ Object subclass: #Behavior
     | temp |
     temp := self allSuperclasses.
     temp addFirst: self.
-    ^ temp.
+    ^ temp. !
+!
 
-
-"Behavior methodsFor: 'accessing method dictionary'"
+!Behavior methodsFor: 'accessing method dictionary'!
 
 allSelectors
     "Answer a Set of all the message selectors that instances of the receiver
@@ -482,9 +488,9 @@ allSelectors
       ifTrue: [^ self selectors]
       ifFalse: [temp := superclass allSelectors.
           temp addAll: self selectors.
-          ^ temp].
+          ^ temp]. !
 
-- changeRecordsAt: selector
+changeRecordsAt: selector
     "Return a list of ChangeRecords for all versions of the method at selector.
     Source code can be retrieved by sending string to any one"
     "(Pen changeRecordsAt: #go:) collect: [:cRec | cRec string]"
@@ -494,22 +500,22 @@ allSelectors
         class: self meta: self isMeta
         category: (self whichCategoryIncludesSelector: selector)
         selector: selector)
-      changeList.
+      changeList. !
 
-- compiledMethodAt: selector
+compiledMethodAt: selector
     "Answer the compiled method associated with the argument, selector (a
     Symbol), a message selector in the receiver's method dictionary. If the
     selector is not in the dictionary, create an error notification."
 
-    ^ methodDict at: selector.
+    ^ methodDict at: selector. !
 
-- compiledMethodAt: selector ifAbsent: aBlock
+compiledMethodAt: selector ifAbsent: aBlock
     "Answer the compiled method associated with the argument, selector (a Symbol), a message selector in the receiver's
     method dictionary. If the selector is not in the dictionary, return the value of aBlock"
 
-    ^ methodDict at: selector ifAbsent: [aBlock value].
+    ^ methodDict at: selector ifAbsent: [aBlock value]. !
 
-- compressedSourceCodeAt: selector
+compressedSourceCodeAt: selector
     "(Paragraph compressedSourceCodeAt: #displayLines:affectedRectangle:) size 721 1921
     Paragraph selectors inject: 0 into: [:tot :sel | tot + (Paragraph compressedSourceCodeAt: sel) size] 13606 31450"
 
@@ -525,9 +531,9 @@ allSelectors
         [:i | String streamContents:
           [:s | s cr. i timesRepeat: [s tab]]]) +
       (self compiledMethodAt: selector) literalStrings)
-        asSortedCollection: [:a :b | a size > b size]).
+        asSortedCollection: [:a :b | a size > b size]). !
 
-- firstCommentAt:  selector
+firstCommentAt:  selector
     "Answer a string representing the first comment in the method associated with selector.  Return an empty string if
     the relevant source file is not available, or if the method's source code does not contain a comment.  Not smart
     enough to bypass quotes in string constants, but ""clever"" enough to map doubled quotes into a single quote."
@@ -543,9 +549,9 @@ allSelectors
       whileTrue:
         [pos := nextQuotePos + 2].
 
-    ^ (sourceString copyFrom: commentStart + 1 to: nextQuotePos - 1) copyReplaceAll: '""' with: '"'.
+    ^ (sourceString copyFrom: commentStart + 1 to: nextQuotePos - 1) copyReplaceAll: '""' with: '"'. !
 
-- selectorAtMethod: method setClass: classResultBlock
+selectorAtMethod: method setClass: classResultBlock
     "Answer both the message selector associated with the compiled method
     and the class in which that selector is defined."
 
@@ -562,56 +568,57 @@ allSelectors
             sel == (self defaultSelectorForMethod: method) ifTrue: [classResultBlock value: self].
             ^ sel].
     classResultBlock value: self.
-    ^ sel.
+    ^ sel. !
 
-- selectors
+selectors
     "Answer a Set of all the message selectors specified in the receiver's
     method dictionary."
 
-    ^ methodDict keys.
+    ^ methodDict keys. !
 
-- selectorsDo: selectorBlock
+selectorsDo: selectorBlock
     "Evaluate selectorBlock for all the message selectors in my method dictionary."
 
-    ^ methodDict keysDo: selectorBlock.
+    ^ methodDict keysDo: selectorBlock. !
 
-- sourceCodeAt: selector
+sourceCodeAt: selector
 
-	^ (methodDict at: selector) getSourceFor: selector in: self.
+	^ (methodDict at: selector) getSourceFor: selector in: self. !
 
-- sourceCodeAt: selector ifAbsent: aBlock
+sourceCodeAt: selector ifAbsent: aBlock
 
-	^ (methodDict at: selector ifAbsent: [^ aBlock value]) getSourceFor: selector in: self.
+	^ (methodDict at: selector ifAbsent: [^ aBlock value]) getSourceFor: selector in: self. !
 
-- sourceMethodAt: selector
+sourceMethodAt: selector
     "Answer the paragraph corresponding to the source code for the
     argument."
 
-    ^ (self sourceCodeAt: selector) asText makeSelectorBoldIn: self.
+    ^ (self sourceCodeAt: selector) asText makeSelectorBoldIn: self. !
 
-- sourceMethodAt: selector ifAbsent: aBlock
+sourceMethodAt: selector ifAbsent: aBlock
     "Answer the paragraph corresponding to the source code for the
     argument."
 
-    ^ (self sourceCodeAt: selector ifAbsent: [^ aBlock value]) asText makeSelectorBoldIn: self.
+    ^ (self sourceCodeAt: selector ifAbsent: [^ aBlock value]) asText makeSelectorBoldIn: self.!
+!
 
-"Behavior methodsFor: 'accessing instances and variables'"
+!Behavior methodsFor: 'accessing instances and variables'!
 
-- allClassVarNames
+allClassVarNames
     "Answer a Set of the names of the receiver's and the receiver's ancestor's
     class variables."
 
-    ^ superclass allClassVarNames.
+    ^ superclass allClassVarNames. !
 
-- allInstances
+allInstances
     "Answer a collection of all current instances of the receiver."
 
     | all |
     all := OrderedCollection new.
     self allInstancesDo: [:x | x == all ifFalse: [all add: x]].
-    ^ all asArray.
+    ^ all asArray. !
 
-- allInstVarNames
+allInstVarNames
     "Answer an Array of the names of the receiver's instance variables. The
     Array ordering is the order in which the variables are stored and
     accessed by the interpreter."
@@ -620,29 +627,29 @@ allSelectors
     superclass == nil
       ifTrue: [vars := self instVarNames copy]	"Guarantee a copy is answered."
       ifFalse: [vars := superclass allInstVarNames + self instVarNames].
-    ^ vars.
+    ^ vars. !
 
-- allSharedPools
+allSharedPools
     "Answer a Set of the names of the pools (Dictionaries) that the receiver
     and the receiver's ancestors share."
 
-    ^ superclass allSharedPools.
+    ^ superclass allSharedPools. !
 
-- allSubInstances
+allSubInstances
     "Answer a list of all current instances of the receiver and all of its subclasses."
 
     | aCollection |
     aCollection := OrderedCollection new.
     self allSubInstancesDo:
       [:x | x == aCollection ifFalse: [aCollection add: x]].
-    ^ aCollection.
+    ^ aCollection. !
 
-- classVarNames
+classVarNames
     "Answer a Set of the receiver's class variable names."
 
-    ^ Set new.
+    ^ Set new. !
 
-- inspectAllInstances
+inspectAllInstances
     "Inpsect all instances of the receiver.  1/26/96 sw"
 
     | all allSize prefix |
@@ -653,9 +660,9 @@ allSelectors
       ifTrue: 	['The lone instance']
       ifFalse:	['The ' + allSize printString + ' instances'].
 
-    all asArray inspectWithLabel: (prefix + ' of ' + self name).
+    all asArray inspectWithLabel: (prefix + ' of ' + self name). !
 
-- inspectSubInstances
+inspectSubInstances
     "Inspect all instances of the receiver and all its subclasses.  CAUTION - don't do this for something as generic as Object!!  1/26/96 sw"
 
     | all allSize prefix |
@@ -667,18 +674,18 @@ allSelectors
       ifTrue: 	['The lone instance']
       ifFalse:	['The ' + allSize printString + ' instances'].
 
-    all asArray inspectWithLabel: (prefix + ' of ' + self name + ' & its subclasses').
+    all asArray inspectWithLabel: (prefix + ' of ' + self name + ' & its subclasses'). !
 
-- instanceCount
+instanceCount
     "Answer the number of instances of the receiver that are currently in
     use."
 
     | count |
     count := 0.
     self allInstancesDo: [:x | count := count + 1].
-    ^ count.
+    ^ count. !
 
-- instVarNames
+instVarNames
     "Answer an Array of the instance variable names. Behaviors must make
     up fake local instance variable names because Behaviors have instance
     variables for the purpose of compiling methods, but these are not named
@@ -691,33 +698,34 @@ allSelectors
         ifTrue: [0]
         ifFalse: [superclass instSize].
     mySize = superSize ifTrue: [^ #()].
-    ^ (superSize + 1 to: mySize) collect: [:i | 'inst' + i printString].
+    ^ (superSize + 1 to: mySize) collect: [:i | 'inst' + i printString]. !
 
-- sharedPools
+sharedPools
     "Answer a Set of the names of the pools (Dictionaries) that the receiver
     shares."
 
-    ^ OrderedCollection new.
+    ^ OrderedCollection new. !
 
-- someInstance
+someInstance
     "Primitive. Answer the first instance in the enumeration of all instances
     of the receiver. Fails if there are none. Essential. See Object
     documentation whatIsAPrimitive."
 
-    JVM primitive: 77.
+    JVM primitive: 77. !
 
-- subclassInstVarNames
+subclassInstVarNames
     "Answer a Set of the names of the receiver's subclasses' instance
     variables."
 
     | vars |
     vars := Set new.
     self allSubclasses do: [:aSubclass | vars addAll: aSubclass instVarNames].
-    ^ vars.
+    ^ vars. !
+!
 
-"Behavior methodsFor: 'testing class hierarchy'"
+!Behavior methodsFor: 'testing class hierarchy'!
 
-- inheritsFrom: aClass
+inheritsFrom: aClass
     "Answer whether the argument, aClass, is on the receiver's superclass
     chain."
 
@@ -727,9 +735,9 @@ allSelectors
       whileFalse:
         [aSuperclass == aClass ifTrue: [^ true].
         aSuperclass := aSuperclass superclass].
-    ^ false.
+    ^ false. !
 
-- kindOfSubclass
+kindOfSubclass
     "Answer a String that is the keyword that describes the receiver's kind of
     subclass, either a regular subclass, a variableSubclass, a
     variableByteSubclass, or a variableWordSubclass."
@@ -740,51 +748,52 @@ allSelectors
                   ifTrue: [^ ' variableByteSubclass: ']
                   ifFalse: [^ ' variableWordSubclass: ']]
             ifFalse: [^ ' variableSubclass: ']]
-      ifFalse: [^ ' subclass: '].
+      ifFalse: [^ ' subclass: ']. !
 
-- allUnsentMessages
+allUnsentMessages
     "Answer an array of all the messages defined by the receiver that are not sent anywhere in the system."
 
-    ^ Smalltalk allUnSentMessagesIn: self selectors.
+    ^ Smalltalk allUnSentMessagesIn: self selectors. !
+!
 
-"Behavior methodsFor: 'testing method dictionary'"
+!Behavior methodsFor: 'testing method dictionary'!
 
-- canUnderstand: selector
+canUnderstand: selector
     "Answer whether the receiver can respond to the message whose selector
     is the argument. The selector can be in the method dictionary of the
     receiver's class or any of its superclasses."
 
     (self includesSelector: selector) ifTrue: [^ true].
     superclass == nil ifTrue: [^ false].
-    ^ superclass canUnderstand: selector.
+    ^ superclass canUnderstand: selector. !
 
-- classThatUnderstands: selector
+classThatUnderstands: selector
     "Answer the class that can respond to the message whose selector
     is the argument. The selector can be in the method dictionary of the
     receiver's class or any of its superclasses."
 
     (self includesSelector: selector) ifTrue: [^ self].
     superclass == nil ifTrue: [^ nil].
-    ^ superclass classThatUnderstands: selector.
+    ^ superclass classThatUnderstands: selector. !
 
-- hasMethods
+hasMethods
     "Answer whether the receiver has any methods in its method dictionary."
 
-    ^ methodDict size > 0.
+    ^ methodDict size > 0. !
 
-- includesSelector: aSymbol
+includesSelector: aSymbol
     "Answer whether the message whose selector is the argument is in the
     method dictionary of the receiver's class."
 
-    ^ methodDict includesKey: aSymbol.
+    ^ methodDict includesKey: aSymbol. !
 
-- scopeHas: name ifTrue: assocBlock
+scopeHas: name ifTrue: assocBlock
     "If the argument name is a variable known to the receiver, then evaluate
     the second argument, assocBlock."
 
-    ^ superclass scopeHas: name ifTrue: assocBlock.
+    ^ superclass scopeHas: name ifTrue: assocBlock. !
 
-- thoroughWhichSelectorsReferTo: literal special: specialFlag byte: specialByte
+thoroughWhichSelectorsReferTo: literal special: specialFlag byte: specialByte
 	"Answer a set of selectors whose methods access the argument as a literal.  Dives into the compact literal notation, making it slow but thorough"
 
 	| who method |
@@ -799,17 +808,17 @@ allSelectors
 				or: [method sendsToSuper not
 					or: [method literals allButLast includes: literal]])
 				ifTrue: [who add: assn key]]].
-	^ who.
+	^ who. !
 
-- whichClassIncludesSelector: aSymbol
+whichClassIncludesSelector: aSymbol
     "Answer the class on the receiver's superclass chain where the argument,
     aSymbol (a message selector), will be found. Answer nil if none found."
 
     (methodDict includesKey: aSymbol) ifTrue: [^ self].
     superclass == nil ifTrue: [^ nil].
-    ^ superclass whichClassIncludesSelector: aSymbol.
+    ^ superclass whichClassIncludesSelector: aSymbol. !
 
-- whichSelectorsAccess: instVarName
+whichSelectorsAccess: instVarName
     "Answer a Set of selectors whose methods access the argument,
     instVarName, as a named instance variable."
 
@@ -819,16 +828,16 @@ allSelectors
       [:sel |
       ((methodDict at: sel)
         readsField: instVarIndex)
-        or: [(methodDict at: sel) writesField: instVarIndex]].
+        or: [(methodDict at: sel) writesField: instVarIndex]]. !
 
-- whichSelectorsReferTo: literal
+whichSelectorsReferTo: literal
     "Answer a Set of selectors whose methods access the argument as a literal."
 
     | special |
     special := Smalltalk hasSpecialSelector: literal ifTrueSetByte: [:byte ].
-    ^ self whichSelectorsReferTo: literal special: special byte: byte.
+    ^ self whichSelectorsReferTo: literal special: special byte: byte. !
 
-- whichSelectorsReferTo: literal special: specialFlag byte: specialByte
+whichSelectorsReferTo: literal special: specialFlag byte: specialByte
     "Answer a set of selectors whose methods access the argument as a literal."
 
     | who method |
@@ -843,20 +852,21 @@ allSelectors
           or: [method sendsToSuper not
             or: [method literals allButLast includes: literal]])
           ifTrue: [who add: assn key]]].
-    ^ who.
+    ^ who. !
 
-- whichSelectorsStoreInto: instVarName
+whichSelectorsStoreInto: instVarName
     "Answer a Set of selectors whose methods access the argument,
     instVarName, as a named instance variable."
 
     | instVarIndex |
     instVarIndex := self allInstVarNames indexOf: instVarName ifAbsent: [^ Set new].
     ^ methodDict keys select:
-      [:sel | (methodDict at: sel) writesField: instVarIndex].
+      [:sel | (methodDict at: sel) writesField: instVarIndex]. !
+!
 
-"Behavior methodsFor: 'enumerating'"
+!Behavior methodsFor: 'enumerating'!
 
-- allInstancesDo: aBlock
+allInstancesDo: aBlock
     "Evaluate the argument, aBlock, for each of the current instances of the
     receiver."
     | inst next |
@@ -865,31 +875,31 @@ allSelectors
     [inst == nil]
       whileFalse:
       [aBlock value: inst.
-      inst := inst nextInstance].
+      inst := inst nextInstance]. !
 
-- allSubclassesDo: aBlock
+allSubclassesDo: aBlock
     "Evaluate the argument, aBlock, for each of the receiver's subclasses."
 
     self subclassesDo:
       [:cl |
       aBlock value: cl.
-      cl allSubclassesDo: aBlock].
+      cl allSubclassesDo: aBlock]. !
 
-- allSubInstancesDo: aBlock
+allSubInstancesDo: aBlock
     "Evaluate the argument, aBlock, for each of the current instances of the
     receiver and all its subclasses."
 
     self allInstancesDo: aBlock.
-    self allSubclassesDo: [:sub | sub allInstancesDo: aBlock].
+    self allSubclassesDo: [:sub | sub allInstancesDo: aBlock]. !
 
-- allSuperclassesDo: aBlock
+allSuperclassesDo: aBlock
     "Evaluate the argument, aBlock, for each of the receiver's superclasses."
 
     superclass == nil
       ifFalse: [aBlock value: superclass.
-          superclass allSuperclassesDo: aBlock].
+          superclass allSuperclassesDo: aBlock]. !
 
-- selectSubclasses: aBlock
+selectSubclasses: aBlock
     "Evaluate the argument, aBlock, with each of the receiver's (next level)
     subclasses as its argument. Collect into a Set only those subclasses for
     which aBlock evaluates to true. In addition, evaluate aBlock for the
@@ -901,9 +911,9 @@ allSelectors
     self allSubclasses do:
       [:aSubclass |
       (aBlock value: aSubclass) ifTrue: [aSet add: aSubclass]].
-    ^ aSet.
+    ^ aSet. !
 
-- selectSuperclasses: aBlock
+selectSuperclasses: aBlock
     "Evaluate the argument, aBlock, with the receiver's superclasses as the
     argument. Collect into an OrderedCollection only those superclasses for
     which aBlock evaluates to true. In addition, evaluate aBlock for the
@@ -916,24 +926,25 @@ allSelectors
     self allSuperclasses do:
       [:aSuperclass |
       (aBlock value: aSuperclass) ifTrue: [aSet add: aSuperclass]].
-    ^ aSet.
+    ^ aSet. !
 
-- subclassesDo: aBlock
+subclassesDo: aBlock
     "Evaluate the argument, aBlock, for each of the receiver's immediate subclasses."
 
     subclasses == nil ifFalse:
-      [subclasses do: [:cl | aBlock value: cl]].
+      [subclasses do: [:cl | aBlock value: cl]]. !
 
-- withAllSubclassesDo: aBlock
+withAllSubclassesDo: aBlock
     "Evaluate the argument, aBlock, for the receiver and each of its
     subclasses."
 
     aBlock value: self.
-    self allSubclassesDo: aBlock.
+    self allSubclassesDo: aBlock. !
+!
 
-"Behavior methodsFor: 'user interface'"
+!Behavior methodsFor: 'user interface'!
 
-- allCallsOn: aSymbol
+allCallsOn: aSymbol
     "Answer a SortedCollection of all the methods that call on aSymbol."
 
     | aSortedCollection special |
@@ -942,12 +953,12 @@ allSelectors
     self withAllSubclassesDo:
       [:class | (class whichSelectorsReferTo: aSymbol special: special byte: byte) do:
         [:sel | sel ~~ #DoIt ifTrue: [aSortedCollection add: class name + ' ' + sel]]].
-    ^ aSortedCollection.
+    ^ aSortedCollection. !
 
-- browse
-	Browser newOnClass: self.
+browse
+	Browser newOnClass: self.!
 
-- browseAllAccessesTo: instVarName 	"Collection browseAllAccessesTo: 'contents'."
+browseAllAccessesTo: instVarName
     "Create and schedule a Message Set browser for all the receiver's methods
     or any methods of a subclass that refer to the instance variable name."
 
@@ -963,9 +974,9 @@ allSelectors
           [:class |
           (class whichSelectorsAccess: instVarName) do:
             [:sel | sel ~~ #DoIt ifTrue: [coll add: class name + ' ' + sel]]]].
-    ^ Smalltalk browseMessageList: coll name: 'Accesses to ' + instVarName autoSelect: instVarName.
+    ^ Smalltalk browseMessageList: coll name: 'Accesses to ' + instVarName autoSelect: instVarName. !
 
-- browseAllCallsOn: aSymbol
+browseAllCallsOn: aSymbol
     "Create and schedule a Message Set browser for all the methods that call
     on aSymbol."
 
@@ -974,9 +985,9 @@ allSelectors
         ifTrue: [label := 'Users of ' + (key := aSymbol key)]
         ifFalse: [label := 'Senders of ' + (key := aSymbol)].
     ^ Smalltalk browseMessageList: (self allCallsOn: aSymbol) asSortedCollection
-      name: label autoSelect: key.
+      name: label autoSelect: key. !
 
-- browseAllStoresInto: instVarName 	"Collection browseAllStoresInto: 'contents'."
+browseAllStoresInto: instVarName
     "Create and schedule a Message Set browser for all the receiver's methods
     or any methods of a subclass that refer to the instance variable name."
 
@@ -992,19 +1003,18 @@ allSelectors
           [:class |
           (class whichSelectorsStoreInto: instVarName) do:
             [:sel | sel ~~ #DoIt ifTrue: [coll add: class name + ' ' + sel]]]].
-    ^ Smalltalk browseMessageList: coll name: 'Stores into ' + instVarName autoSelect: instVarName.
+    ^ Smalltalk browseMessageList: coll name: 'Stores into ' + instVarName autoSelect: instVarName. !
 
-- crossReference
+crossReference
     "Answer an Array of arrays of size 2 whose first element is a message selector in the receiver's method dictionary
     and whose second element is a set of all message selectors in the method dictionary whose methods send a message
     with that selector. Subclasses are not included."
 
     ^ self selectors asSortedCollection asArray collect: [:x | 		Array
         with: (String with: Character cr) + x
-        with: (self whichSelectorsReferTo: x)].
+        with: (self whichSelectorsReferTo: x)]. !
 
-
-- removeUninstantiatedSubclassesSilently
+removeUninstantiatedSubclassesSilently
     "Remove the classes of any subclasses that have neither instances nor subclasses.  Answer the number of bytes reclaimed"
     "Player removeUninstantiatedSubclassesSilently"
 
@@ -1015,9 +1025,9 @@ allSelectors
       self subclasses select: [:c |
         (c instanceCount = 0) and: [c subclasses size = 0]].
     candidatesForRemoval do: [:c | c removeFromSystem].
-    ^ Smalltalk garbageCollect - oldFree.
+    ^ Smalltalk garbageCollect - oldFree. !
 
-- unreferencedInstanceVariables
+unreferencedInstanceVariables
     "Return a list of the instance variables defined in the receiver which are not referenced in the receiver or any of
      its subclasses."
 
@@ -1028,12 +1038,12 @@ allSelectors
       self withAllSubclasses do:
         [:class |  (class whichSelectorsAccess: ivn) do:
             [:sel | sel ~~ #DoIt ifTrue: [any := true]]].
-      any].
+      any]. !
+!
 
+!Behavior methodsFor: 'private'!
 
-"Behavior methodsFor: 'private'"
-
-- becomeCompact
+becomeCompact
     | cct index |
     cct := Smalltalk compactClassesArray.
     (self indexIfCompact > 0 or: [cct includes: self])
@@ -1047,9 +1057,9 @@ allSelectors
     "Make up new instances and become old ones into them"
     self updateInstancesFrom: self.
     "Purge any old instances"
-    Smalltalk garbageCollect.
+    Smalltalk garbageCollect. !
 
-- becomeUncompact
+becomeUncompact
     | cct index |
     cct := Smalltalk compactClassesArray.
     (index := self indexIfCompact) = 0
@@ -1063,15 +1073,15 @@ allSelectors
     "Make sure there are no compact ones left around"
     Smalltalk garbageCollect.
     "Remove this class from the compact class table"
-    cct at: index put: nil.
+    cct at: index put: nil. !
 
-- flushCache
+flushCache
     "Tell the interpreter to remove the contents of its method lookup cache, if it has
     one.  Essential.  See Object documentation whatIsAPrimitive."
 
-    JVM primitive: 89.
+    JVM primitive: 89. !
 
-- format: nInstVars variable: isVar words: isWords pointers: isPointers
+format: nInstVars variable: isVar words: isWords pointers: isPointers
     "Set the format for the receiver (a Class)."
 
     | cClass instSpec sizeHiBits |
@@ -1087,16 +1097,16 @@ allSelectors
     format := (format bitShift: 5) + cClass.
     format := (format bitShift: 4) + instSpec.
     format := (format bitShift: 6) + ((nInstVars+1)\\64).  "+1 since prim size field includes header"
-    format := (format bitShift: 1). "This shift plus integer bit lets wordSize work like byteSize"
+    format := (format bitShift: 1). "This shift plus integer bit lets wordSize work like byteSize" !
 
-- indexIfCompact
+indexIfCompact
     "If these 5 bits are non-zero, then instances of this class
     will be compact.  It is crucial that there be an entry in
     Smalltalk compactClassesArray for any class so optimized.
     See the msgs becomeCompact and becomeUncompact."
-    ^ (format bitShift: -11) bitAnd: 16r1F.
+    ^ (format bitShift: -11) bitAnd: 16r1F. !
 
-- printSubclassesOn: aStream level: level
+printSubclassesOn: aStream level: level
     "As part of the algorithm for printing a description of the receiver, print the
     subclass on the file stream, aStream, indenting level times."
 
@@ -1113,11 +1123,11 @@ allSelectors
     subclassNames asSortedCollection do:
       [:name |
       subclass := self subclasses detect: [:subC | subC name = name].
-      subclass printSubclassesOn: aStream level: level + 1].
+      subclass printSubclassesOn: aStream level: level + 1]. !
 
-- removeSelectorSimply: selector
+removeSelectorSimply: selector
     "Remove the message selector from the receiver's method dictionary.
     Internal access from compiler."
 
     methodDict removeKey: selector ifAbsent: [^ self].
-    selector flushCache.
+    selector flushCache. !

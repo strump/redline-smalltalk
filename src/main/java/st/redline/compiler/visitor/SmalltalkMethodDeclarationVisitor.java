@@ -50,7 +50,6 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
      */
     @Override
     public Void visitMethodDeclaration(SmalltalkParser.MethodDeclarationContext ctx) {
-        //TODO: add pushLine(...)
         visitMethodHeader(ctx.methodHeader());
         initBlockName();
         log.info("visitMethodDeclaration: class {}, selector {}, method {}", className, methodSelector, blockName);
@@ -68,6 +67,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
         int line = ctx.start.getLine();
         visitLine(mv, line);
 
+        //TODO: Case of isClassMethod==true is not handled
         //Generate: <code> reference(className).addMethod(selector, lambda) </code>
         line = ctx.sequence().start.getLine(); // first line in method code
         pushReference(mv, className);
