@@ -61,7 +61,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
         if (blockSequence != null)
             blockSequence.accept(currentVisitor());
         boolean returnRequired = returnRequired(blockSequence);
-        closeBlockLambdaMethod(false);
+        closeBlockLambdaMethod(returnRequired);
 
         //Lambda method is finished. Switching to previous MethodVisitor
         this.mv = parentMV;
@@ -73,7 +73,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
         pushReference(mv, className);
         addCheckCast(mv, PRIM_CLASS_FULL_NAME); // Cast PrimObject to PrimClass
         pushLiteral(mv, methodSelector); //Put first argument of "addMethod" call
-        pushNewLambda(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line); //Put second argument of "addMethod" call
+        pushNewMethod(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line); //Put second argument of "addMethod" call
         pushAddMethodCall(mv);
 
         return null;
@@ -120,7 +120,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
     }
 
     private void pushAddMethodCall(MethodVisitor mv) {
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimClass", "addMethod", "(Ljava/lang/String;Lst/redline/core/PrimObject;)Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimClass", "addMethod", "(Ljava/lang/String;Lst/redline/core/PrimObject;)V", false);
     }
 
     private void addCheckCast(MethodVisitor mv, String typeName) {
