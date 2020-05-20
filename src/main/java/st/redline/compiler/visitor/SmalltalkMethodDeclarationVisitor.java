@@ -100,7 +100,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
             methodSelector = ctx.IDENTIFIER().getText();
         }
         else if (ctx.binaryMethodHeader() != null) {
-            methodSelector = ctx.binaryMethodHeader().BINARY_SELECTOR().getText();
+            methodSelector = ctx.binaryMethodHeader().binarySelector().getText();
             addArgumentToMap(new ExtendedTerminalNode(ctx.binaryMethodHeader().IDENTIFIER(), 0));
         }
         else if (ctx.keywordMethodHeader() != null) {

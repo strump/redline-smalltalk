@@ -33,7 +33,7 @@ public class ParserTest {
 
     @Test
     public void test_Add_method() throws IOException {
-        final Compiler compiler = new Compiler(loadTestSource(SMALLTALK_FOLDER+"/Add_method.st"));
+        final Compiler compiler = new Compiler(loadTestSource(SMALLTALK_FOLDER+"/Number.st"));
         final ParseTree parseTree = compiler.parsedSourceContents();
         assertNotNull(parseTree);
     }

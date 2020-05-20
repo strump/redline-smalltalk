@@ -1097,7 +1097,8 @@ format: nInstVars variable: isVar words: isWords pointers: isPointers
     format := (format bitShift: 5) + cClass.
     format := (format bitShift: 4) + instSpec.
     format := (format bitShift: 6) + ((nInstVars+1)\\64).  "+1 since prim size field includes header"
-    format := (format bitShift: 1). "This shift plus integer bit lets wordSize work like byteSize" !
+    format := (format bitShift: 1). "This shift plus integer bit lets wordSize work like byteSize"
+!
 
 indexIfCompact
     "If these 5 bits are non-zero, then instances of this class
@@ -1131,3 +1132,4 @@ removeSelectorSimply: selector
 
     methodDict removeKey: selector ifAbsent: [^ self].
     selector flushCache. !
+!

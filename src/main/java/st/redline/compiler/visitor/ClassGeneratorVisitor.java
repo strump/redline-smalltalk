@@ -246,8 +246,10 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     }
 
     private void addToTemporaryVariableMap(String key, int index, TerminalNode node) {
-        if (temporaries.containsKey(key))
-            throw new RuntimeException("Temporary '" + key + "' already defined.");
+        if (temporaries.containsKey(key)) {
+            final int line = node.getSymbol().getLine();
+            throw new RuntimeException("Temporary '" + key + "' already defined. Line "+line);
+        }
         temporaries.put(key, new SmalltalkGeneratingVisitor.ExtendedTerminalNode(node, index));
     }
 
@@ -515,8 +517,12 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitBinaryMessage(@NotNull SmalltalkParser.BinaryMessageContext ctx) {
-        log.info("  visitBinaryMessage {}", ctx.BINARY_SELECTOR().getSymbol().getText());
-        TerminalNode binarySelector = ctx.BINARY_SELECTOR();
+        log.info("  visitBinaryMessage {}", ctx.binarySelector().getText());
+        SmalltalkParser.BinarySelectorContext binarySelectorCtx = ctx.binarySelector();
+        TerminalNode binarySelector = binarySelectorCtx.BINARY_SELECTOR();
+        if (binarySelector == null) {
+            binarySelectorCtx.MINUS();
+        }
         SmalltalkParser.UnarySendContext unarySend = ctx.unarySend();
         if (unarySend != null)
             unarySend.accept(currentVisitor());
@@ -740,7 +746,12 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         TerminalNode node = bareSymbolContext.IDENTIFIER();
         if (node != null)
             return new SmalltalkGeneratingVisitor.ExtendedTerminalNode(node, 0);
-        node = bareSymbolContext.BINARY_SELECTOR();
+
+        final SmalltalkParser.BinarySelectorContext binarySelector = bareSymbolContext.binarySelector();
+        node = binarySelector.BINARY_SELECTOR();
+        if (node != null)
+            return new SmalltalkGeneratingVisitor.ExtendedTerminalNode(node, 0);
+        node = binarySelector.MINUS();
         if (node != null)
             return new SmalltalkGeneratingVisitor.ExtendedTerminalNode(node, 0);
         List<TerminalNode> keywords = bareSymbolContext.KEYWORD();

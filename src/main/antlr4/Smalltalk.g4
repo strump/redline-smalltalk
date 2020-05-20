@@ -38,14 +38,15 @@ parsetimeLiteral : charConstant | pseudoVariable | number | literalArray | strin
 number : numberExp | hex | stFloat | stInteger;
 numberExp : (stFloat | stInteger) EXP stInteger;
 charConstant : CHARACTER_CONSTANT;
-hex : MINUS? HEX HEXDIGIT+;
+hex : MINUS? HEX hexDigit+;
 stInteger : MINUS? DIGIT+;
 stFloat : MINUS? DIGIT+ PERIOD DIGIT+;
+hexDigit : DIGIT | HEXDIGIT;
 pseudoVariable : RESERVED_WORD;
 string : STRING;
 symbol : HASH bareSymbol;
 primitive : LT ws KEYWORD ws DIGIT+ ws GT;
-bareSymbol : (IDENTIFIER | BINARY_SELECTOR) | KEYWORD+ | string | PIPE+;
+bareSymbol : (IDENTIFIER | binarySelector) | KEYWORD+ | string | PIPE+;
 literalArray : LITARR_START literalArrayRest;
 literalArrayRest : (ws (parsetimeLiteral | bareLiteralArray | bareSymbol))* ws CLOSE_PAREN;
 bareLiteralArray : OPEN_PAREN literalArrayRest;
@@ -55,7 +56,8 @@ unarySelector : IDENTIFIER;
 keywords : KEYWORD+;
 reference : variable;
 binaryTail : binaryMessage binaryTail?;
-binaryMessage : ws BINARY_SELECTOR ws (unarySend | operand);
+binaryMessage : ws binarySelector ws (unarySend | operand);
+binarySelector : BINARY_SELECTOR | MINUS;
 
 //Methods declaration
 methodGroup : EXCLAMATION SEP* className SEP+ classSelector? 'methodsFor:' SEP* methodGroupName SEP* EXCLAMATION
@@ -70,7 +72,7 @@ methodDeclaration : methodHeader SEP* EOL
                     ws EXCLAMATION
                    ;
 methodHeader : IDENTIFIER | binaryMethodHeader | keywordMethodHeader;
-binaryMethodHeader : BINARY_SELECTOR SEP* IDENTIFIER;
+binaryMethodHeader : binarySelector SEP* IDENTIFIER;
 keywordMethodHeader : KEYWORD SEP* IDENTIFIER (SEP+ KEYWORD SEP* IDENTIFIER)*;
 
 EXCLAMATION : '!';
@@ -86,7 +88,7 @@ OPEN_PAREN : '(';
 PIPE : '|';
 PERIOD : '.';
 SEMI_COLON : ';';
-BINARY_SELECTOR : ('\\' | '+' | '*' | '/' | '=' | '>' | '<' | ',' | '@' | '%' | '~' | '&' | '-' | '?')+; //Do we need PIPE here?
+BINARY_SELECTOR : ('\\' | '+' | '*' | '/' | '=' | '>' | '<' | ',' | '@' | '%' | '~' | '&' | '?' | '->')+; //Do we need PIPE here?
 LT : '<';
 GT : '>';
 MINUS : '-';
@@ -104,7 +106,7 @@ DYNDICT_START : '#{';
 DYNARR_END : '}';
 DYNARR_START : '{';
 DIGIT : [0-9];
-HEXDIGIT : [0-9a-fA-F];
+HEXDIGIT : [a-fA-F];
 KEYWORD : IDENTIFIER COLON;
 BLOCK_PARAM : COLON IDENTIFIER;
 CHARACTER_CONSTANT : DOLLAR .;
