@@ -16,6 +16,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
     private String className;
     private String methodGroupName;
     private boolean isClassMethod = false;
+    private MethodVisitor parentMV;
 
     private String methodSelector;
     //private List<String> methodArgs = null;
@@ -25,11 +26,12 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
                                              HashMap<String, ExtendedTerminalNode> homeTemporaries,
                                              HashMap<String, ExtendedTerminalNode> homeArguments,
                                              HashMap<String, ExtendedTerminalNode> outerArguments) {
-        super(classGenerator, cw, mv, null, blockNumber, homeTemporaries, homeArguments, outerArguments);
+        super(classGenerator, cw, null, blockNumber, homeTemporaries, homeArguments, outerArguments);
 
         this.className = className;
         this.methodGroupName = methodGroupName;
         this.isClassMethod = isClassMethod;
+        this.parentMV = mv;
     }
 
     @Override
@@ -59,14 +61,17 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
         if (blockSequence != null)
             blockSequence.accept(currentVisitor());
         boolean returnRequired = returnRequired(blockSequence);
-        closeBlockLambdaMethod(returnRequired);
+        closeBlockLambdaMethod(false);
+
+        //Lambda method is finished. Switching to previous MethodVisitor
+        this.mv = parentMV;
 
         //Generate: <code> reference(className) </code>
+        mv.visitVarInsn(ALOAD, 1);
         pushReference(mv, className);
-        mv.visitVarInsn(ALOAD, 1); // Class reference
         addCheckCast(mv, "st/redline/core/PrimClass");
         pushLiteral(mv, methodSelector); //Put first argument of "addMethod" call
-        pushNewLambda(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line); //Put first argument of "addMethod" call
+        pushNewLambda(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line); //Put second argument of "addMethod" call
         pushAddMethodCall(mv);
 
         return null;

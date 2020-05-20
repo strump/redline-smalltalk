@@ -35,14 +35,6 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
         this.outerArguments = outerArguments;
     }
 
-    public BlockGeneratorVisitor(ClassGenerator classGenerator, ClassWriter cw, MethodVisitor mv, String blockName, int blockNumber,
-                                 HashMap<String, ExtendedTerminalNode> homeTemporaries,
-                                 HashMap<String, ExtendedTerminalNode> homeArguments,
-                                 HashMap<String, ExtendedTerminalNode> outerArguments) {
-        this(classGenerator, cw, blockName, blockNumber, homeTemporaries, homeArguments, outerArguments);
-        this.mv = mv;
-    }
-
     /* Generate java lambda body with Smalltalk block code inside. */
     public void handleBlock(SmalltalkParser.BlockContext ctx) {
         log.info("  handleBlock {} {}", blockName, blockNumber);
