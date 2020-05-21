@@ -518,19 +518,19 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     @Override
     public Void visitBinaryMessage(@NotNull SmalltalkParser.BinaryMessageContext ctx) {
         log.info("  visitBinaryMessage {}", ctx.binarySelector().getText());
-        SmalltalkParser.BinarySelectorContext binarySelectorCtx = ctx.binarySelector();
-        TerminalNode binarySelector = binarySelectorCtx.BINARY_SELECTOR();
-        if (binarySelector == null) {
+        SmalltalkParser.BinarySelectorContext binarySelector = ctx.binarySelector();
+        //TerminalNode binarySelector = binarySelectorCtx.BINARY_SELECTOR();
+        /*if (binarySelector == null) {
             binarySelectorCtx.MINUS();
-        }
+        }*/
         SmalltalkParser.UnarySendContext unarySend = ctx.unarySend();
         if (unarySend != null)
             unarySend.accept(currentVisitor());
         SmalltalkParser.OperandContext operand = ctx.operand();
         if (operand != null)
             operand.accept(currentVisitor());
-        visitLine(mv, binarySelector.getSymbol().getLine());
-        invokePerform(mv, binarySelector.getSymbol().getText(), 1, sendToSuper);
+        visitLine(mv, binarySelector.start.getLine());
+        invokePerform(mv, binarySelector.getText(), 1, sendToSuper);
         sendToSuper = false;
         return null;
     }
@@ -749,12 +749,8 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
             return new SmalltalkGeneratingVisitor.ExtendedTerminalNode(node, 0);
 
         final SmalltalkParser.BinarySelectorContext binarySelector = bareSymbolContext.binarySelector();
-        node = binarySelector.BINARY_SELECTOR();
-        if (node != null)
-            return new SmalltalkGeneratingVisitor.ExtendedTerminalNode(node, 0);
-        node = binarySelector.MINUS();
-        if (node != null)
-            return new SmalltalkGeneratingVisitor.ExtendedTerminalNode(node, 0);
+        if (binarySelector != null)
+            return new BasicNode(binarySelector.start.getLine(), binarySelector.getText(), 0);
         List<TerminalNode> keywords = bareSymbolContext.KEYWORD();
         if (keywords != null && !keywords.isEmpty())
             return nodeFor(keywords);

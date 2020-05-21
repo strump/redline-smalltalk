@@ -57,7 +57,7 @@ keywords : KEYWORD+;
 reference : variable;
 binaryTail : binaryMessage binaryTail?;
 binaryMessage : ws binarySelector ws (unarySend | operand);
-binarySelector : BINARY_SELECTOR | MINUS;
+binarySelector : (BINARY_SELECTOR_CHAR | MINUS)+;
 
 //Methods declaration
 methodGroup : EXCLAMATION SEP* className SEP+ classSelector? 'methodsFor:' SEP* methodGroupName SEP* EXCLAMATION
@@ -88,7 +88,7 @@ OPEN_PAREN : '(';
 PIPE : '|';
 PERIOD : '.';
 SEMI_COLON : ';';
-BINARY_SELECTOR : ('\\' | '+' | '*' | '/' | '=' | '>' | '<' | ',' | '@' | '%' | '~' | '&' | '?' | '->')+; //Do we need PIPE here?
+BINARY_SELECTOR_CHAR : ('\\' | '+' | '*' | '/' | '=' | '>' | '<' | ',' | '@' | '%' | '~' | '&' | '?'); //Do we need PIPE here?
 LT : '<';
 GT : '>';
 MINUS : '-';
