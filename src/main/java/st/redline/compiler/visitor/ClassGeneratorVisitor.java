@@ -691,7 +691,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         if (ctx.parsetimeLiteral() != null)
             for (SmalltalkParser.ParsetimeLiteralContext literal : ctx.parsetimeLiteral()) {
                 // TODO: Implement LiterArray handling
-                throw new RuntimeException("Handle LiteralArray element");
+                throw new UnsupportedOperationException("Not implemented handling of LiteralArray element");
             }
         return null;
     }
