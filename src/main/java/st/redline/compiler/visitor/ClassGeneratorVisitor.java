@@ -1,7 +1,6 @@
 package st.redline.compiler.visitor;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -723,6 +722,17 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     public Void visitStFloat(@NotNull SmalltalkParser.StFloatContext ctx) {
         log.info("  visitFloat");
         throw new RuntimeException("visitFloat handle me.");
+    }
+
+    @Override
+    public Void visitHex(SmalltalkParser.HexContext ctx) {
+        log.info("  visitHex {}{}", ctx.MINUS() != null  ? "-" : "", ctx.HEX().getText());
+        boolean minus = ctx.MINUS() != null;
+        final String hexStr = ctx.HEX().toString().substring(3); // Skip '16r' at the beginning of hex string
+        final long longValue = Long.parseLong(hexStr, 16);
+        String value = (minus ? "-" : "") + longValue;
+        pushNewObject(mv, "smalltalkInteger", value, ctx.HEX().getSymbol().getLine());
+        return null;
     }
 
     @Override
