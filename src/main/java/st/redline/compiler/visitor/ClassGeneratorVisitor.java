@@ -1,6 +1,7 @@
 package st.redline.compiler.visitor;
 
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -659,6 +660,16 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     }
 
     @Override
+    public Void visitBareLiteralArray(SmalltalkParser.BareLiteralArrayContext ctx) {
+        throw new UnsupportedOperationException("BareLiteralArray compiling is not implemented");
+    }
+
+    @Override
+    public Void visitBareSymbol(SmalltalkParser.BareSymbolContext ctx) {
+        throw new UnsupportedOperationException("BareSymbol compiling is not implemented");
+    }
+
+    @Override
     public Void visitPseudoVariable(@NotNull SmalltalkParser.PseudoVariableContext ctx) {
         log.info("  visitPseudoVariable {}", ctx.RESERVED_WORD().getSymbol().getText());
         TerminalNode pseudoVariable = ctx.RESERVED_WORD();
@@ -681,19 +692,71 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     @Override
     public Void visitLiteralArray(@NotNull SmalltalkParser.LiteralArrayContext ctx) {
         log.info("  visitLiteralArray");
-        pushNewObject(mv, "smalltalkArray", "", ctx.LITARR_START().getSymbol().getLine());
+        //pushNewObject(mv, "smalltalkArray", "", ctx.LITARR_START().getSymbol().getLine());
         return visitChildren(ctx);
     }
 
+    /* Generate Smalltalk Array:
+       <code>
+       smalltalkArray(new Object[] {
+           smalltalkSymbol("aaa"),
+           smalltalkNumber(100),
+           nil(),
+           ...,
+       })
+       </code>
+     */
     @Override
     public Void visitLiteralArrayRest(@NotNull SmalltalkParser.LiteralArrayRestContext ctx) {
         log.info("  visitLiteralArrayRest");
-        if (ctx.parsetimeLiteral() != null)
-            for (SmalltalkParser.ParsetimeLiteralContext literal : ctx.parsetimeLiteral()) {
-                // TODO: Implement LiterArray handling
-                throw new UnsupportedOperationException("Not implemented handling of LiteralArray element");
+        int arraySize = calcLiteralArraySize(ctx);
+
+        pushReceiver(mv);
+        pushNumber(mv, arraySize);
+        mv.visitTypeInsn(ANEWARRAY, "st/redline/core/PrimObject");
+
+        int index = 0;
+        for (ParseTree child : ctx.children) {
+            if ( !(child instanceof SmalltalkParser.ParsetimeLiteralContext) &&
+                 !(child instanceof SmalltalkParser.BareLiteralArrayContext) &&
+                 !(child instanceof SmalltalkParser.BareSymbolContext))
+            {
+                //Assuming child is a whitespace or a CLOSE_PAREN token
+                continue;
             }
+
+            mv.visitInsn(DUP);
+            pushNumber(mv, index);
+            if (child instanceof SmalltalkParser.ParsetimeLiteralContext) {
+                this.visitParsetimeLiteral((SmalltalkParser.ParsetimeLiteralContext) child);
+            }
+            else if (child instanceof SmalltalkParser.BareLiteralArrayContext) {
+                this.visitBareLiteralArray((SmalltalkParser.BareLiteralArrayContext) child);
+            }
+            else if (child instanceof SmalltalkParser.BareSymbolContext) {
+                this.visitBareSymbol((SmalltalkParser.BareSymbolContext) child);
+            }
+            else {
+                throw new UnsupportedOperationException("Unknown child of type: " + child.getClass() +
+                        " at line "+ctx.start.getLine() + ". Text: '"+child.getText()+"'");
+            }
+            mv.visitInsn(AASTORE); // Put object to array at index `index`
+            index ++;
+        }
+
+        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "smalltalkArray", "([Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
         return null;
+    }
+
+    private int calcLiteralArraySize(SmalltalkParser.LiteralArrayRestContext ctx) {
+        int size = 0;
+        for (ParseTree child : ctx.children) {
+            if ( (child instanceof SmalltalkParser.ParsetimeLiteralContext) ||
+                 (child instanceof SmalltalkParser.BareLiteralArrayContext) ||
+                 (child instanceof SmalltalkParser.BareSymbolContext))
+                    size ++;
+        }
+        return size;
     }
 
     @Override
@@ -922,11 +985,13 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitMethodDeclaration(SmalltalkParser.MethodDeclarationContext ctx) {
-        throw new UnsupportedOperationException("Method declaration is not supported yet");
+        throw new UnsupportedOperationException("Method declaration is not supported in ClassGeneratorVisitor. " +
+                "This method should be overridden in a subclass");
     }
 
     @Override
     public Void visitMethodHeader(SmalltalkParser.MethodHeaderContext ctx) {
-        throw new UnsupportedOperationException("Method header is not supported yet");
+        throw new UnsupportedOperationException("Method header is not supported in ClassGeneratorVisitor. " +
+                "This method should be overridden in a subclass");
     }
 }
