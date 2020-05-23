@@ -104,7 +104,7 @@ public class JVMGeneratorVisitor extends ClassGeneratorVisitor {
         void write(MethodVisitor mv, List<Object> arguments);
     }
 
-    private static final Map<String, JVMWriter> JVM_WRITERS = new HashMap<String, JVMWriter>();
+    private static final Map<String, JVMWriter> JVM_WRITERS = new HashMap<>();
     static {
         JVM_WRITERS.put("aload:", new JVMWriter() {
             public void write(MethodVisitor mv, List<Object> arguments) {
@@ -131,7 +131,7 @@ public class JVMGeneratorVisitor extends ClassGeneratorVisitor {
             public void write(MethodVisitor mv, List<Object> arguments) {
                 mv.visitVarInsn(ALOAD, 2);  // Load Context
                 pushNumber(mv, Integer.valueOf(String.valueOf(arguments.get(0))));  // Load index of argument we want to get.
-                mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimContext", "argumentAt", "(I)Lst/redline/core/PrimObject;", false);
+                mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_CONTEXT_CLASS, "argumentAt", "(I)Lst/redline/core/PrimObject;", false);
             }
         });
         JVM_WRITERS.put("primitive:", new JVMWriter() {
@@ -139,7 +139,7 @@ public class JVMGeneratorVisitor extends ClassGeneratorVisitor {
                 mv.visitVarInsn(ALOAD, 1);  // Load Receiver
                 mv.visitVarInsn(ALOAD, 2);  // Load Context
                 String methodName = "primitive" + String.valueOf(arguments.get(0));
-                mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", methodName, "(Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;", false);
+                mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, methodName, "(Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;", false);
             }
         });
     }

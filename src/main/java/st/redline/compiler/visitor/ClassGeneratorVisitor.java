@@ -91,10 +91,10 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         mv = cw.visitMethod(ACC_PROTECTED, "importFor", "(Ljava/lang/String;)Ljava/lang/String;", null, null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "classLoader", "()Lst/redline/classloader/SmalltalkClassLoader;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "classLoader", "()Lst/redline/classloader/SmalltalkClassLoader;", false);
         mv.visitVarInsn(ALOAD, 1);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "packageName", "()Ljava/lang/String;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "packageName", "()Ljava/lang/String;", false);
         mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/classloader/SmalltalkClassLoader", "importForBy", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false);
         mv.visitInsn(ARETURN);
         mv.visitMaxs(3, 2);
@@ -144,8 +144,8 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         // import current package
         mv.visitVarInsn(ALOAD, 0);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "packageName", "()Ljava/lang/String;", false);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "importAll", "(Ljava/lang/String;)V", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "packageName", "()Ljava/lang/String;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "importAll", "(Ljava/lang/String;)V", false);
 
         // create a Context
         mv.visitTypeInsn(NEW, contextName());
@@ -706,7 +706,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
         pushReceiver(mv);
         pushNumber(mv, arraySize);
-        mv.visitTypeInsn(ANEWARRAY, "st/redline/core/PrimObject");
+        mv.visitTypeInsn(ANEWARRAY, PRIM_OBJECT_CLASS);
 
         int index = 0;
         for (ParseTree child : ctx.children) {
@@ -737,7 +737,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
             index ++;
         }
 
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "smalltalkArray", "([Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "smalltalkArray", "([Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
         return null;
     }
 

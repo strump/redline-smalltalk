@@ -3,6 +3,7 @@ package st.redline.compiler.visitor;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.StringUtils;
 import org.objectweb.asm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,8 @@ import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.generated.SmalltalkBaseVisitor;
 import st.redline.compiler.generated.SmalltalkParser;
 import st.redline.compiler.generated.SmalltalkVisitor;
+import st.redline.core.PrimContext;
+import st.redline.core.PrimObject;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -21,6 +24,9 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
 
     public static final String DEFAULT_IMPORTED_PACKAGE = "st.redline.kernel";
 
+    public static final String PRIM_OBJECT_CLASS = StringUtils.replaceChars(PrimObject.class.getCanonicalName(), ".", "/"); //"st/redline/core/PrimObject";
+    public static final String PRIM_CONTEXT_CLASS = StringUtils.replaceChars(PrimContext.class.getCanonicalName(), ".", "/"); //"st/redline/core/PrimContext";
+
     protected static final String[] SIGNATURES = {
             "(Ljava/lang/String;)Lst/redline/core/PrimObject;",
             "(Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;",
@@ -31,6 +37,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     };
     protected static final Map<String, Integer> OPCODES = new HashMap<String, Integer>();
     protected static final int BYTECODE_VERSION;
+
     static {
         int compareTo18 = new BigDecimal(System.getProperty("java.specification.version")).compareTo(new BigDecimal("1.8"));
         if (compareTo18 >= 0) {
@@ -276,7 +283,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     public void invokePerform(MethodVisitor mv, String selector, int argumentCount, boolean sendToSuper) {
         pushLiteral(mv, selector);
         String methodName = (sendToSuper) ? "superPerform" : "perform";
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", methodName, SIGNATURES[argumentCount], false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, methodName, SIGNATURES[argumentCount], false);
     }
 
     public void visitLine(MethodVisitor mv, int line) {
@@ -312,7 +319,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         visitLine(mv, line);
         pushReceiver(mv);
         pushLiteral(mv, value);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", type, "(Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, type, "(Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
     }
 
     /* Create BlockClosure class to wrap smalltalk block lambda (with ^ answer or without)
@@ -327,17 +334,17 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         pushNewLambda(mv, className, name, sig, line);
         pushContext(mv);
         if (!answerBlock) {
-            mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "smalltalkBlock", "(Ljava/lang/Object;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;", false);
+            mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "smalltalkBlock", "(Ljava/lang/Object;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;", false);
         } else {
             pushLiteral(mv, answerBlockClassName);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "smalltalkBlockAnswer", "(Ljava/lang/Object;Lst/redline/core/PrimContext;Ljava/lang/String;)Lst/redline/core/PrimObject;", false);
+            mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "smalltalkBlockAnswer", "(Ljava/lang/Object;Lst/redline/core/PrimContext;Ljava/lang/String;)Lst/redline/core/PrimObject;", false);
         }
     }
 
     public void pushNewMethod(MethodVisitor mv, String className, String name, String sig, int line) {
         pushReceiver(mv);
         pushNewLambda(mv, className, name, sig, line);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimObject", "smalltalkMethod", "(Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "smalltalkMethod", "(Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
     }
 
     /* Generate lambda function with LambdaBlock interface. Body of the lambda function is static method
