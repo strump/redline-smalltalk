@@ -689,67 +689,15 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         return null;
     }
 
-    /* Generate Smalltalk Array:
-       <code>
-       smalltalkArray(new Object[] {
-           smalltalkSymbol("aaa"),
-           smalltalkNumber(100),
-           nil(),
-           ...,
-       })
-       </code>
-     */
     @Override
-    public Void visitLiteralArrayRest(@NotNull SmalltalkParser.LiteralArrayRestContext ctx) {
-        log.info("  visitLiteralArrayRest");
-        int arraySize = calcLiteralArraySize(ctx);
+    public Void visitLiteralArray(SmalltalkParser.LiteralArrayContext ctx) {
+        LiteralArrayVisitor literalArrayVisitor = new LiteralArrayVisitor(classGen, cw, mv);
 
-        pushReceiver(mv);
-        pushNumber(mv, arraySize);
-        mv.visitTypeInsn(ANEWARRAY, PRIM_OBJECT_CLASS);
+        classGen.pushCurrentVisitor(literalArrayVisitor);
+        ctx.literalArrayRest().accept(literalArrayVisitor);
+        classGen.popCurrentVisitor();
 
-        int index = 0;
-        for (ParseTree child : ctx.children) {
-            if ( !(child instanceof SmalltalkParser.ParsetimeLiteralContext) &&
-                 !(child instanceof SmalltalkParser.BareLiteralArrayContext) &&
-                 !(child instanceof SmalltalkParser.BareSymbolContext))
-            {
-                //Assuming child is a whitespace or a CLOSE_PAREN token
-                continue;
-            }
-
-            mv.visitInsn(DUP);
-            pushNumber(mv, index);
-            if (child instanceof SmalltalkParser.ParsetimeLiteralContext) {
-                this.visitParsetimeLiteral((SmalltalkParser.ParsetimeLiteralContext) child);
-            }
-            else if (child instanceof SmalltalkParser.BareLiteralArrayContext) {
-                this.visitBareLiteralArray((SmalltalkParser.BareLiteralArrayContext) child);
-            }
-            else if (child instanceof SmalltalkParser.BareSymbolContext) {
-                this.visitBareSymbol((SmalltalkParser.BareSymbolContext) child);
-            }
-            else {
-                throw new UnsupportedOperationException("Unknown child of type: " + child.getClass() +
-                        " at line "+ctx.start.getLine() + ". Text: '"+child.getText()+"'");
-            }
-            mv.visitInsn(AASTORE); // Put object to array at index `index`
-            index ++;
-        }
-
-        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "smalltalkArray", "([Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
         return null;
-    }
-
-    private int calcLiteralArraySize(SmalltalkParser.LiteralArrayRestContext ctx) {
-        int size = 0;
-        for (ParseTree child : ctx.children) {
-            if ( (child instanceof SmalltalkParser.ParsetimeLiteralContext) ||
-                 (child instanceof SmalltalkParser.BareLiteralArrayContext) ||
-                 (child instanceof SmalltalkParser.BareSymbolContext))
-                    size ++;
-        }
-        return size;
     }
 
     @Override
@@ -851,8 +799,8 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitBlock(@NotNull SmalltalkParser.BlockContext ctx) {
-        log.info("  visitBlock {} {}", peekKeyword(), blockNumber);
         SmalltalkGeneratingVisitor.KeywordRecord keywordRecord = peekKeyword();
+        log.info("  visitBlock {} {}", keywordRecord, blockNumber);
         String blockName = makeBlockMethodName(keywordRecord);
         boolean methodBlock = keywordRecord.keyword.toString().endsWith("withMethod:"); //TODO: what does this mean?
         HashMap<String, SmalltalkGeneratingVisitor.ExtendedTerminalNode> homeTemps = homeTemporaries;
@@ -932,7 +880,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     private String makeBlockMethodName(SmalltalkGeneratingVisitor.KeywordRecord keywordRecord) {
         StringBuilder name = new StringBuilder();
-        if (keywordRecord.firstArgument.length() == 0) {
+        if (keywordRecord==null || keywordRecord.firstArgument.length() == 0) {
             blockNumber++;
             name.append("B").append(blockNumber);
         } else

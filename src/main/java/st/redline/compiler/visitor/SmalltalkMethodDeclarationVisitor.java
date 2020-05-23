@@ -95,6 +95,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
 
     @Override
     public Void visitMethodHeader(SmalltalkParser.MethodHeaderContext ctx) {
+        initializeKeyword();
         if (ctx.IDENTIFIER() != null) {
             methodSelector = ctx.IDENTIFIER().getText();
         }
@@ -115,6 +116,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
                 addArgumentToMap(new ExtendedTerminalNode(ident, index));
             }
         }
+        addToKeyword(methodSelector);
         return null;
     }
 

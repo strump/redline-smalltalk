@@ -54,7 +54,7 @@ public class Compiler {
         parser.addErrorListener(new SmalltalkParserErrorListener());
 
         final SmalltalkParser.ScriptContext script = parser.script();
-        //dumpTree(parser, script);
+        dumpTree(parser, script);
 
         return script;
     }
