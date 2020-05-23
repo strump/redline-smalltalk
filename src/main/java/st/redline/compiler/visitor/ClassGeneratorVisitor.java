@@ -689,13 +689,6 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         return null;
     }
 
-    @Override
-    public Void visitLiteralArray(@NotNull SmalltalkParser.LiteralArrayContext ctx) {
-        log.info("  visitLiteralArray");
-        //pushNewObject(mv, "smalltalkArray", "", ctx.LITARR_START().getSymbol().getLine());
-        return visitChildren(ctx);
-    }
-
     /* Generate Smalltalk Array:
        <code>
        smalltalkArray(new Object[] {
