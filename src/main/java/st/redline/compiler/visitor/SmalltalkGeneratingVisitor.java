@@ -24,8 +24,8 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
 
     public static final String DEFAULT_IMPORTED_PACKAGE = "st.redline.kernel";
 
-    public static final String PRIM_OBJECT_CLASS = StringUtils.replaceChars(PrimObject.class.getCanonicalName(), ".", "/"); //"st/redline/core/PrimObject";
-    public static final String PRIM_CONTEXT_CLASS = StringUtils.replaceChars(PrimContext.class.getCanonicalName(), ".", "/"); //"st/redline/core/PrimContext";
+    public static final String PRIM_OBJECT_CLASS = StringUtils.replaceChars(PrimObject.class.getCanonicalName(), '.', '/'); //"st/redline/core/PrimObject";
+    public static final String PRIM_CONTEXT_CLASS = StringUtils.replaceChars(PrimContext.class.getCanonicalName(), '.', '/'); //"st/redline/core/PrimContext";
 
     protected static final String[] SIGNATURES = {
             "(Ljava/lang/String;)Lst/redline/core/PrimObject;",

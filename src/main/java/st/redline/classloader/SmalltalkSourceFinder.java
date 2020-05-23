@@ -1,6 +1,8 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.classloader;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.*;
 import java.util.*;
 import java.util.jar.*;
@@ -11,7 +13,6 @@ public class SmalltalkSourceFinder implements SourceFinder {
 
     private final SourceFactory sourceFactory;
     private final String[] classPaths;
-    public static final String FILE_SEPARATOR_ESCAPED = File.separator.replace("\\", "\\\\");
 
     public SmalltalkSourceFinder(SourceFactory sourceFactory, String[] classPaths) {
         this.sourceFactory = sourceFactory;
@@ -33,7 +34,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
     }
 
     private List<Source> findInPath(String path) {
-        String packagePath = path.replace(".", CLASS_SEPARATOR);
+        String packagePath = StringUtils.replaceChars(path, '.', CLASS_SEPARATOR);
         List<Source> sources = new ArrayList<>();
         for (String classPath : classPaths)
             sources.addAll(findInPath(packagePath, classPath));
@@ -95,7 +96,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
     }
 
     private String toFilename(String name) {
-        return name.replaceAll("\\.", FILE_SEPARATOR_ESCAPED) + SOURCE_EXTENSION;
+        return StringUtils.replaceChars(name, '.', File.separator.charAt(0)) + SOURCE_EXTENSION;
     }
 
     public class SourceNotFound implements Source {

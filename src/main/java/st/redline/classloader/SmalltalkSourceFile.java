@@ -1,16 +1,17 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.classloader;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static st.redline.classloader.SmalltalkSourceFinder.FILE_SEPARATOR_ESCAPED;
 
 /* Note: Move the preprocessing responsibility into an inner class. */
 
 public class SmalltalkSourceFile implements Source, LineTransformer {
 
-    public static final String CLASS_SEPARATOR = "/";
+    public static final char CLASS_SEPARATOR = '/';
     public static final String SOURCE_EXTENSION = ".st";
 
     private static final Pattern METHOD_START_PATTERN = Pattern.compile("^[-+] .*\\s");
@@ -155,7 +156,7 @@ public class SmalltalkSourceFile implements Source, LineTransformer {
     public String fullClassName() {
         if (fullClassName == null) {
             fullClassName = withoutClassPath(withoutExtension(filename()));
-            fullClassName = fullClassName.replaceAll(FILE_SEPARATOR_ESCAPED, CLASS_SEPARATOR);
+            fullClassName = StringUtils.replaceChars(fullClassName, File.separator.charAt(0), CLASS_SEPARATOR);
         }
         return fullClassName;
     }
@@ -166,7 +167,7 @@ public class SmalltalkSourceFile implements Source, LineTransformer {
             int index = packageName.lastIndexOf(CLASS_SEPARATOR);
             if (index != -1)
                 packageName = packageName.substring(0, index);
-            packageName = packageName.replaceAll(Pattern.quote(CLASS_SEPARATOR), ".");
+            packageName = StringUtils.replaceChars(packageName, CLASS_SEPARATOR, '.');
         }
         return packageName;
     }
