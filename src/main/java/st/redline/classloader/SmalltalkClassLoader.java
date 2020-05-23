@@ -1,7 +1,6 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.classloader;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import st.redline.compiler.Compiler;
@@ -216,7 +215,7 @@ public class SmalltalkClassLoader extends ClassLoader {
     }
 
     private String dotted(String name) {
-        return StringUtils.replaceChars(name, SmalltalkSourceFile.CLASS_SEPARATOR, '.');
+        return name.replace(SmalltalkSourceFile.CLASS_SEPARATOR, '.');
     }
 
     public void importAll(String packageName) {

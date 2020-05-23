@@ -3,7 +3,6 @@ package st.redline.compiler.visitor;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.commons.lang3.StringUtils;
 import org.objectweb.asm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +23,8 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
 
     public static final String DEFAULT_IMPORTED_PACKAGE = "st.redline.kernel";
 
-    public static final String PRIM_OBJECT_CLASS = StringUtils.replaceChars(PrimObject.class.getCanonicalName(), '.', '/'); //"st/redline/core/PrimObject";
-    public static final String PRIM_CONTEXT_CLASS = StringUtils.replaceChars(PrimContext.class.getCanonicalName(), '.', '/'); //"st/redline/core/PrimContext";
+    public static final String PRIM_OBJECT_CLASS = PrimObject.class.getCanonicalName().replace('.', '/'); //"st/redline/core/PrimObject";
+    public static final String PRIM_CONTEXT_CLASS = PrimContext.class.getCanonicalName().replace('.', '/'); //"st/redline/core/PrimContext";
 
     protected static final String[] SIGNATURES = {
             "(Ljava/lang/String;)Lst/redline/core/PrimObject;",

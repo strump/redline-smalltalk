@@ -1,8 +1,6 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.classloader;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -156,7 +154,7 @@ public class SmalltalkSourceFile implements Source, LineTransformer {
     public String fullClassName() {
         if (fullClassName == null) {
             fullClassName = withoutClassPath(withoutExtension(filename()));
-            fullClassName = StringUtils.replaceChars(fullClassName, File.separator.charAt(0), CLASS_SEPARATOR);
+            fullClassName = fullClassName.replace(File.pathSeparatorChar, CLASS_SEPARATOR);
         }
         return fullClassName;
     }
@@ -167,7 +165,7 @@ public class SmalltalkSourceFile implements Source, LineTransformer {
             int index = packageName.lastIndexOf(CLASS_SEPARATOR);
             if (index != -1)
                 packageName = packageName.substring(0, index);
-            packageName = StringUtils.replaceChars(packageName, CLASS_SEPARATOR, '.');
+            packageName = packageName.replace(CLASS_SEPARATOR, '.');
         }
         return packageName;
     }

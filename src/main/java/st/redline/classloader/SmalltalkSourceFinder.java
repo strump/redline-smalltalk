@@ -1,8 +1,6 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.classloader;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.*;
 import java.util.*;
 import java.util.jar.*;
@@ -34,7 +32,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
     }
 
     private List<Source> findInPath(String path) {
-        String packagePath = StringUtils.replaceChars(path, '.', CLASS_SEPARATOR);
+        String packagePath = path.replace('.', CLASS_SEPARATOR);
         List<Source> sources = new ArrayList<>();
         for (String classPath : classPaths)
             sources.addAll(findInPath(packagePath, classPath));
@@ -96,7 +94,7 @@ public class SmalltalkSourceFinder implements SourceFinder {
     }
 
     private String toFilename(String name) {
-        return StringUtils.replaceChars(name, '.', File.separator.charAt(0)) + SOURCE_EXTENSION;
+        return name.replace('.', File.separatorChar) + SOURCE_EXTENSION;
     }
 
     public class SourceNotFound implements Source {
