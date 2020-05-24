@@ -78,7 +78,7 @@ EXCLAMATION : '!';
 EOL : '\r'? '\n';
 SEP : [ \t];
 
-STRING : '\'' (.)*? '\'';
+STRING : '\'' (~[\\'] | '\\\\' | '\\\'' | '\'\'' | '\\t' | '\\n' )* '\'';
 COMMENT : '"' (.)*? '"';
 BLOCK_START : '[';
 BLOCK_END : ']';
