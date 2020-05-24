@@ -421,7 +421,7 @@ renameInstVar: oldName to: newName
           newCode := oldCode copyReplaceTokens: oldName with: newName.
           newCode ~= oldCode ifTrue:
             [cls comment: newCode]]]. !
-
+!
 
 !ClassDescription methodsFor: 'method dictionary'!
 
