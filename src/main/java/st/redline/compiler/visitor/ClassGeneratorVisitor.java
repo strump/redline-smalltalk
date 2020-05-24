@@ -7,15 +7,13 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import st.redline.OrderedMap;
 import st.redline.classloader.SmalltalkClassLoader;
 import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.SmalltalkCompilationError;
 import st.redline.compiler.generated.SmalltalkParser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /* Generator of class bytecode. Such generator is created once for every *.st source file assuming that
  * single .st file contains one class definition (see source.fullClassName()).
@@ -909,14 +907,14 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
             }
             isClassMethod = true;
         }
-        final String methodGroupName = ctx.methodGroupName().getText();
 
+        OrderedMap<String, String> classGroupKeywords = parseClassGroupKeywords(ctx);
 
         final List<SmalltalkParser.MethodDeclarationContext> methods = ctx.methodDeclaration();
         if (methods != null) {
             for (SmalltalkParser.MethodDeclarationContext methodDecl : methods) {
                 SmalltalkMethodDeclarationVisitor methodGroupVisitor = new SmalltalkMethodDeclarationVisitor(classGen,
-                        className, methodGroupName, isClassMethod, cw, mv, blockNumber, homeTemporaries, homeArguments,
+                        className, classGroupKeywords, isClassMethod, cw, mv, blockNumber, homeTemporaries, homeArguments,
                         outerArguments);
 
                 classGen.pushCurrentVisitor(methodGroupVisitor);
@@ -930,8 +928,27 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
             }
         }
 
-
         return null;
+    }
+
+    /* Parse keywords in method group declaration:
+       !ClassDescription methodsFor: 'fileIn/Out' stamp: 'tk 12/29/97 13:11'!
+                         |<--                  keywords                 -->|
+
+       Generates OrderedMap<String, String>:
+         'methodsFor:' -> 'fileIn/Out'
+         'stamp:' -> 'tk 12/29/97 13:11'
+     */
+    private OrderedMap<String, String> parseClassGroupKeywords(SmalltalkParser.MethodGroupContext ctx) {
+        OrderedMap<String, String> x = new OrderedMap<>();
+        final SmalltalkParser.MethodHeaderKeywordsContext keywordsContext = ctx.methodHeaderKeywords();
+        final int pairs = keywordsContext.KEYWORD().size();
+        for(int i=0; i<pairs; i++) {
+            final String keyword = keywordsContext.KEYWORD(i).getText();
+            final String strValue = keywordsContext.STRING(i).getText();
+            x.put(keyword, strValue);
+        }
+        return x;
     }
 
     @Override

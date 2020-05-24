@@ -5,23 +5,28 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import st.redline.OrderedMap;
 import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.generated.SmalltalkParser;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
     private static final Logger log = LoggerFactory.getLogger(SmalltalkMethodDeclarationVisitor.class);
     public static final String PRIM_CLASS_FULL_NAME = "st/redline/core/PrimClass";
 
     private String className;
-    private String methodGroupName;
+    private OrderedMap<String, String> classGroupKeywords;
     private boolean isClassMethod = false;
     private MethodVisitor parentMV;
 
     private String methodSelector;
 
-    public SmalltalkMethodDeclarationVisitor(ClassGenerator classGenerator, String className, String methodGroupName,
+    public SmalltalkMethodDeclarationVisitor(ClassGenerator classGenerator, String className,
+                                             OrderedMap<String, String> classGroupKeywords,
                                              boolean isClassMethod, ClassWriter cw, MethodVisitor mv, int blockNumber,
                                              HashMap<String, ExtendedTerminalNode> homeTemporaries,
                                              HashMap<String, ExtendedTerminalNode> homeArguments,
@@ -29,7 +34,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
         super(classGenerator, cw, null, blockNumber, homeTemporaries, homeArguments, outerArguments);
 
         this.className = className;
-        this.methodGroupName = methodGroupName;
+        this.classGroupKeywords = classGroupKeywords;
         this.isClassMethod = isClassMethod;
         this.parentMV = mv;
     }

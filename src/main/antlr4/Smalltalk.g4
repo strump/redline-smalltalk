@@ -59,13 +59,13 @@ binaryMessage : ws binarySelector ws (unarySend | operand);
 binarySelector : (BINARY_SELECTOR_CHAR | PIPE | MINUS)+;
 
 //Methods declaration
-methodGroup : EXCLAMATION SEP* className SEP+ classSelector? 'methodsFor:' SEP* methodGroupName SEP* EXCLAMATION
+methodGroup : EXCLAMATION SEP* className SEP+ classSelector? methodHeaderKeywords EXCLAMATION
               ws (methodDeclaration ws)+
               EXCLAMATION
              ;
 className : IDENTIFIER;
 classSelector : IDENTIFIER SEP+;
-methodGroupName : STRING;
+methodHeaderKeywords: KEYWORD SEP* STRING (SEP+ KEYWORD SEP* STRING)*;
 methodDeclaration : methodHeader SEP* EOL
                     sequence
                     ws EXCLAMATION
