@@ -7,7 +7,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import st.redline.OrderedMap;
+import st.redline.utils.OrderedMap;
 import st.redline.classloader.SmalltalkClassLoader;
 import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.SmalltalkCompilationError;

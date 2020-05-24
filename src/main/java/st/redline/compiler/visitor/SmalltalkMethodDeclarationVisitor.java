@@ -5,14 +5,11 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import st.redline.OrderedMap;
+import st.redline.utils.OrderedMap;
 import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.generated.SmalltalkParser;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
 
 public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
     private static final Logger log = LoggerFactory.getLogger(SmalltalkMethodDeclarationVisitor.class);
