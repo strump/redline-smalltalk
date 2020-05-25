@@ -701,7 +701,8 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     public Void visitCharConstant(@NotNull SmalltalkParser.CharConstantContext ctx) {
         log.info("  visitCharConstant {}", ctx.CHARACTER_CONSTANT().getSymbol().getText());
         TerminalNode constant = ctx.CHARACTER_CONSTANT();
-        String value = constant.getSymbol().getText().substring(1);
+        String value = constant.getSymbol().getText().substring(1, 2); //Get seconds char from '$.' literal.
+                                                                       // '$!!' literal should be parsed as '$!'
         pushNewObject(mv, "smalltalkCharacter", value, constant.getSymbol().getLine());
         return null;
     }

@@ -107,4 +107,4 @@ DYNARR_START : '{';
 DIGIT : [0-9];
 KEYWORD : IDENTIFIER COLON;
 BLOCK_PARAM : COLON IDENTIFIER;
-CHARACTER_CONSTANT : DOLLAR .;
+CHARACTER_CONSTANT : DOLLAR ('!!' | .); //Symbol $!! should be parsed as $! inside of method declaration
