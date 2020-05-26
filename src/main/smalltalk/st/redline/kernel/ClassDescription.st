@@ -305,7 +305,7 @@ browseClassVarRefs
     lines := OrderedCollection new.
     allVars := OrderedCollection new.
     owningClasses := OrderedCollection new.
-    labelStream _ WriteStream on: (String new: 200).
+    labelStream := WriteStream on: (String new: 200).
     self withAllSuperclasses reverseDo:
       [:class |
       vars := class classVarNames asSortedCollection.
@@ -467,9 +467,8 @@ organization
     of the messages of the receiver."
 
     organization==nil
-      ifTrue: [organization _
-           ClassOrganizer defaultList:
-              methodDict keys asSortedCollection asArray].
+      ifTrue: [organization := (ClassOrganizer defaultList:
+              methodDict keys asSortedCollection asArray)].
     ^ organization. !
 
 whichCategoryIncludesSelector: aSelector

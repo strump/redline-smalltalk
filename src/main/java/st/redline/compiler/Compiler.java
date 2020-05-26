@@ -48,10 +48,13 @@ public class Compiler {
         final CharStream inputStream = CharStreams.fromString(input, source.fullClassName());
 
         SmalltalkLexer lexer = new SmalltalkLexer(inputStream);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(new SmalltalkParserErrorListener());
+
         SmalltalkParser parser = new SmalltalkParser(new CommonTokenStream(lexer));
         //parser.setErrorHandler(new BailErrorStrategy());
         parser.removeErrorListeners();
-        parser.addErrorListener(new SmalltalkParserErrorListener());
+        parser.addErrorListener(new SmalltalkParserErrorListener(false));
 
         final SmalltalkParser.ScriptContext script = parser.script();
         //dumpTree(parser, script);

@@ -246,6 +246,17 @@ public class PrimObject {
 //        System.out.println("** superPerform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + arg5 + "," + arg6 + "," + arg7 + "," + selector + ") " + this);
         return perform0s(selector, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
     }
+
+    public PrimObject perform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, PrimObject arg5, PrimObject arg6, PrimObject arg7, PrimObject arg8, String selector) {
+//        System.out.println("** perform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + arg5 + "," + arg6 + "," + arg7 + "," + arg8 + "," + selector + ") " + this);
+        return perform0(selector, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+    }
+
+    public PrimObject superPerform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, PrimObject arg5, PrimObject arg6, PrimObject arg7, PrimObject arg8, String selector) {
+//        System.out.println("** superPerform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + arg5 + "," + arg6 + "," + arg7 + "," + arg8 + "," + selector + ") " + this);
+        return perform0s(selector, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+    }
+
     public PrimObject perform(PrimObject[] args, String selector) {
         return perform0(selector, args);
     }
