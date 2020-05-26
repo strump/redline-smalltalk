@@ -204,27 +204,54 @@ public class PrimObject {
 
     public PrimObject superPerform(PrimObject arg1, PrimObject arg2, PrimObject arg3, String selector) {
 //        System.out.println("** superPerform(" + arg1 + "," + arg2 + "," + arg3 + "," + selector + ") " + this);
-        return perform0s(selector, arg1, arg2);
+        return perform0s(selector, arg1, arg2, arg3);
     }
 
     public PrimObject perform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, String selector) {
 //        System.out.println("** perform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + selector + ") " + this);
-        return perform0(selector, arg1, arg2);
+        return perform0(selector, arg1, arg2, arg3, arg4);
     }
 
     public PrimObject superPerform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, String selector) {
 //        System.out.println("** superPerform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + selector + ") " + this);
-        return perform0s(selector, arg1, arg2);
+        return perform0s(selector, arg1, arg2, arg3, arg4);
     }
 
     public PrimObject perform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, PrimObject arg5, String selector) {
 //        System.out.println("** perform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + arg5 + "," + selector + ") " + this);
-        return perform0(selector, arg1, arg2);
+        return perform0(selector, arg1, arg2, arg3, arg4, arg5);
     }
 
     public PrimObject superPerform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, PrimObject arg5, String selector) {
 //        System.out.println("** superPerform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + arg5 + "," + selector + ") " + this);
-        return perform0s(selector, arg1, arg2);
+        return perform0s(selector, arg1, arg2, arg3, arg4, arg5);
+    }
+
+    public PrimObject perform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, PrimObject arg5, PrimObject arg6, String selector) {
+//        System.out.println("** perform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + arg5 + "," + arg6 + "," + selector + ") " + this);
+        return perform0(selector, arg1, arg2, arg3, arg4, arg5, arg6);
+    }
+
+    public PrimObject superPerform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, PrimObject arg5, PrimObject arg6, String selector) {
+//        System.out.println("** superPerform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + arg5 + "," + arg6 + "," + selector + ") " + this);
+        return perform0s(selector, arg1, arg2, arg3, arg4, arg5, arg6);
+    }
+
+    public PrimObject perform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, PrimObject arg5, PrimObject arg6, PrimObject arg7, String selector) {
+//        System.out.println("** perform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + arg5 + "," + arg6 + "," + arg7 + "," + selector + ") " + this);
+        return perform0(selector, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+    }
+
+    public PrimObject superPerform(PrimObject arg1, PrimObject arg2, PrimObject arg3, PrimObject arg4, PrimObject arg5, PrimObject arg6, PrimObject arg7, String selector) {
+//        System.out.println("** superPerform(" + arg1 + "," + arg2 + "," + arg3 + "," + arg4 + "," + arg5 + "," + arg6 + "," + arg7 + "," + selector + ") " + this);
+        return perform0s(selector, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+    }
+    public PrimObject perform(PrimObject[] args, String selector) {
+        return perform0(selector, args);
+    }
+
+    public PrimObject superPerform(PrimObject[] args, String selector) {
+        return perform0s(selector, args);
     }
 
     protected PrimObject perform0(String selector, PrimObject ... arguments) {

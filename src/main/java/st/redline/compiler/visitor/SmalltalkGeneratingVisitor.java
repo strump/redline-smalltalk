@@ -26,13 +26,15 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     public static final String PRIM_OBJECT_CLASS = PrimObject.class.getCanonicalName().replace('.', '/'); //"st/redline/core/PrimObject";
     public static final String PRIM_CONTEXT_CLASS = PrimContext.class.getCanonicalName().replace('.', '/'); //"st/redline/core/PrimContext";
 
-    protected static final String[] SIGNATURES = {
+    protected static final String[] PERFORM_METHOD_SIGNATURES = {
             "(Ljava/lang/String;)Lst/redline/core/PrimObject;",
             "(Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;",
             "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;",
             "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;",
             "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;",
-            "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;"
+            "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;",
+            "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;",
+            "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;"
     };
     protected static final Map<String, Integer> OPCODES = new HashMap<String, Integer>();
     protected static final int BYTECODE_VERSION;
@@ -282,7 +284,10 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     public void invokePerform(MethodVisitor mv, String selector, int argumentCount, boolean sendToSuper) {
         pushLiteral(mv, selector);
         String methodName = (sendToSuper) ? "superPerform" : "perform";
-        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, methodName, SIGNATURES[argumentCount], false);
+        if (argumentCount >= PERFORM_METHOD_SIGNATURES.length) {
+            //TODO: use invoke method self.perform(PrimObject[] args, String selector)
+        }
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, methodName, PERFORM_METHOD_SIGNATURES[argumentCount], false);
     }
 
     public void visitLine(MethodVisitor mv, int line) {
