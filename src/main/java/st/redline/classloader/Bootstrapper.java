@@ -42,6 +42,7 @@ public class Bootstrapper {
         PrimClass arrayedCollection = createKernelObject("ArrayedCollection", sequenceableCollection, metaclass);
         PrimClass string = createKernelObject("String", arrayedCollection, metaclass);
         PrimClass symbol = createKernelObject("Symbol", string, metaclass);
+        PrimClass transcript = createKernelObject("Transcript", object, metaclass);
 
         // Fix up bootstrapped Kernel Objects Metaclass instance.
         klass.selfClass().selfClass(metaclass);
@@ -88,6 +89,7 @@ public class Bootstrapper {
         classLoader.cacheObject("st.redline.kernel.ArrayedCollection", arrayedCollection);
         classLoader.cacheObject("st.redline.kernel.String", string);
         classLoader.cacheObject("st.redline.kernel.Symbol", symbol);
+        classLoader.cacheObject("st.redline.kernel.Transcript", transcript);
     }
 
     private PrimClass createKernelObject(String name, PrimObject superclass) {
@@ -126,6 +128,7 @@ public class Bootstrapper {
         loadObject(classLoader, "st.redline.kernel.ArrayedCollection");
         loadObject(classLoader, "st.redline.kernel.String");
         loadObject(classLoader, "st.redline.kernel.Symbol");
+        loadObject(classLoader, "st.redline.kernel.Transcript");
     }
 
     private void createPrimObject(SmalltalkClassLoader classLoader) {
