@@ -2,32 +2,35 @@
 
 Boolean subclass: #True.
 
-- & alternativeObject
-	^ alternativeObject.
+!True methodsFor: 'logical operations'!
 
-- and: alternativeBlock
-	^ alternativeBlock value.
+& alternativeObject
+	^ alternativeObject. !
 
-- ifFalse: alternativeBlock
-	^ nil.
+and: alternativeBlock
+	^ alternativeBlock value. !
 
-- ifFalse: falseAlternativeBlock ifTrue: trueAlternativeBlock
-	^ trueAlternativeBlock value.
+ifFalse: alternativeBlock
+	^ nil. !
 
-- ifTrue: alternativeBlock
-	^ alternativeBlock value.
+ifFalse: falseAlternativeBlock ifTrue: trueAlternativeBlock
+	^ trueAlternativeBlock value. !
 
-- ifTrue: trueAlternativeBlock ifFalse: falseAlternativeBlock
-	^ trueAlternativeBlock value.
+ifTrue: alternativeBlock
+	^ alternativeBlock value. !
 
-- not
-	^ false.
+ifTrue: trueAlternativeBlock ifFalse: falseAlternativeBlock
+	^ trueAlternativeBlock value. !
 
-- or: alternativeBlock
-	^ self.
+not
+	^ false. !
 
-- printOn: aStream
-	aStream nextPutAll: 'true'.
+or: alternativeBlock
+	^ self. !
 
-- | aBoolean
-	^ self.
+printOn: aStream
+	aStream nextPutAll: 'true'. !
+
+| aBoolean
+	^ self. !
+!
