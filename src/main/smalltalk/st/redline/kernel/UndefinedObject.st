@@ -2,49 +2,54 @@
 
 Object subclass: #UndefinedObject.
 
-+ new
-	self error: 'You may not create any more undefined objects--use nil'.
+!UndefinedObject class methodsFor: 'initialization'!
 
-- addDependent: ignored
-	self error: 'Nil should not have dependents'.
+new
+	self error: 'You may not create any more undefined objects--use nil'. !
+!
 
-- deepCopy
-	^ self.
+!UndefinedObject methodsFor: 'access'!
 
-- ifNil: aBlock
-	^ aBlock value.
+addDependent: ignored
+	self error: 'Nil should not have dependents'. !
 
-- ifNil: nilBlock ifNotNil: ifNotNilBlock
-	^ nilBlock value.
+deepCopy
+	^ self. !
 
-- ifNotNil: aBlock
-	^ self.
+ifNil: aBlock
+	^ aBlock value. !
 
-- ifNotNil: ifNotNilBlock ifNil: nilBlock
-	^ nilBlock value.
+ifNil: nilBlock ifNotNil: ifNotNilBlock
+	^ nilBlock value. !
 
-- isNil
-	^ true.
+ifNotNil: aBlock
+	^ self. !
 
-- notNil
-	^ false.
+ifNotNil: ifNotNilBlock ifNil: nilBlock
+	^ nilBlock value. !
 
-- printOn: aStream
-	aStream nextPutAll: 'nil'.
+isNil
+	^ true. !
 
-- release
-	^ self.
+notNil
+	^ false. !
 
-- removeSubclass: aClass
-	^ self.
+printOn: aStream
+	aStream nextPutAll: 'nil'. !
 
-- shallowCopy
-	^ self.
+release
+	^ self. !
 
-- storeOn: aStream
-	aStream nextPutAll: 'nil'.
+removeSubclass: aClass
+	^ self. !
 
-- subclass: nameOfClass instanceVariableNames: instVarNames classVariableNames: classVarNames poolDictionaries: poolDictnames category: category
+shallowCopy
+	^ self. !
+
+storeOn: aStream
+	aStream nextPutAll: 'nil'. !
+
+subclass: nameOfClass instanceVariableNames: instVarNames classVariableNames: classVarNames poolDictionaries: poolDictnames category: category
 	| newClass |
 	newClass := Object
 				subclass: nameOfClass
@@ -54,4 +59,5 @@ Object subclass: #UndefinedObject.
 				category: category.
 	Object removeSubclass: newClass.
 	newClass superclass: nil.
-	^ newClass.
+	^ newClass. !
+!

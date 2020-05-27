@@ -2,10 +2,11 @@
 
 Object subclass: #BlockClosure.
 
-"category: evaluating"
+!BlockClosure messageFor: 'evaluating'!
 
-- value
+value
   "Activate the receiver and evaluate the block."
   JVM aload: 1; "lambda object"
       aload: 2; "context argument"
       invokeVirtual: 'st/redline/core/PrimObject' method: 'primitiveEval' matching: '(Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;'.
+! !
