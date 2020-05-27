@@ -1,8 +1,8 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.classloader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import st.redline.compiler.Compiler;
 import st.redline.core.PrimObject;
 
@@ -12,7 +12,7 @@ import java.util.*;
 import static st.redline.compiler.visitor.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
 
 public class SmalltalkClassLoader extends ClassLoader {
-    private static final Logger log = LoggerFactory.getLogger(SmalltalkClassLoader.class);
+    private static final Logger log = LogManager.getLogger(SmalltalkClassLoader.class);
 
     // Special Object instance values set during bootstrapping.
     private static PrimObject NIL;

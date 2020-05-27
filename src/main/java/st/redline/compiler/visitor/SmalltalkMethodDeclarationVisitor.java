@@ -3,8 +3,8 @@ package st.redline.compiler.visitor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import st.redline.utils.OrderedMap;
 import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.generated.SmalltalkParser;
@@ -12,7 +12,7 @@ import st.redline.compiler.generated.SmalltalkParser;
 import java.util.HashMap;
 
 public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
-    private static final Logger log = LoggerFactory.getLogger(SmalltalkMethodDeclarationVisitor.class);
+    private static final Logger log = LogManager.getLogger(SmalltalkMethodDeclarationVisitor.class);
     public static final String PRIM_CLASS_FULL_NAME = "st/redline/core/PrimClass";
 
     private String className;

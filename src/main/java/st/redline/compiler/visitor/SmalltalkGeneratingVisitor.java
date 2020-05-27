@@ -4,8 +4,8 @@ package st.redline.compiler.visitor;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.generated.SmalltalkBaseVisitor;
 import st.redline.compiler.generated.SmalltalkParser;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 /* Base class for all other visitors. Contains common method for bytecode generation. */
 public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> implements SmalltalkVisitor<Void>, Opcodes {
-    private static final Logger log = LoggerFactory.getLogger(SmalltalkGeneratingVisitor.class);
+    private static final Logger log = LogManager.getLogger(SmalltalkGeneratingVisitor.class);
 
     public static final String DEFAULT_IMPORTED_PACKAGE = "st.redline.kernel";
 
@@ -286,6 +286,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
         pushLiteral(mv, selector);
         String methodName = (sendToSuper) ? "superPerform" : "perform";
         if (argumentCount >= PERFORM_METHOD_SIGNATURES.length) {
+            throw new RuntimeException("Too many arguments in selector '"+selector+"'");
             //TODO: use invoke method self.perform(PrimObject[] args, String selector)
         }
         mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, methodName, PERFORM_METHOD_SIGNATURES[argumentCount], false);

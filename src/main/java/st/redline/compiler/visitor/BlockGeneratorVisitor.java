@@ -3,9 +3,8 @@ package st.redline.compiler.visitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import st.redline.compiler.ClassGenerator;
 import st.redline.compiler.generated.SmalltalkParser;
 
@@ -17,7 +16,7 @@ import java.util.List;
  * inner block appends name to outer block method name.
  */
 public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
-    private static final Logger log = LoggerFactory.getLogger(BlockGeneratorVisitor.class);
+    private static final Logger log = LogManager.getLogger(BlockGeneratorVisitor.class);
 
     protected String blockName;
     private boolean returnRequired;

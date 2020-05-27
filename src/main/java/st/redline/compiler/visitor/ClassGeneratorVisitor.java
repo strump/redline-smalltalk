@@ -5,8 +5,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import st.redline.utils.OrderedMap;
 import st.redline.classloader.SmalltalkClassLoader;
 import st.redline.compiler.ClassGenerator;
@@ -19,7 +19,7 @@ import java.util.*;
  * single .st file contains one class definition (see source.fullClassName()).
  */
 public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
-    private static final Logger log = LoggerFactory.getLogger(ClassGeneratorVisitor.class);
+    private static final Logger log = LogManager.getLogger(ClassGeneratorVisitor.class);
 
     protected final static String LAMBDA_BLOCK_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
     private final static String SEND_MESSAGES_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
@@ -166,6 +166,12 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         mv.visitInsn(RETURN);
         mv.visitMaxs(0, 0);
         mv.visitEnd();
+    }
+
+    @Override
+    public Void visitWs(SmalltalkParser.WsContext ctx) {
+        //Ignore 'ws' tree nodes
+        return null;
     }
 
     @Override

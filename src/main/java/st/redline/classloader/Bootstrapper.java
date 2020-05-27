@@ -1,11 +1,14 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.classloader;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import st.redline.core.*;
 
 import static st.redline.core.PrimSubclass.PRIM_SUBCLASS;
 
 public class Bootstrapper {
+    private static final Logger log = LogManager.getLogger(Bootstrapper.class);
 
     public void bootstrap(SmalltalkClassLoader classLoader) {
         setContextClassLoader(classLoader);
