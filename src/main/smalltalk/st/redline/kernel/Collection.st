@@ -8,35 +8,36 @@ Object subclass: #Collection
        poolDictionaries: ''
        category: 'Collections-Abstract'.
 
-"Collection methodsFor: 'accessing'"
+!Collection methodsFor: 'accessing'!
 
-- size
+size
     "Answer how many elements the receiver contains."
 
     | tally |
     tally := 0.
     self do: [:each | tally := tally + 1].
-    ^ tally.
+    ^ tally. !
+!
 
-"Collection methodsFor: 'testing'"
+!Collection methodsFor: 'testing'!
 
-- includes: anObject
+includes: anObject
     "Answer whether anObject is one of the receiver's elements."
 
     self do: [:each | anObject = each ifTrue: [^ true]].
-    ^ false.
+    ^ false. !
 
-- includesAllOf: aCollection
+includesAllOf: aCollection
     "Answer whether all the elements of aCollection are in the receiver."
     aCollection do: [:elem | (self includes: elem) ifFalse: [^ false]].
-    ^ true.
+    ^ true. !
 
-- includesAnyOf: aCollection
+includesAnyOf: aCollection
     "Answer whether any element of aCollection is one of the receiver's elements."
     aCollection do: [:elem | (self includes: elem) ifTrue: [^ true]].
-    ^ false.
+    ^ false. !
 
-- includesSubstringAnywhere: testString
+includesSubstringAnywhere: testString
     "Answer whether the receiver includes, anywhere in its nested structure, a string that has testString as a substring"
     self do:
       [:element |
@@ -46,74 +47,74 @@ Object subclass: #Collection
         (element isKindOf: Collection)
           ifTrue:
             [(element includesSubstringAnywhere: testString) ifTrue: [^ true]]].
-    ^ false.
+    ^ false. !
 
-
-- isEmpty
+isEmpty
 	"Answer whether the receiver contains any elements."
 
-	^ self size = 0.
+	^ self size = 0. !
 
-- occurrencesOf: anObject
+occurrencesOf: anObject
 	"Answer how many of the receiver's elements are equal to anObject."
 
 	| tally |
 	tally := 0.
 	self do: [:each | anObject = each ifTrue: [tally := tally + 1]].
-	^ tally.
+	^ tally. !
+!
 
-"Collection methodsFor: 'adding'.
+!Collection methodsFor: 'adding'!
 
-- add: newObject
+add: newObject
     "Include newObject as one of the receiver's elements. Answer newObject.
     ArrayedCollections cannot respond to this message."
 
-    self subclassResponsibility.
+    self subclassResponsibility. !
 
-- addAll: aCollection
+addAll: aCollection
     "Include all the elements of aCollection as the receiver's elements. Answer
     aCollection."
 
     aCollection do: [:each | self add: each].
-    ^ aCollection.
+    ^ aCollection. !
 
-- addIfNotPresent: anObject
+addIfNotPresent: anObject
 
-	(self includes: anObject) ifFalse: [^ self add: anObject].
+	(self includes: anObject) ifFalse: [^ self add: anObject]. !
+!
 
+!Collection methodsFor: 'removing'!
 
-"Collection methodsFor: 'removing'"
-
-- remove: oldObject
+remove: oldObject
     "Remove oldObject as one of the receiver's elements. Answer oldObject
     unless no element is equal to oldObject, in which case, create an error
     notification."
 
-    ^ self remove: oldObject ifAbsent: [self errorNotFound].
+    ^ self remove: oldObject ifAbsent: [self errorNotFound]. !
 
-- remove: oldObject ifAbsent: anExceptionBlock
+remove: oldObject ifAbsent: anExceptionBlock
     "Remove oldObject as one of the receiver's elements. If several of the
     elements are equal to oldObject, only one is removed. If no element is
     equal to oldObject, answer the result of evaluating anExceptionBlock.
     Otherwise, answer the argument, oldObject. SequenceableCollections
     cannot respond to this message."
 
-    self subclassResponsibility.
+    self subclassResponsibility. !
 
-- removeAll: aCollection
+removeAll: aCollection
     "Remove each element of aCollection from the receiver. If successful for
     each, answer aCollection. Otherwise create an error notification."
 
     aCollection do: [:each | self remove: each].
-    ^ aCollection.
+    ^ aCollection. !
 
-- removeAllFoundIn: aCollection
+removeAllFoundIn: aCollection
     "Remove each element of aCollection which is present in the receiver from the receiver"
 
     aCollection do: [:each | self remove: each ifAbsent: []].
-    ^ aCollection.
+    ^ aCollection. !
 
-- removeAllSuchThat: aBlock
+removeAllSuchThat: aBlock
     "Apply the condition to each element and remove it if the condition is true.  Use a copy to enumerate collections
     whose order changes when an element is removed (Set)."
 
@@ -124,24 +125,24 @@ Object subclass: #Collection
       (aBlock value: element) ifTrue: [
         self remove: element.
         newCollection add: element]].
-    ^ newCollection.
+    ^ newCollection. !
+!
 
+!Collection methodsFor: 'enumerating'!
 
-"Collection methodsFor: 'enumerating'"
-
-- associationsDo: aBlock
+associationsDo: aBlock
     "Evaluate aBlock for each of the receiver's elements (key/value
     associations).  If any non-association is within, the error is not caught now,
     but later, when a key or value message is sent to it."
 
-    self do: aBlock.
+    self do: aBlock. !
 
-- average
+average
 	"Return the average of all my elements."
 
-	^ self sum asFloat / self size.
+	^ self sum asFloat / self size. !
 
-- collect: aBlock
+collect: aBlock
     "Evaluate aBlock with each of the receiver's elements as the argument.
     Collect the resulting values into a collection like the receiver. Answer
     the new collection."
@@ -149,35 +150,35 @@ Object subclass: #Collection
     | newCollection |
     newCollection := self species new.
     self do: [:each | newCollection add: (aBlock value: each)].
-    ^ newCollection.
+    ^ newCollection. !
 
-- collect: collectBlock thenSelect: selectBlock
-	^ (self collect: collectBlock) select: selectBlock.
+collect: collectBlock thenSelect: selectBlock
+	^ (self collect: collectBlock) select: selectBlock. !
 
-- count: aBlock
+count: aBlock
     "Evaluate aBlock with each of the receiver's elements as the argument.  Return the number that answered true."
 
     | sum |
     sum := 0.
     self do: [:each |
       (aBlock value: each) ifTrue: [sum := sum + 1]].
-    ^ sum.
+    ^ sum. !
 
-- detect: aBlock
+detect: aBlock
     "Evaluate aBlock with each of the receiver's elements as the argument.
     Answer the first element for which aBlock evaluates to true."
 
-    ^ self detect: aBlock ifNone: [self errorNotFound].
+    ^ self detect: aBlock ifNone: [self errorNotFound]. !
 
-- detect: aBlock ifNone: exceptionBlock
+detect: aBlock ifNone: exceptionBlock
     "Evaluate aBlock with each of the receiver's elements as the argument.
     Answer the first element for which aBlock evaluates to true. If none
     evaluate to true, then evaluate the argument, exceptionBlock."
 
     self do: [:each | (aBlock value: each) ifTrue: [^ each]].
-    ^ exceptionBlock value.
+    ^ exceptionBlock value. !
 
-- detectMax: aBlock
+detectMax: aBlock
     "Evaluate aBlock with each of the receiver's elements as the argument.
     Answer the element for which aBlock evaluates to the highest magnitude.
     If collection empty, return nil.  This method might also be called elect:."
@@ -194,9 +195,9 @@ Object subclass: #Collection
           maxValue := aBlock value: each].
           "Note that there is no way to get the first element that works
           for all kinds of Collections.  Must test every one."].
-    ^ maxElement.
+    ^ maxElement. !
 
-- detectMin: aBlock
+detectMin: aBlock
     "Evaluate aBlock with each of the receiver's elements as the argument.
     Answer the element for which aBlock evaluates to the lowest number.
     If collection empty, return nil."
@@ -213,23 +214,23 @@ Object subclass: #Collection
           minValue := aBlock value: each].
           "Note that there is no way to get the first element that works
           for all kinds of Collections.  Must test every one."].
-    ^ minElement.
+    ^ minElement. !
 
-- detectSum: aBlock
+detectSum: aBlock
     "Evaluate aBlock with each of the receiver's elements as the argument.
     Return the sum of the answers."
     | sum |
     sum := 0.
     self do: [:each |
       sum := (aBlock value: each) + sum].
-    ^ sum.
+    ^ sum. !
 
-- do: aBlock
+do: aBlock
     "Evaluate aBlock with each of the receiver's elements as the argument."
 
-    self subclassResponsibility.
+    self subclassResponsibility. !
 
-- inject: thisValue into: binaryBlock
+inject: thisValue into: binaryBlock
     "Accumulate a running value associated with evaluating the argument,
     binaryBlock, with the current value of the argument, thisValue, and the
     receiver as block arguments. For instance, to sum the numeric elements
@@ -239,23 +240,23 @@ Object subclass: #Collection
     | nextValue |
     nextValue := thisValue.
     self do: [:each | nextValue := binaryBlock value: nextValue value: each].
-    ^ nextValue.
+    ^ nextValue. !
 
-- max
+max
     "Return the max of all my elements."
     | max | max := nil.
     self do: [:each | (max == nil or: [each > max])
             ifTrue: [max := each]].
-    ^ max.
+    ^ max. !
 
-- reject: aBlock
+reject: aBlock
     "Evaluate aBlock with each of the receiver's elements as the argument.
     Collect into a new collection like the receiver only those elements for
     which aBlock evaluates to false. Answer the new collection."
 
-    ^ self select: [:element | (aBlock value: element) == false].
+    ^ self select: [:element | (aBlock value: element) == false]. !
 
-- select: aBlock
+select: aBlock
     "Evaluate aBlock with each of the receiver's elements as the argument.
     Collect into a new collection like the receiver, only those elements for
     which aBlock evaluates to true. Answer the new collection."
@@ -263,29 +264,29 @@ Object subclass: #Collection
     | newCollection |
     newCollection := self species new.
     self do: [:each | (aBlock value: each) ifTrue: [newCollection add: each]].
-    ^ newCollection.
+    ^ newCollection. !
 
-- select: selectBlock thenCollect: collectBlock
-	^ (self select: selectBlock) collect: collectBlock.
+select: selectBlock thenCollect: collectBlock
+	^ (self select: selectBlock) collect: collectBlock. !
 
-- sum
+sum
     "Return the sum of all my elements."
     | sum |  sum := 0.
     self do: [:each | sum := sum + each].
-    ^ sum.
+    ^ sum. !
+!
 
+!Collection methodsFor: 'converting'!
 
-"Collection methodsFor: 'converting'"
-
-- asBag
+asBag
     "Answer a Bag whose elements are the elements of the receiver."
 
     | aBag |
     aBag := Bag new.
     self do: [:each | aBag add: each].
-    ^ aBag.
+    ^ aBag. !
 
-- asOrderedCollection
+asOrderedCollection
     "Answer an OrderedCollection whose elements are the elements of the
     receiver. The order in which elements are added depends on the order in
     which the receiver enumerates its elements. In the case of unordered
@@ -295,31 +296,31 @@ Object subclass: #Collection
     | anOrderedCollection |
     anOrderedCollection := OrderedCollection new: self size.
     self do: [:each | anOrderedCollection addLast: each].
-    ^ anOrderedCollection.
+    ^ anOrderedCollection. !
 
-- asSet
+asSet
     "Answer a Set whose elements are the unique elements of the receiver."
 
     | aSet |
     aSet := Set new: self size.
     self do: [:each | aSet add: each].
-    ^ aSet.
+    ^ aSet. !
 
-- asSortedArray
+asSortedArray
     "Return a copy of the receiver in sorted order, as an Array."
 
-    ^ self asSortedCollection asArray.
+    ^ self asSortedCollection asArray. !
 
-- asSortedCollection
+asSortedCollection
     "Answer a SortedCollection whose elements are the elements of the
     receiver. The sort order is the default less than or equal."
 
     | aSortedCollection |
     aSortedCollection := SortedCollection new: self size.
     aSortedCollection addAll: self.
-    ^ aSortedCollection.
+    ^ aSortedCollection. !
 
-- asSortedCollection: aBlock
+asSortedCollection: aBlock
     "Answer a SortedCollection whose elements are the elements of the
     receiver. The sort order is defined by the argument, aBlock."
 
@@ -327,18 +328,18 @@ Object subclass: #Collection
     aSortedCollection := SortedCollection new: self size.
     aSortedCollection sortBlock: aBlock.
     aSortedCollection addAll: self.
-    ^ aSortedCollection.
+    ^ aSortedCollection. !
+!
 
+!Collection methodsFor: 'printing'!
 
-"Collection methodsFor: 'printing'"
-
-- printOn: aStream
+printOn: aStream
     "Refer to the comment in Object|printOn:."
     aStream nextPutAll: self class name + ' ('.
     self do: [:element | element printOn: aStream. aStream space].
-    aStream nextPut: $).
+    aStream nextPut: $). !
 
-- storeOn: aStream
+storeOn: aStream
     "Refer to the comment in Object|storeOn:."
 
     | noneYet |
@@ -354,44 +355,45 @@ Object subclass: #Collection
       aStream nextPutAll: ' add: '.
       aStream store: each].
     noneYet ifFalse: [aStream nextPutAll: '; yourself'].
-    aStream nextPut: $).
+    aStream nextPut: $). !
+!
 
+!Collection methodsFor: 'private'!
 
-"Collection methodsFor: 'private'"
-- emptyCheck
+emptyCheck
 
-	  self isEmpty ifTrue: [self errorEmptyCollection].
+	  self isEmpty ifTrue: [self errorEmptyCollection]. !
 
-- errorEmptyCollection
+errorEmptyCollection
 
-    self error: 'this collection is empty'.
+    self error: 'this collection is empty'. !
 
-- errorNoMatch
+errorNoMatch
 
-    self error: 'collection sizes do not match'.
+    self error: 'collection sizes do not match'. !
 
-- errorNotFound
+errorNotFound
 
-    self error: 'Object is not in the collection.'.
+    self error: 'Object is not in the collection.'. !
 
-- errorNotKeyed
+errorNotKeyed
 
-    self error: self class name + 's do not respond to keyed accessing messages.'.
+    self error: self class name + 's do not respond to keyed accessing messages.'. !
 
-- fill: numElements fromStack: aContext
+fill: numElements fromStack: aContext
     "Fill me with numElements elements, popped in reverse order from
      the stack of aContext.  Do not call directly: this is called indirectly by {1. 2. 3}
      constructs.  Subclasses that support at:put: instead of add: should override
      this and call Context<pop:toIndexable:"
 
-    aContext pop: numElements toAddable: self.
+    aContext pop: numElements toAddable: self. !
 
-- maxSize
+maxSize
     "Answer the largest basicSize which is valid for the receiver's class."
 
-    ^ 65486. "for VM3 interpreter DoradoST80Aug19"
+    ^ 65486. ! "for VM3 interpreter DoradoST80Aug19"
 
-- toBraceStack: itsSize
+toBraceStack: itsSize
     "Push receiver's elements onto the stack of thisContext sender.  Error if receiver does
      not have itsSize elements or if receiver is unordered.
      Do not call directly: this is called by {a. b} _ ... constructs."
@@ -399,37 +401,38 @@ Object subclass: #Collection
     self size ~= itsSize ifTrue:
       [self error: 'Trying to store ' + self size printString,
             ' values into ' + itsSize printString, ' variables.'].
-    thisContext sender push: itsSize fromIndexable: self.
+    thisContext sender push: itsSize fromIndexable: self. !
+!
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "
 
-+ fromBraceStack: itsSize
+!Collection class methodsFor: 'instance creation'!
+
+fromBraceStack: itsSize
     "Answer an instance of me with itsSize elements, popped in reverse order from
      the stack of thisContext sender.  Do not call directly: this is called by {1. 2. 3}
      constructs."
 
-    ^ self newFrom: ((Array new: itsSize) fill: itsSize fromStack: thisContext sender).
+    ^ self newFrom: ((Array new: itsSize) fill: itsSize fromStack: thisContext sender). !
 
-"Collection class methodsFor: 'instance creation'"
-
-+ with: anObject
+with: anObject
 	"Answer an instance of me containing anObject."
 
 	| newCollection |
 	newCollection := self new.
 	newCollection add: anObject.
-	^ newCollection.
+	^ newCollection. !
 
-+ with: firstObject with: secondObject
+with: firstObject with: secondObject
     "Answer an instance of me containing the two arguments as elements."
 
     | newCollection |
     newCollection := self new.
     newCollection add: firstObject.
     newCollection add: secondObject.
-    ^ newCollection.
+    ^ newCollection. !
 
-- with: firstObject with: secondObject with: thirdObject
+with: firstObject with: secondObject with: thirdObject
     "Answer an instance of me containing the three arguments as elements."
 
     | newCollection |
@@ -437,9 +440,9 @@ Object subclass: #Collection
     newCollection add: firstObject.
     newCollection add: secondObject.
     newCollection add: thirdObject.
-    ^ newCollection.
+    ^ newCollection. !
 
-+ with: firstObject with: secondObject with: thirdObject with: fourthObject
+with: firstObject with: secondObject with: thirdObject with: fourthObject
     "Answer an instance of me, containing the four arguments as the
     elements."
 
@@ -449,11 +452,12 @@ Object subclass: #Collection
     newCollection add: secondObject.
     newCollection add: thirdObject.
     newCollection add: fourthObject.
-    ^ newCollection.
+    ^ newCollection. !
+!
 
+!Collection class methodsFor: 'private'!
 
-"Collection class methodsFor: 'private'"
-
-+ initialize
+initialize
 	"Set up a Random number generator to be used by pickOne when the user does not feel like creating his own Random generator."
-	RandomForPicking := Random new.
+	RandomForPicking := Random new. !
+!

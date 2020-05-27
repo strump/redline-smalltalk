@@ -5,26 +5,27 @@
 SequenceableCollection subclass: #ArrayedCollection
                        category: 'Collections-Abstract'.
 
-"ArrayedCollection methodsFor: 'accessing'"
+!ArrayedCollection methodsFor: 'accessing'!
 
-- size
+size
     "Primitive. Answer the number of indexable fields in the receiver. This
 	  value is the same as the largest legal subscript. Primitive is specified
 	  here to override SequenceableCollection size. Essential. See Object
 	  documentation whatIsAPrimitive. "
 
-	  JVM primitive: 62.
+	  JVM primitive: 62. !
+!
 
-"ArrayedCollection methodsFor: 'adding'"
+!ArrayedCollection methodsFor: 'adding'!
 
-- add: newObject
+add: newObject
 
-	self shouldNotImplement.
+	self shouldNotImplement. !
+!
 
+!ArrayedCollection methodsFor: 'printing'!
 
-"ArrayedCollection methodsFor: 'printing'"
-
-- storeOn: aStream
+storeOn: aStream
 
     aStream nextPutAll: '(('.
     aStream nextPutAll: self class name.
@@ -33,23 +34,23 @@ SequenceableCollection subclass: #ArrayedCollection
     aStream nextPut: $).
     (self storeElementsFrom: 1 to: self size on: aStream)
       ifFalse: [aStream nextPutAll: '; yourself'].
-    aStream nextPut: $).
+    aStream nextPut: $). !
+!
 
+!ArrayedCollection methodsFor: 'private'!
 
-"ArrayedCollection methodsFor: 'private'"
+defaultElement
 
-- defaultElement
+    ^ nil. !
 
-    ^ nil.
-
-- fill: numElements fromStack: aContext
+fill: numElements fromStack: aContext
     "Fill me with numElements elements, popped in reverse order from
 	  the stack of aContext.  Do not call directly: this is called indirectly by {1. 2. 3}
 	  constructs."
 
-    aContext pop: numElements toIndexable: self.
+    aContext pop: numElements toIndexable: self. !
 
-- storeElementsFrom: firstIndex to: lastIndex on: aStream
+storeElementsFrom: firstIndex to: lastIndex on: aStream
 
     | noneYet defaultElement arrayElement |
     noneYet := true.
@@ -66,56 +67,57 @@ SequenceableCollection subclass: #ArrayedCollection
           aStream store: index.
           aStream nextPutAll: ' put: '.
           aStream store: arrayElement]].
-    ^ noneYet.
+    ^ noneYet. !
+!
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "
 
-"ArrayedCollection class methodsFor: 'instance creation'"
+!ArrayedCollection class methodsFor: 'instance creation'!
 
-+ fromBraceStack: itsSize
+fromBraceStack: itsSize
     "Answer an instance of me with itsSize elements, popped in reverse order from
 	  the stack of thisContext sender.  Do not call directly: this is called by {1. 2. 3}
 	  constructs."
 
-	  ^ (self new: itsSize) fill: itsSize fromStack: thisContext sender.
+	  ^ (self new: itsSize) fill: itsSize fromStack: thisContext sender. !
 
-+ new
+new
     "Answer a new instance of me, with size = 0."
 
-	  ^ self new: 0.
+	  ^ self new: 0. !
 
-+ new: size withAll: value
+new: size withAll: value
     "Answer an instance of me, with number of elements equal to size, each
 	  of which refers to the argument, value."
 
-    ^ (self new: size) atAllPut: value.
+    ^ (self new: size) atAllPut: value. !
 
-+ newFrom: aCollection
+newFrom: aCollection
     "Answer an instance of me containing the same elements as aCollection."
 
     | newArray |
     newArray := self new: aCollection size.
     1 to: aCollection size do: [:i | newArray at: i put: (aCollection at: i)].
-    ^ newArray.
+    ^ newArray. !
 
-+ with: anObject
+with: anObject
     "Answer a new instance of me, containing only anObject."
 
     | newCollection |
     newCollection := self new: 1.
     newCollection at: 1 put: anObject.
-    ^ newCollection.
+    ^ newCollection. !
 
-+ with: firstObject with: secondObject
+with: firstObject with: secondObject
     "Answer a new instance of me, containing firstObject and secondObject."
 
     | newCollection |
     newCollection := self new: 2.
     newCollection at: 1 put: firstObject.
     newCollection at: 2 put: secondObject.
-    ^ newCollection.
+    ^ newCollection. !
 
-+ with: firstObject with: secondObject with: thirdObject
+with: firstObject with: secondObject with: thirdObject
 	"Answer a new instance of me, containing only the three arguments as
 	elements."
 
@@ -124,9 +126,9 @@ SequenceableCollection subclass: #ArrayedCollection
 	newCollection at: 1 put: firstObject.
 	newCollection at: 2 put: secondObject.
 	newCollection at: 3 put: thirdObject.
-	^ newCollection.
+	^ newCollection. !
 
-+ with: firstObject with: secondObject with: thirdObject with: fourthObject
+with: firstObject with: secondObject with: thirdObject with: fourthObject
     "Answer a new instance of me, containing only the three arguments as
     elements."
 
@@ -136,9 +138,9 @@ SequenceableCollection subclass: #ArrayedCollection
     newCollection at: 2 put: secondObject.
     newCollection at: 3 put: thirdObject.
     newCollection at: 4 put: fourthObject.
-    ^ newCollection.
+    ^ newCollection. !
 
-+ with: firstObject with: secondObject with: thirdObject with: fourthObject with: fifthObject
+with: firstObject with: secondObject with: thirdObject with: fourthObject with: fifthObject
     "Answer a new instance of me, containing only the five arguments as
     elements."
 
@@ -149,4 +151,5 @@ SequenceableCollection subclass: #ArrayedCollection
     newCollection at: 3 put: thirdObject.
     newCollection at: 4 put: fourthObject.
     newCollection at: 5 put: fifthObject.
-    ^ newCollection.
+    ^ newCollection. !
+!
