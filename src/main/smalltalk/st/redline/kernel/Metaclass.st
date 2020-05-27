@@ -2,5 +2,8 @@
 
 ClassDescription subclass: #Metaclass.
 
-- isMeta
-	^ true.
+!Metaclass methodsFor: 'access'!
+
+isMeta
+	^ true. !
+!
