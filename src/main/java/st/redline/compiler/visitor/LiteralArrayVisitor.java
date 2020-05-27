@@ -66,7 +66,7 @@ public class LiteralArrayVisitor extends ClassGeneratorVisitor {
             index ++;
         }
 
-        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "smalltalkArray", "([Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "smalltalkArray", "([Lst/redline/core/PrimObject;)Lst/redline/core/PrimObject;", false);
         return null;
     }
 

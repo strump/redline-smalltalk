@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import st.redline.classloader.SmalltalkClassLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static st.redline.compiler.visitor.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
 import static st.redline.core.PrimDoesNotUnderstand.PRIM_DOES_NOT_UNDERSTAND;
@@ -99,6 +100,12 @@ public class PrimObject {
 
     public PrimObject smalltalkArray(Object ignored) {
         return instanceOfWith("Array", new ArrayList<PrimObject>());
+    }
+
+    public PrimObject smalltalkArray(PrimObject items[]) {
+        final ArrayList<PrimObject> value = new ArrayList<>();
+        Collections.addAll(value, items);
+        return instanceOfWith("Array", value);
     }
 
     public PrimObject smalltalkInteger(Object value) {
