@@ -544,12 +544,39 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         log.info("  visitKeywordMessage");
         initializeKeyword();
         initializeTryCatch();
-        for (SmalltalkParser.KeywordPairContext keywordPair : ctx.keywordPair())
-            keywordPair.accept(currentVisitor());
-        visitLine(mv, ctx.keywordPair().get(0).KEYWORD().getSymbol().getLine());
-        String keyword = removeKeyword();
+        String keyword;
+        final List<SmalltalkParser.KeywordPairContext> keywordPairs = ctx.keywordPair();
+        if (keywordPairs.size() < PERFORM_METHOD_SIGNATURES.length) {
+            for (SmalltalkParser.KeywordPairContext keywordPair : keywordPairs)
+                keywordPair.accept(currentVisitor());
+            keyword = removeKeyword();
+        }
+        else {
+            //Too many arguments in selector. Create array to store arguments
+            int arraySize = keywordPairs.size();
+
+            //Create array PrimObject[arraySize];
+            pushReceiver(mv);
+            pushNumber(mv, arraySize);
+            mv.visitTypeInsn(ANEWARRAY, PRIM_OBJECT_CLASS);
+
+            final StringBuilder keywordAcc = new StringBuilder();
+            int index = 0; //Array item index
+            for (SmalltalkParser.KeywordPairContext keywordPair : keywordPairs) {
+                mv.visitInsn(DUP);
+                pushNumber(mv, index);
+
+                keywordAcc.append(keywordPair.KEYWORD().getText());
+                keywordPair.binarySend().accept(currentVisitor()); //Put argument to stack
+
+                mv.visitInsn(AASTORE); // Put object to array at index `index`
+                index ++;
+            }
+            keyword = keywordAcc.toString();
+        }
+        visitLine(mv, keywordPairs.get(0).KEYWORD().getSymbol().getLine());
         setupTryBlock();
-        invokePerform(mv, keyword, countOf(keyword, ':'), sendToSuper);
+        invokePerform(mv, keyword, keywordPairs.size(), sendToSuper);
         setupCatchBlock();
         sendToSuper = false;
         return null;

@@ -37,7 +37,8 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
             "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;",
             "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;"
     };
-    protected static final Map<String, Integer> OPCODES = new HashMap<String, Integer>();
+    protected static final String PERFORM_METHOD_ARRAY_SIGNATURE = "([Lst/redline/core/PrimObject;Ljava/lang/String;)Lst/redline/core/PrimObject;";
+    protected static final Map<String, Integer> OPCODES = new HashMap<>();
     protected static final int BYTECODE_VERSION;
 
     static {
@@ -285,11 +286,12 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     public void invokePerform(MethodVisitor mv, String selector, int argumentCount, boolean sendToSuper) {
         pushLiteral(mv, selector);
         String methodName = (sendToSuper) ? "superPerform" : "perform";
-        if (argumentCount >= PERFORM_METHOD_SIGNATURES.length) {
-            throw new RuntimeException("Too many arguments in selector '"+selector+"'");
-            //TODO: use invoke method self.perform(PrimObject[] args, String selector)
+        if (argumentCount < PERFORM_METHOD_SIGNATURES.length) {
+            mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, methodName, PERFORM_METHOD_SIGNATURES[argumentCount], false);
         }
-        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, methodName, PERFORM_METHOD_SIGNATURES[argumentCount], false);
+        else {
+            mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, methodName, PERFORM_METHOD_ARRAY_SIGNATURE, false);
+        }
     }
 
     public void visitLine(MethodVisitor mv, int line) {
