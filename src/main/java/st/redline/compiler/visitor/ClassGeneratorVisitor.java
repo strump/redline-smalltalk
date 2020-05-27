@@ -74,7 +74,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     }
 
     private void createPackageNameMethod() {
-        mv = cw.visitMethod(ACC_PROTECTED, "packageName", "()Ljava/lang/String;", null, null);
+        mv = cw.visitMethod(ACC_PUBLIC, "packageName", "()Ljava/lang/String;", null, null);
         mv.visitCode();
         mv.visitLdcInsn(packageName());
         mv.visitInsn(ARETURN);
@@ -176,7 +176,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitRootSequence(SmalltalkParser.RootSequenceContext ctx) {
-        log.info("visitRootSequence");
+        log.trace("visitRootSequence");
         SmalltalkParser.TempsContext temps = ctx.temps();
         if (temps != null)
             temps.accept(currentVisitor());
@@ -191,7 +191,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitSequence(SmalltalkParser.SequenceContext ctx) {
-        log.info("visitSequence");
+        log.trace("visitSequence");
         SmalltalkParser.TempsContext temps = ctx.temps();
         if (temps != null)
             temps.accept(currentVisitor());
@@ -315,7 +315,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     }
 
     protected void addArgumentToMap(SmalltalkGeneratingVisitor.ExtendedTerminalNode node) {
-        log.info("addArgumentToMap {}", node.getText());
+        log.trace("addArgumentToMap '{}'", node.getText());
         assert !arguments.containsKey(node.getText());
         String key = node.getText();
         if (key.startsWith(":"))  // <- block arguments are prefixed with ':'
@@ -325,14 +325,14 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitStatementExpressions(@NotNull SmalltalkParser.StatementExpressionsContext ctx) {
-        log.info("  visitStatementExpressions");
+        log.trace("  visitStatementExpressions");
         ctx.expressions().accept(currentVisitor());
         return null;
     }
 
     @Override
     public Void visitStatementExpressionsAnswer(@NotNull SmalltalkParser.StatementExpressionsAnswerContext ctx) {
-        log.info("  visitStatementExpressionsAnswer");
+        log.trace("  visitStatementExpressionsAnswer");
         ctx.expressions().accept(currentVisitor());
         ctx.answer().accept(currentVisitor());
         return null;
@@ -340,7 +340,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitStatementAnswer(@NotNull SmalltalkParser.StatementAnswerContext ctx) {
-        log.info("  visitStatementAnswer");
+        log.trace("  visitStatementAnswer");
         SmalltalkParser.AnswerContext answer = ctx.answer();
         visitLine(mv, answer.CARROT().getSymbol().getLine());
         SmalltalkParser.ExpressionContext expression = answer.expression();
@@ -351,7 +351,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitAnswer(@NotNull SmalltalkParser.AnswerContext ctx) {
-        log.info("  visitAnswer");
+        log.trace("  visitAnswer");
         TerminalNode carrot = ctx.CARROT();
         visitLine(mv, carrot.getSymbol().getLine());
         SmalltalkParser.ExpressionContext expression = ctx.expression();
@@ -362,7 +362,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitExpression(@NotNull SmalltalkParser.ExpressionContext ctx) {
-        log.info("  visitExpression");
+        log.trace("  visitExpression");
         referencedJVM = false;
         removeJVMGeneratorVisitor();
         SmalltalkParser.BinarySendContext binarySend = ctx.binarySend();
@@ -390,13 +390,13 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitPrimitive(@NotNull SmalltalkParser.PrimitiveContext ctx) {
-        log.info("  visitPrimitive");
+        log.trace("  visitPrimitive");
         throw new RuntimeException("Smalltalk <primitive> should be replaced with JVM primitive: id.");
     }
 
     @Override
     public Void visitUnarySend(@NotNull SmalltalkParser.UnarySendContext ctx) {
-        log.info("  visitUnarySend");
+        log.trace("  visitUnarySend");
         ctx.operand().accept(currentVisitor());
         SmalltalkParser.UnaryTailContext unaryTail = ctx.unaryTail();
         if (unaryTail != null)
@@ -406,7 +406,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitUnaryTail(@NotNull SmalltalkParser.UnaryTailContext ctx) {
-        log.info("  visitUnaryTail");
+        log.trace("  visitUnaryTail");
         ctx.unaryMessage().accept(currentVisitor());
         SmalltalkParser.UnaryTailContext unaryTail = ctx.unaryTail();
         if (unaryTail != null)
@@ -416,7 +416,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitUnarySelector(@NotNull SmalltalkParser.UnarySelectorContext ctx) {
-        log.info("  visitUnarySelector {}", ctx.IDENTIFIER().getSymbol().getText());
+        log.trace("  visitUnarySelector {}", ctx.IDENTIFIER().getSymbol().getText());
         TerminalNode selectorNode = ctx.IDENTIFIER();
         visitLine(mv, selectorNode.getSymbol().getLine());
         invokePerform(mv, selectorNode.getSymbol().getText(), 0, sendToSuper);
@@ -426,7 +426,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitBinarySend(@NotNull SmalltalkParser.BinarySendContext ctx) {
-        log.info("  visitBinarySend");
+        log.trace("  visitBinarySend");
         ctx.unarySend().accept(currentVisitor());
         SmalltalkParser.BinaryTailContext binaryTail = ctx.binaryTail();
         if (binaryTail != null)
@@ -436,7 +436,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitBinaryTail(@NotNull SmalltalkParser.BinaryTailContext ctx) {
-        log.info("  visitBinaryTail");
+        log.trace("  visitBinaryTail");
         ctx.binaryMessage().accept(currentVisitor());
         SmalltalkParser.BinaryTailContext binaryTail = ctx.binaryTail();
         if (binaryTail != null)
@@ -446,7 +446,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitKeywordSend(@NotNull SmalltalkParser.KeywordSendContext ctx) {
-        log.info("  visitKeywordSend");
+        log.trace("  visitKeywordSend");
         ctx.binarySend().accept(currentVisitor());
         if (referencedJVM)
             classGen.pushCurrentVisitor(new JVMGeneratorVisitor(classGen, cw, mv));
@@ -456,7 +456,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitCascade(@NotNull SmalltalkParser.CascadeContext ctx) {
-        log.info("  visitCascade");
+        log.trace("  visitCascade");
         SmalltalkParser.BinarySendContext binarySend = ctx.binarySend();
         if (binarySend != null)
             binarySend.accept(currentVisitor());
@@ -470,7 +470,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitAssignment(@NotNull SmalltalkParser.AssignmentContext ctx) {
-        log.info("  visitAssignment");
+        log.trace("  visitAssignment");
         SmalltalkParser.ExpressionContext expression = ctx.expression();
         if (expression == null)
             throw new RuntimeException("visitAssignment expression expected.");
@@ -497,7 +497,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitMessage(@NotNull SmalltalkParser.MessageContext ctx) {
-        log.info("  visitMessage");
+        log.trace("  visitMessage");
         SmalltalkParser.UnaryMessageContext unaryMessage = ctx.unaryMessage();
         if (unaryMessage != null)
             return unaryMessage.accept(currentVisitor());
@@ -512,7 +512,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitUnaryMessage(@NotNull SmalltalkParser.UnaryMessageContext ctx) {
-        log.info("  visitUnaryMessage");
+        log.trace("  visitUnaryMessage");
         SmalltalkParser.UnarySelectorContext unarySelector = ctx.unarySelector();
         if (unarySelector != null)
             unarySelector.accept(currentVisitor());
@@ -521,7 +521,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitBinaryMessage(@NotNull SmalltalkParser.BinaryMessageContext ctx) {
-        log.info("  visitBinaryMessage {}", ctx.binarySelector().getText());
+        log.trace("  visitBinaryMessage {}", ctx.binarySelector().getText());
         SmalltalkParser.BinarySelectorContext binarySelector = ctx.binarySelector();
         //TerminalNode binarySelector = binarySelectorCtx.BINARY_SELECTOR();
         /*if (binarySelector == null) {
@@ -541,7 +541,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitKeywordMessage(@NotNull SmalltalkParser.KeywordMessageContext ctx) {
-        log.info("  visitKeywordMessage");
+        log.trace("  visitKeywordMessage");
         initializeKeyword();
         initializeTryCatch();
         String keyword;
@@ -612,7 +612,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitKeywordPair(@NotNull SmalltalkParser.KeywordPairContext ctx) {
-        log.info("  visitKeywordPair {}", ctx.KEYWORD().getSymbol().getText());
+        log.trace("  visitKeywordPair {}", ctx.KEYWORD().getSymbol().getText());
         TerminalNode keyword = ctx.KEYWORD();
         String part = keyword.getSymbol().getText();
         visitLine(mv, keyword.getSymbol().getLine());
@@ -625,7 +625,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitOperand(@NotNull SmalltalkParser.OperandContext ctx) {
-        log.info("  visitOperand");
+        log.trace("  visitOperand");
         SmalltalkParser.LiteralContext literal = ctx.literal();
         if (literal != null)
             return literal.accept(currentVisitor());
@@ -640,7 +640,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitLiteral(@NotNull SmalltalkParser.LiteralContext ctx) {
-        log.info("  visitLiteral");
+        log.trace("  visitLiteral");
         SmalltalkParser.ParsetimeLiteralContext parsetimeLiteral = ctx.parsetimeLiteral();
         if (parsetimeLiteral != null)
             return parsetimeLiteral.accept(currentVisitor());
@@ -652,7 +652,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitRuntimeLiteral(@NotNull SmalltalkParser.RuntimeLiteralContext ctx) {
-        log.info("  visitRuntimeLiteral");
+        log.trace("  visitRuntimeLiteral");
         SmalltalkParser.BlockContext block = ctx.block();
         if (block != null)
             return block.accept(currentVisitor());
@@ -667,7 +667,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitParsetimeLiteral(@NotNull SmalltalkParser.ParsetimeLiteralContext ctx) {
-        log.info("  visitParsetimeLiteral");
+        log.trace("  visitParsetimeLiteral");
         SmalltalkParser.PseudoVariableContext pseudoVariable = ctx.pseudoVariable();
         if (pseudoVariable != null)
             return pseudoVariable.accept(currentVisitor());
@@ -701,7 +701,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitPseudoVariable(@NotNull SmalltalkParser.PseudoVariableContext ctx) {
-        log.info("  visitPseudoVariable {}", ctx.RESERVED_WORD().getSymbol().getText());
+        log.trace("  visitPseudoVariable {}", ctx.RESERVED_WORD().getSymbol().getText());
         TerminalNode pseudoVariable = ctx.RESERVED_WORD();
         String name = pseudoVariable.getSymbol().getText();
         if ("self".equals(name))
@@ -732,7 +732,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitCharConstant(@NotNull SmalltalkParser.CharConstantContext ctx) {
-        log.info("  visitCharConstant {}", ctx.CHARACTER_CONSTANT().getSymbol().getText());
+        log.trace("  visitCharConstant {}", ctx.CHARACTER_CONSTANT().getSymbol().getText());
         TerminalNode constant = ctx.CHARACTER_CONSTANT();
         String value = constant.getSymbol().getText().substring(1, 2); //Get seconds char from '$.' literal.
                                                                        // '$!!' literal should be parsed as '$!'
@@ -742,7 +742,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitStInteger(@NotNull SmalltalkParser.StIntegerContext ctx) {
-        log.info("  visitInteger {}{}", ctx.MINUS() != null  ? "-" : "", nodeFor(ctx.DIGIT()).getText());
+        log.trace("  visitInteger {}{}", ctx.MINUS() != null  ? "-" : "", nodeFor(ctx.DIGIT()).getText());
         boolean minus = ctx.MINUS() != null;
         SmalltalkGeneratingVisitor.BasicNode number = nodeFor(ctx.DIGIT());
         String value = minus ? "-" + number.getText() : number.getText();
@@ -752,13 +752,13 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitStFloat(@NotNull SmalltalkParser.StFloatContext ctx) {
-        log.info("  visitFloat");
+        log.trace("  visitFloat");
         throw new RuntimeException("visitFloat handle me.");
     }
 
     @Override
     public Void visitHex(SmalltalkParser.HexContext ctx) {
-        log.info("  visitHex {}{}", ctx.MINUS() != null  ? "-" : "", ctx.HEX().getText());
+        log.trace("  visitHex {}{}", ctx.MINUS() != null  ? "-" : "", ctx.HEX().getText());
         boolean minus = ctx.MINUS() != null;
         final String hexStr = ctx.HEX().toString().substring(3); // Skip '16r' at the beginning of hex string
         final long longValue = Long.parseLong(hexStr, 16);
@@ -769,7 +769,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitString(@NotNull SmalltalkParser.StringContext ctx) {
-        log.info("  visitString {}", ctx.STRING().getSymbol().getText());
+        log.trace("  visitString {}", ctx.STRING().getSymbol().getText());
         TerminalNode node = ctx.STRING();
         String value = node.getSymbol().getText();
         value = value.substring(1, value.length() - 1);
@@ -779,7 +779,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitSymbol(@NotNull SmalltalkParser.SymbolContext ctx) {
-        log.info("  visitSymbol #{}", nodeFor(ctx).getText());
+        log.trace("  visitSymbol #{}", nodeFor(ctx).getText());
         SmalltalkGeneratingVisitor.BasicNode node = nodeFor(ctx);
         String symbol = node.getText();
         if (haveKeyword())
@@ -816,7 +816,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitReference(@NotNull SmalltalkParser.ReferenceContext ctx) {
-        log.info("  visitReference {}", ctx.variable().IDENTIFIER().getSymbol().getText());
+        log.trace("  visitReference {}", ctx.variable().IDENTIFIER().getSymbol().getText());
         TerminalNode identifier = ctx.variable().IDENTIFIER();
         String name = identifier.getSymbol().getText();
         visitLine(mv, identifier.getSymbol().getLine());
@@ -842,7 +842,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     @Override
     public Void visitBlock(@NotNull SmalltalkParser.BlockContext ctx) {
         SmalltalkGeneratingVisitor.KeywordRecord keywordRecord = peekKeyword();
-        log.info("  visitBlock {} {}", keywordRecord, blockNumber);
+        log.trace("  visitBlock {} {}", keywordRecord, blockNumber);
         String blockName = makeBlockMethodName(keywordRecord);
         boolean methodBlock = keywordRecord.keyword.toString().endsWith("withMethod:"); //TODO: what does this mean?
         HashMap<String, SmalltalkGeneratingVisitor.ExtendedTerminalNode> homeTemps = homeTemporaries;
@@ -903,7 +903,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitSubexpression(@NotNull SmalltalkParser.SubexpressionContext ctx) {
-        log.info("  visitSubexpression");
+        log.trace("  visitSubexpression");
         // 2 + (  (3 * 4) - 1  )
         // evaluated last (   (evaluated first)  evaluated second  )
         SmalltalkParser.ExpressionContext expression = ctx.expression();

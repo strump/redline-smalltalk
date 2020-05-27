@@ -20,7 +20,7 @@ public class SmalltalkClassLoader extends ClassLoader {
     private static PrimObject FALSE;
 
     private final SourceFinder sourceFinder;
-    private final Map<String, Class> classCache;
+    private final Map<String, Class<?>> classCache;
     private final Map<String, PrimObject> objectCache;
     private final Map<String, Map<String, Source>> packageCache;
     private final Stack<String> instantiatingName;
@@ -45,7 +45,7 @@ public class SmalltalkClassLoader extends ClassLoader {
             return cls;
         try {
             boolean requiresInstantiation = !isCachedClass(name);
-            Class messageSendingClass = findClass(name);
+            Class<?> messageSendingClass = findClass(name);
             if (requiresInstantiation)
                 instantiateMessageSendingClass(messageSendingClass, name);
             cls = cachedObject(name);
@@ -57,7 +57,7 @@ public class SmalltalkClassLoader extends ClassLoader {
         throw new ObjectNotFoundException("Object '" + name + "' was not found.");
     }
 
-    private void instantiateMessageSendingClass(Class messageSendingClass, String name) throws IllegalAccessException, InstantiationException {
+    private void instantiateMessageSendingClass(Class<?> messageSendingClass, String name) throws IllegalAccessException, InstantiationException {
         // We have to instantiate the class to cause all the message sends contained within it to be sent.
         // Should these message sends involve a subclass then we need to ensure that subclass knows the package it is in.
         // hence this code (which makes me uncomfortable).
@@ -91,9 +91,9 @@ public class SmalltalkClassLoader extends ClassLoader {
         objectCache.put(name, object);
     }
 
-    public Class findClass(String name) throws ClassNotFoundException {
+    public Class<?> findClass(String name) throws ClassNotFoundException {
         log.trace("** findClass {}", name);
-        Class cls = cachedClass(name);
+        Class<?> cls = cachedClass(name);
         if (cls != null)
             return cls;
         byte[] classData = loadClassData(name);
@@ -102,6 +102,12 @@ public class SmalltalkClassLoader extends ClassLoader {
         cls = defineClass(null, classData, 0, classData.length);
         saveClass(classData, name);
         cacheClass(cls, name);
+        return cls;
+    }
+
+    public Class<?> compileToClass(Source stSource) {
+        final byte[] classData = compile(stSource);
+        final Class<?> cls = defineClass(null, classData, 0, classData.length);
         return cls;
     }
 

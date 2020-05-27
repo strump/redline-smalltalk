@@ -154,7 +154,7 @@ public class SmalltalkSourceFile implements Source, LineTransformer {
     public String fullClassName() {
         if (fullClassName == null) {
             fullClassName = withoutClassPath(withoutExtension(filename()));
-            fullClassName = fullClassName.replace(File.pathSeparatorChar, CLASS_SEPARATOR);
+            fullClassName = fullClassName.replace(File.separatorChar, CLASS_SEPARATOR);
         }
         return fullClassName;
     }

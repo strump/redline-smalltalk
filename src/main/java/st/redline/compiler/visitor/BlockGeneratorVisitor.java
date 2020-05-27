@@ -83,13 +83,13 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
     }
 
     protected void openBlockLambdaMethod() {
-        log.info(" openBlockLambdaMethod: {}", blockName);
+        log.trace(" openBlockLambdaMethod: {}", blockName);
         mv = cw.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, blockName, LAMBDA_BLOCK_SIG, null, null);
         mv.visitCode();
     }
 
     protected void closeBlockLambdaMethod(boolean returnRequired) {
-        log.info(" closeBlockLambdaMethod: {} {}", blockName, returnRequired);
+        log.trace(" closeBlockLambdaMethod: {} {}", blockName, returnRequired);
         if (returnRequired)
             mv.visitInsn(ARETURN);
         mv.visitMaxs(0, 0);

@@ -25,7 +25,7 @@ public class JVMGeneratorVisitor extends ClassGeneratorVisitor {
 
     @Override
     public Void visitMessage(@NotNull SmalltalkParser.MessageContext ctx) {
-        log.info("  visitMessage");
+        log.trace("  visitMessage");
         SmalltalkParser.KeywordMessageContext keywordMessage = ctx.keywordMessage();
         if (keywordMessage != null)
             return keywordMessage.accept(currentVisitor());
@@ -34,7 +34,7 @@ public class JVMGeneratorVisitor extends ClassGeneratorVisitor {
 
     @Override
     public Void visitKeywordMessage(@NotNull SmalltalkParser.KeywordMessageContext ctx) {
-        log.info("  visitKeywordMessage");
+        log.trace("  visitKeywordMessage");
         initializeKeyword();
         for (SmalltalkParser.KeywordPairContext keywordPair : ctx.keywordPair())
             keywordPair.accept(currentVisitor());
@@ -55,7 +55,7 @@ public class JVMGeneratorVisitor extends ClassGeneratorVisitor {
 
     @Override
     public Void visitKeywordPair(@NotNull SmalltalkParser.KeywordPairContext ctx) {
-        log.info("  visitKeywordPair {}", ctx.KEYWORD().getSymbol().getText());
+        log.trace("  visitKeywordPair {}", ctx.KEYWORD().getSymbol().getText());
         TerminalNode keyword = ctx.KEYWORD();
         String part = keyword.getSymbol().getText();
         visitLine(mv, keyword.getSymbol().getLine());

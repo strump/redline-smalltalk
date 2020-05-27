@@ -52,7 +52,6 @@ public class Compiler {
         lexer.addErrorListener(new SmalltalkParserErrorListener());
 
         SmalltalkParser parser = new SmalltalkParser(new CommonTokenStream(lexer));
-        //parser.setErrorHandler(new BailErrorStrategy());
         parser.removeErrorListeners();
         parser.addErrorListener(new SmalltalkParserErrorListener(false));
 
