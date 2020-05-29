@@ -43,6 +43,9 @@ public class Bootstrapper {
         PrimClass string = createKernelObject("String", arrayedCollection, metaclass);
         PrimClass symbol = createKernelObject("Symbol", string, metaclass);
         PrimClass transcript = createKernelObject("Transcript", object, metaclass);
+        PrimClass magnitude = createKernelObject("Magnitude", object, metaclass);
+        PrimClass number = createKernelObject("Number", magnitude, metaclass);
+        PrimClass random = createKernelObject("Random", number, metaclass);
 
         // Fix up bootstrapped Kernel Objects Metaclass instance.
         klass.selfClass().selfClass(metaclass);
@@ -90,6 +93,9 @@ public class Bootstrapper {
         classLoader.cacheObject("st.redline.kernel.String", string);
         classLoader.cacheObject("st.redline.kernel.Symbol", symbol);
         classLoader.cacheObject("st.redline.kernel.Transcript", transcript);
+        classLoader.cacheObject("st.redline.kernel.Magnitude", magnitude);
+        classLoader.cacheObject("st.redline.kernel.Number", number);
+        classLoader.cacheObject("st.redline.kernel.Random", random);
     }
 
     private PrimClass createKernelObject(String name, PrimObject superclass) {
@@ -129,6 +135,9 @@ public class Bootstrapper {
         loadObject(classLoader, "st.redline.kernel.String");
         loadObject(classLoader, "st.redline.kernel.Symbol");
         loadObject(classLoader, "st.redline.kernel.Transcript");
+        loadObject(classLoader, "st.redline.kernel.Magnitude");
+        loadObject(classLoader, "st.redline.kernel.Number");
+        loadObject(classLoader, "st.redline.kernel.Random");
     }
 
     private void createPrimObject(SmalltalkClassLoader classLoader) {
