@@ -287,7 +287,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     }
 
     private SmalltalkGeneratingVisitor.KeywordRecord peekKeyword() {
-        return keywords.peek();
+        return keywords.empty() ? null : keywords.peek();
     }
 
     private boolean isArgument(String key) {
@@ -844,7 +844,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         SmalltalkGeneratingVisitor.KeywordRecord keywordRecord = peekKeyword();
         log.trace("  visitBlock {} {}", keywordRecord, blockNumber);
         String blockName = makeBlockMethodName(keywordRecord);
-        boolean methodBlock = keywordRecord.keyword.toString().endsWith("withMethod:"); //TODO: what does this mean?
+        boolean methodBlock = keywordRecord!=null && keywordRecord.keyword.toString().endsWith("withMethod:"); //TODO: what does this mean?
         HashMap<String, SmalltalkGeneratingVisitor.ExtendedTerminalNode> homeTemps = homeTemporaries;
         if (homeTemps == null && !methodBlock)
             homeTemps = temporaries;

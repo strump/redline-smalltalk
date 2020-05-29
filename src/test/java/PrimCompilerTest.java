@@ -23,7 +23,7 @@ public class PrimCompilerTest {
 
     @Test
     public void test_compiler() throws Exception {
-        final Source src = sourceFromString("^ 'test'", "StringReturn");
+        final Source src = sourceFromString("[1 < 0] whileTrue: [Transcript show: false]", "StringTest");
         final Class<?> StringReturn = stClassLoader.compileToClass(src);
         assertEquals(StringReturn.getSuperclass(), PrimObject.class);
 
@@ -33,9 +33,9 @@ public class PrimCompilerTest {
         assertEquals(packageName, "st.redline.test");
     }
 
-    @Test
+    //@Test
     public void test_compiler_string() throws Exception {
-        final Source src = sourceFromString("^ 'test'", "StringReturn2");
+        final Source src = sourceFromString("^ 'test'", "StringTest2");
         final Class<?> StringReturn = stClassLoader.compileToClass(src);
         assertEquals(StringReturn.getSuperclass(), PrimObject.class);
 

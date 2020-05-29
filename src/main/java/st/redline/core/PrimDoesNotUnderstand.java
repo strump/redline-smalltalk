@@ -18,6 +18,8 @@ public class PrimDoesNotUnderstand extends PrimObject {
         StringBuilder message = new StringBuilder();
         message.append("Object '")
                 .append(receiver)
+                .append("' of class '")
+                .append(receiver.selfClass())
                 .append("' does not understand #")
                 .append(context.arguments()[0]);
 //        if (context.arguments.length > 1) {

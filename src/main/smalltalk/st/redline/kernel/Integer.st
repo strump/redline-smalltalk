@@ -12,18 +12,18 @@ Integer division consists of:
 Number subclass: #Integer
 	   category: 'Numeric-Numbers'.
 
-"Integer methodsFor: 'testing'"
+!Integer methodsFor: 'testing'!
 
-- benchFib  "Handy send-heavy benchmark"
+benchFib  "Handy send-heavy benchmark"
 	"(result // seconds to run) = approx calls per second"
 	" | r t | t _ Time millisecondsToRun: [r _ 26 benchFib].
 			r//t*1000 "
 	"138000 on a Mac 8100/100"
 	^ self < 2
 		ifTrue: [1]
-		ifFalse: [(self-1) benchFib + (self-2) benchFib + 1].
+		ifFalse: [(self-1) benchFib + (self-2) benchFib + 1]. !
 
-- benchmark  "Handy bytecode-heavy benchmark"
+benchmark  "Handy bytecode-heavy benchmark"
 	"(500000 // time to run) = approx bytecodes per second"
 	"5000000 // (Time millisecondsToRun: [10 benchmark]) * 1000"
 	"3059000 on a Mac 8100/100"
@@ -41,47 +41,48 @@ Number subclass: #Integer
                     [flags at: k put: false.
                     k := k + prime].
                 count := count + 1]]].
-    ^ count.
+    ^ count. !
 
-- even
+even
 	"Refer to the comment in Number|even."
 
-	^((self digitAt: 1) bitAnd: 1) = 0.
+	^((self digitAt: 1) bitAnd: 1) = 0. !
 
-- isInteger
+isInteger
 	"True for all subclasses of Integer."
 
-	^ true.
+	^ true. !
 
-- isPowerOfTwo
-	^ (self bitAnd: self-1) = 0.
+isPowerOfTwo
+	^ (self bitAnd: self-1) = 0. !
+!
 
-"Integer methodsFor: 'arithmetic'"
+!Integer methodsFor: 'arithmetic'!
 
-- * aNumber
+* aNumber
 	"Refer to the comment in Number * "
 	aNumber isInteger
 		ifTrue: [^ self digitMultiply: aNumber
 					neg: self negative ~~ aNumber negative]
-		ifFalse: [^ (aNumber adaptInteger: self) * aNumber adaptToInteger].
+		ifFalse: [^ (aNumber adaptInteger: self) * aNumber adaptToInteger]. !
 
-- + aNumber
++ aNumber
 	"Refer to the comment in Number + "
 	aNumber isInteger
 		ifTrue: [self negative == aNumber negative
 					ifTrue: [^(self digitAdd: aNumber) normalize]
 					ifFalse: [^self digitSubtract: aNumber]]
-		ifFalse: [^ (aNumber adaptInteger: self) + aNumber adaptToInteger].
+		ifFalse: [^ (aNumber adaptInteger: self) + aNumber adaptToInteger]. !
 
-- - aNumber
+- aNumber
 	"Refer to the comment in Number - "
 	aNumber isInteger
 		ifTrue: [self negative == aNumber negative
 					ifTrue: [^ self digitSubtract: aNumber]
 					ifFalse: [^ (self digitAdd: aNumber) normalize]]
-		ifFalse: [^ (aNumber adaptInteger: self) - aNumber adaptToInteger].
+		ifFalse: [^ (aNumber adaptInteger: self) - aNumber adaptToInteger]. !
 
-- / aNumber
+/ aNumber
 	"Refer to the comment in Number / "
 	| quoRem |
 	aNumber isInteger
@@ -90,9 +91,9 @@ Number subclass: #Integer
 				(quoRem at: 2) = 0
 					ifTrue: [^(quoRem at: 1) normalize]
 					ifFalse: [^(Fraction numerator: self denominator: aNumber) reduced]]
-		ifFalse: [^ (aNumber adaptInteger: self) / aNumber adaptToInteger].
+		ifFalse: [^ (aNumber adaptInteger: self) / aNumber adaptToInteger]. !
 
-- // aNumber
+// aNumber
 
 	| q |
 	aNumber = 0 ifTrue: [^self error: 'division by 0'].
@@ -103,14 +104,14 @@ Number subclass: #Integer
 		ifTrue: [q * aNumber ~= self]
 		ifFalse: [q = 0 and: [self negative ~= aNumber negative]])
 		ifTrue: [^q - 1"Truncate towards minus infinity"]
-		ifFalse: [^q].
+		ifFalse: [^q]. !
 
-- alignedTo: anInteger
+alignedTo: anInteger
 	"Answer the smallest number not less than receiver that is a multiple of anInteger."
 
-	^(self+anInteger-1//anInteger)*anInteger.
+	^(self+anInteger-1//anInteger)*anInteger. !
 
-- quo: aNumber
+quo: aNumber
 	"Refer to the comment in Number quo: "
 	| ng quo |
 	aNumber isInteger
@@ -118,70 +119,70 @@ Number subclass: #Integer
 			[ng := self negative == aNumber negative == false.
 			quo := (self digitDiv: aNumber neg: ng) at: 1.
 			^ quo normalize]
-		ifFalse: [^ (aNumber adaptInteger: self) quo: aNumber adaptToInteger].
+		ifFalse: [^ (aNumber adaptInteger: self) quo: aNumber adaptToInteger]. !
+!
 
-"Integer methodsFor: 'comparing'"
+!Integer methodsFor: 'comparing'!
 
-- < aNumber
+< aNumber
 	aNumber isInteger
 		ifTrue: [self negative == aNumber negative
 					ifTrue: [self negative
 								ifTrue: [^(self digitCompare: aNumber) > 0]
 								ifFalse: [^(self digitCompare: aNumber) < 0]]
 					ifFalse: [^self negative]]
-		ifFalse: [^ (aNumber adaptInteger: self) < aNumber adaptToInteger].
+		ifFalse: [^ (aNumber adaptInteger: self) < aNumber adaptToInteger]. !
 
-- = aNumber
+= aNumber
 	aNumber isNumber ifFalse: [^ false].
 	aNumber isInteger
 		ifTrue: [aNumber negative == self negative
 					ifTrue: [^ (self digitCompare: aNumber) = 0]
 					ifFalse: [^ false]]
-		ifFalse: [^ (aNumber adaptInteger: self) = aNumber adaptToInteger].
+		ifFalse: [^ (aNumber adaptInteger: self) = aNumber adaptToInteger]. !
 
-- > aNumber
+> aNumber
 	aNumber isInteger
 		ifTrue: [self negative == aNumber negative
 					ifTrue: [self negative
 								ifTrue: [^(self digitCompare: aNumber) < 0]
 								ifFalse: [^(self digitCompare: aNumber) > 0]]
 					ifFalse: [^ aNumber negative]]
-		ifFalse: [^ (aNumber adaptInteger: self) > aNumber adaptToInteger].
+		ifFalse: [^ (aNumber adaptInteger: self) > aNumber adaptToInteger]. !
 
-- hash
+hash
 	"Hash is reimplemented because = is implemented."
 
-	^(self lastDigit bitShift: 8) + (self digitAt: 1).
+	^(self lastDigit bitShift: 8) + (self digitAt: 1). !
 
-
-- atRandom
+atRandom
 	"Return a random integer from 1 to self.  Heavy users should use Interval atRandom or atRandom: directly."
-	^ (1 to: self) atRandom.
+	^ (1 to: self) atRandom. !
 
-- ceiling
+ceiling
 	"Refer to the comment in Number|ceiling."
-	^ self.
+	^ self. !
 
-- floor
+floor
 	"Refer to the comment in Number|floor."
-	^ self.
+	^ self. !
 
-- normalize
+normalize
 	"SmallInts OK; LgInts override"
-	^ self.
+	^ self. !
 
-- rounded
+rounded
 	"Refer to the comment in Number|rounded."
-	^ self.
+	^ self. !
 
-- truncated
+truncated
 	"Refer to the comment in Number|truncated."
-	^ self.
+	^ self. !
+!
 
+!Integer methodsFor: 'enumerating'!
 
-"Integer methodsFor: 'enumerating'"
-
-- timesRepeat: aBlock
+timesRepeat: aBlock
 	"Evaluate the argument, aBlock, the number of times represented by the
 	receiver."
 
@@ -190,29 +191,29 @@ Number subclass: #Integer
 	[count <= self]
 		whileTrue:
 			[aBlock value.
-			count := count + 1].
+			count := count + 1]. !
+!
 
+!Integer methodsFor: 'mathematical functions'!
 
-"Integer methodsFor: 'mathematical functions'"
-
-- degreeCos
+degreeCos
 	"Answer the cosine of the receiver taken as an angle in degrees."
 
-	^ (90 + self) degreeSin.
+	^ (90 + self) degreeSin. !
 
-- degreeSin
+degreeSin
 	"Answer the sine of the receiver taken as an angle in degrees."
 
-	^ self asFloat degreesToRadians sin.
+	^ self asFloat degreesToRadians sin. !
 
-- factorial
+factorial
 	"Answer the factorial of the receiver."
 
 	self = 0 ifTrue: [^ 1].
 	self > 0 ifTrue: [^ self * (self - 1) factorial].
-	self error: 'Not valid for negative integers'.
+	self error: 'Not valid for negative integers'. !
 
-- gcd: anInteger
+gcd: anInteger
 	"See Knuth, Vol 2, 4.5.2, Algorithm L"
 	"Initialize"
 	| higher u v k uHat vHat a b c d vPrime vPrimePrime q t |
@@ -246,14 +247,14 @@ Number subclass: #Integer
 					[t := u * a + (v * b).
 					v := u * c + (v * d).
 					u := t]].
-	^ u gcd: v.
+	^ u gcd: v. !
 
-- lcm: n
+lcm: n
 	"Answer the least common multiple of the receiver and n."
 
-	^self // (self gcd: n) * n.
+	^self // (self gcd: n) * n. !
 
-- take: kk
+take: kk
 	"Return the number of combinations of (self) elements taken kk at a time.  For 6 take 3, this is 6*5*4 / (1*2*3).  Zero outside of Pascal's triangle.  Use a trick to go faster."
 	" 6 take: 3  "
 
@@ -264,66 +265,66 @@ Number subclass: #Integer
 	self to: (kk max: self-kk) + 1 by: -1 do: [:factor | num := num * factor].
 	denom := 1.
 	1 to: (kk min: self-kk) do: [:factor | denom := denom * factor].
-	^ num // denom.
+	^ num // denom. !
+!
 
+!Integer methodsFor: 'bit manipulation'!
 
-"Integer methodsFor: 'bit manipulation'"
-
-- << shiftAmount  "left shift"
+<< shiftAmount  "left shift"
 	shiftAmount < 0 ifTrue: [self error: 'negative arg'].
-	^ self bitShift: shiftAmount.
+	^ self bitShift: shiftAmount. !
 
-- >> shiftAmount  "left shift"
+>> shiftAmount  "left shift"
 	shiftAmount < 0 ifTrue: [self error: 'negative arg'].
-	^ self bitShift: 0 - shiftAmount.
+	^ self bitShift: 0 - shiftAmount. !
 
-- allMask: mask
+allMask: mask
 	"Treat the argument as a bit mask. Answer whether all of the bits that
 	are 1 in the argument are 1 in the receiver."
 
-	^mask = (self bitAnd: mask).
+	^mask = (self bitAnd: mask). !
 
-- anyMask: mask
+anyMask: mask
 	"Treat the argument as a bit mask. Answer whether any of the bits that
 	are 1 in the argument are 1 in the receiver."
 
-	^0 ~= (self bitAnd: mask).
+	^0 ~= (self bitAnd: mask). !
 
-- bitAnd: n
+bitAnd: n
 	"Answer an Integer whose bits are the logical AND of the receiver's bits
 	and those of the argument, n."
 	| norm |
 	norm := n normalize.
 	^ self digitLogic: norm
 		op: #bitAnd:
-		length: (self digitLength max: norm digitLength).
+		length: (self digitLength max: norm digitLength). !
 
-- bitClear: aMask
+bitClear: aMask
 	"Answer an Integer equal to the receiver, except with all bits cleared that are set in aMask."
 
-	^ (self bitOr: aMask) - aMask.
+	^ (self bitOr: aMask) - aMask. !
 
-- bitInvert
+bitInvert
 	"Answer an Integer whose bits are the logical negation of the receiver's bits.
 	Numbers are interpreted as having 2's-complement representation."
 
-	^ -1 - self.
+	^ -1 - self. !
 
-- bitInvert32
+bitInvert32
 	"Answer the 32-bit complement of the receiver."
 
-	^ self bitXor: 16rFFFFFFFF.
+	^ self bitXor: 16rFFFFFFFF. !
 
-- bitOr: n
+bitOr: n
 	"Answer an Integer whose bits are the logical OR of the receiver's bits
 	and those of the argument, n."
 	| norm |
 	norm := n normalize.
 	^self digitLogic: norm
 		op: #bitOr:
-		length: (self digitLength max: norm digitLength).
+		length: (self digitLength max: norm digitLength). !
 
-- bitShift: shiftCount
+bitShift: shiftCount
 	"Answer an Integer whose value (in twos-complement representation) is
 	the receiver's value (in twos-complement representation) shifted left by
 	the number of bits indicated by the argument. Negative arguments shift
@@ -333,9 +334,9 @@ Number subclass: #Integer
 	rShift := 0 - shiftCount.
 	^ (self digitRshift: (rShift bitAnd: 7)
 				bytes: (rShift bitShift: -3)
-				lookfirst: self digitLength) normalize.
+				lookfirst: self digitLength) normalize. !
 
-- bitXor: n
+bitXor: n
 	"Answer an Integer whose bits are the logical XOR of the receiver's bits
 	and those of the argument, n."
 	| norm |
@@ -343,9 +344,9 @@ Number subclass: #Integer
 	^self
 		digitLogic: norm
 		op: #bitXor:
-		length: (self digitLength max: norm digitLength).
+		length: (self digitLength max: norm digitLength). !
 
-- lowBit
+lowBit
 	"Answer the index of the low order bit of this number."
 	| index |
 	self = 0 ifTrue: [ ^ 0 ].
@@ -353,39 +354,39 @@ Number subclass: #Integer
 	[ (self digitAt: index) = 0 ]
 		whileTrue:
 			[ index := index + 1 ].
-	^ (self digitAt: index) lowBit + (8 * (index - 1)).
+	^ (self digitAt: index) lowBit + (8 * (index - 1)). !
 
-- noMask: mask
+noMask: mask
 	"Treat the argument as a bit mask. Answer whether none of the bits that
 	are 1 in the argument are 1 in the receiver."
 
-	^0 = (self bitAnd: mask).
+	^0 = (self bitAnd: mask). !
+!
 
+!Integer methodsFor: 'converting'!
 
-"Integer methodsFor: 'converting'"
-
-- adaptFloat: aFloat
+adaptFloat: aFloat
 	"If I am involved in arithmetic with a Float, do not convert the Float."
-	^ aFloat.
+	^ aFloat. !
 
-- adaptFraction: aFraction
+adaptFraction: aFraction
 	"If I am involved in arithmetic with a Fraction, do not convert the Fraction."
-	^ aFraction.
+	^ aFraction. !
 
-- adaptToFloat
+adaptToFloat
 	"If I am involved in arithmetic with a Float, convert me to a Float."
-	^ self asFloat.
+	^ self asFloat. !
 
-- adaptToFraction
+adaptToFraction
 	"If I am involved in arithmetic with a Fraction, convert me to a Fraction."
-	^ self asFraction.
+	^ self asFraction. !
 
-- asCharacter
+asCharacter
 	"Answer the Character whose value is the receiver."
 
-	^Character value: self.
+	^Character value: self. !
 
-- asFloat
+asFloat
 	"Answer a Float that represents the value of the receiver. Optimized to process only the significant digits of a LargeInteger."
 
 	| sum factor numBytes |
@@ -402,46 +403,47 @@ Number subclass: #Integer
 				sum := sum + ((self digitAt: i) * factor).
 				factor := factor * 256.0].
 			sum := sum timesTwoPower: 8 * (numBytes - 7)].
-	^ sum.
+	^ sum. !
 
-- asFraction
+asFraction
 	"Answer a Fraction that represents value of the the receiver."
 
-	^Fraction numerator: self denominator: 1.
+	^Fraction numerator: self denominator: 1. !
 
-- asInteger
+asInteger
 	"Answer with the receiver itself."
 
-	^self.
+	^self. !
+!
 
+!Integer methodsFor: 'printing'!
 
-"Integer methodsFor: 'printing'"
-
-- asStringWithCommas  "123456789 asStringWithCommas"
+asStringWithCommas  "123456789 asStringWithCommas"
 	| digits |
 	digits := self abs printString.
 	^ String streamContents:
 		[:strm | 1 to: digits size do:
 			[:i | strm nextPut: (digits at: i).
 			(i < digits size and: [(i - digits size) \\ 3 = 0])
-				ifTrue: [strm nextPut: $,]]].
+				ifTrue: [strm nextPut: $,]]]. !
 
-- hex
-	^ self printStringBase: 16.
+hex
+	^ self printStringBase: 16. !
 
-- hex8  "16r3333 hex8"
+hex8  "16r3333 hex8"
 	| hex |
 	hex := self hex.  "16rNNN"
 	hex size < 11
 		ifTrue: [^ hex copyReplaceFrom: 4 to: 3
 						 with: ('00000000' copyFrom: 1 to: 11-hex size)]
-		ifFalse: [^ hex].
+		ifFalse: [^ hex]. !
 
-- isLiteral
+isLiteral
 
-	^true.
+	^true. !
+!
 
-"Integer methodsFor: 'printing'"
+!Integer methodsFor: 'printing'!
 
 printOn: aStream base: b
 	"Print a representation of the receiver on the stream, aStream, in base, b,
@@ -474,41 +476,41 @@ printOn: aStream base: b
 	[pos > 0]
 		whileTrue:
 			[aStream nextPut: (Character digitValue: (digits at: pos)).
-			pos := pos - 1].
+			pos := pos - 1]. !
 
-- radix: radix
+radix: radix
 	"Answer a String representing the receiver as a base radix integer."
 
-	^ self printStringBase: radix.
+	^ self printStringBase: radix. !
 
-- stringForReadout
-	^ self rounded printString.
+stringForReadout
+	^ self rounded printString. !
+!
 
+!Integer methodsFor: 'system primitives'!
 
-"Integer methodsFor: 'system primitives'"
-
-- lastDigit
+lastDigit
 	"Answer the last digit of the integer."
 
-	^self digitAt: self digitLength.
+	^self digitAt: self digitLength. !
 
-- replaceFrom: start to: stop with: replacement startingAt: repStart
+replaceFrom: start to: stop with: replacement startingAt: repStart
 	| j |  "Catches failure if LgInt replace primitive fails"
 	j := repStart.
 	start to: stop do:
 		[:i |
 		self digitAt: i put: (replacement digitAt: j).
-		j := j+1].
+		j := j+1]. !
+!
 
+!Integer methodsFor: 'private'!
 
-"Integer methodsFor: 'private'"
-
-- copyto: x
+copyto: x
 	| stop |
 	stop := self digitLength min: x digitLength.
-	^ x replaceFrom: 1 to: stop with: self startingAt: 1.
+	^ x replaceFrom: 1 to: stop with: self startingAt: 1. !
 
-- digitAdd: arg
+digitAdd: arg
 	| len arglen accum sum |
 	accum := 0.
 	(len := self digitLength) < (arglen := arg digitLength)
@@ -522,9 +524,9 @@ printOn: aStream base: b
 	accum > 255 ifTrue:
 			[sum := sum growby: 1.
 			sum at: sum digitLength put: (accum bitShift: -8)].
-	^sum.
+	^sum. !
 
-- digitCompare: arg
+digitCompare: arg
 	"Compare the magnitude of self with that of arg.
 	Return a code of 1, 0, -1 for self >, = , < arg"
 	| len arglen argDigit selfDigit |
@@ -540,9 +542,9 @@ printOn: aStream base: b
 							ifTrue: [^1]
 							ifFalse: [^-1]].
 			len := len - 1].
-	^0.
+	^0. !
 
-- digitDiv: arg neg: ng
+digitDiv: arg neg: ng
 	"Answer with an array of (quotient, remainder)."
 	| quo rem ql d div dh dnh dl qhi qlo j l hi lo r3 a t |
 	l := self digitLength - arg digitLength + 1.
@@ -628,9 +630,9 @@ printOn: aStream base: b
 					l := l + 1]].
 		quo digitAt: quo digitLength + 1 - k put: (qhi bitShift: 4) + qlo].
 	rem := rem digitRshift: d bytes: 0 lookfirst: dl.
-	^Array with: quo with: rem.
+	^Array with: quo with: rem. !
 
-- digitLogic: arg op: op length: len
+digitLogic: arg op: op length: len
 	| result neg1 neg2 rneg z1 z2 rz b1 b2 b |
 	neg1 := self negative.
 	neg2 := arg negative.
@@ -675,9 +677,9 @@ printOn: aStream base: b
 											256 - b]
 										ifFalse: [255 - b]]
 						ifFalse: [b])]].
-	^ result normalize.
+	^ result normalize. !
 
-- digitLshift: shiftCount
+digitLshift: shiftCount
 	| carry rShift mask len result digit byteShift bitShift highBit |
 	(highBit := self highBit) = 0 ifTrue: [^ 0].
 	len := highBit + shiftCount + 7 // 8.
@@ -698,9 +700,9 @@ printOn: aStream base: b
 		result digitAt: i + byteShift
 			put: (((digit bitAnd: mask) bitShift: bitShift) bitOr: carry).
 		carry := digit bitShift: rShift].
-	^ result.
+	^ result. !
 
-- digitMultiply: arg neg: ng
+digitMultiply: arg neg: ng
 	| prod prodLen carry digit k ab |
 	(arg digitLength = 1 and: [(arg digitAt: 1) = 0]) ifTrue: [^ 0].
 	prodLen := self digitLength + arg digitLength.
@@ -721,9 +723,9 @@ printOn: aStream base: b
 					prod digitAt: k put: (ab bitAnd: 255).
 					k := k + 1].
 				prod digitAt: k put: carry]].
-	^ prod normalize.
+	^ prod normalize. !
 
-- digitRshift: anInteger bytes: b lookfirst: a
+digitRshift: anInteger bytes: b lookfirst: a
 	 "Shift right 8*b+anInteger bits, 0<=n<8.
 	Discard all digits beyond a, and all zeroes at or below a."
 	| n x r f m digit count i |
@@ -746,9 +748,9 @@ printOn: aStream base: b
 		r digitAt: j - b put: (((digit bitAnd: m) bitShift: f) bitOr: x)
 			"Avoid values > 8 bits".
 		x := digit bitShift: n].
-	^r.
+	^r. !
 
-- digitSubtract: arg
+digitSubtract: arg
 	| smaller larger z sum sl al ng |
 	sl := self digitLength.
 	al := arg digitLength.
@@ -777,21 +779,22 @@ printOn: aStream base: b
 		sum digitAt: i
 			put: z - (z // 256 * 256) "sign-tolerant form of (z bitAnd: 255)".
 		z := z // 256].
-	^ sum normalize.
+	^ sum normalize. !
 
-- growby: n
+growby: n
 
-	^self growto: self digitLength + n.
+	^self growto: self digitLength + n. !
 
-- growto: n
+growto: n
 
-	^self copyto: (self species new: n).
+	^self copyto: (self species new: n). !
+!
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "
 
-"Integer class methodsFor: 'instance creation'"
+!Integer class methodsFor: 'instance creation'!
 
-+ byte1: byte1 byte2: byte2 byte3: byte3 byte4: byte4
+byte1: byte1 byte2: byte2 byte3: byte3 byte4: byte4
 	"Depending on high-order byte copy directly into a LargeInteger,
 	or build up a SmallInteger by shifting"
 	| value |
@@ -805,17 +808,17 @@ printOn: aStream base: b
 	value digitAt: 3 put: byte3.
 	value digitAt: 2 put: byte2.
 	value digitAt: 1 put: byte1.
-	^ value.
+	^ value. !
 
-+ new: length neg: neg
+new: length neg: neg
 	"Answer an instance of a large integer whose size is length. neg is a flag
 	determining whether the integer is negative or not."
 
 	neg
 		ifTrue: [^LargeNegativeInteger new: length]
-		ifFalse: [^LargePositiveInteger new: length].
+		ifFalse: [^LargePositiveInteger new: length]. !
 
-+ primesUpTo: max
+primesUpTo: max
 	"Return a list of prime integers up to the given integer."
 	"Integer primesUpTo: 100"
 
@@ -831,14 +834,14 @@ printOn: aStream base: b
 				flags at: k put: false.
 				k := k + prime].
 			out add: prime]].
-	^ out asArray.
+	^ out asArray. !
 
-+ readFrom: aStream
+readFrom: aStream
 	"Answer a new Integer as described on the stream, aStream.
 	Embedded radix specifiers not allowed - use Number readFrom: for that."
-	^self readFrom: aStream base: 10.
+	^self readFrom: aStream base: 10. !
 
-+ readFrom: aStream base: base
+readFrom: aStream base: base
 	"Answer an instance of one of my concrete subclasses. Initial minus sign
 	accepted, and bases > 10 use letters A-Z. Embedded radix specifiers not
 	allowed--use Number readFrom: for that. Answer zero (not an error) if
@@ -857,9 +860,9 @@ printOn: aStream base: b
 					^ value]
 				ifFalse: [value := value * base + digit]].
 	neg ifTrue: [^ value negated].
-	^ value.
+	^ value. !
 
-+ testBitLogic  "Integer testBitLogic"
+testBitLogic  "Integer testBitLogic"
 	"This little suite of tests is designed to verify correct operation of most
 	of Squeak's bit manipulation code, including two's complement
 	representation of negative values.  It was written in a hurry and
@@ -889,5 +892,5 @@ printOn: aStream base: b
 
 	"Verify that n negated = (n complemented +1) for single bits"
 	1 to: 100 do: [:i | n := 1 bitShift: i.
-				n negated = ((n bitXor: -1) + 1) ifFalse: [self error: 'Bit Logic Failure']].
-
+				n negated = ((n bitXor: -1) + 1) ifFalse: [self error: 'Bit Logic Failure']]. !
+!

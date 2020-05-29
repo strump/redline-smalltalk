@@ -68,12 +68,16 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
         int line = ctx.start.getLine();
         visitLine(mv, line);
 
-        //TODO: Case of isClassMethod==true is not handled
         //Generate: <code> reference(className).addMethod(selector, lambda) </code>
         line = ctx.sequence().start.getLine(); // first line in method code
         pushReference(mv, className);
+        if (isClassMethod) {
+            //Use <className>.selfClass() instead of <className> object.
+            mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "selfClass", "()Lst/redline/core/PrimObject;", false);
+        }
         addCheckCast(mv, PRIM_CLASS_FULL_NAME); // Cast PrimObject to PrimClass
         pushLiteral(mv, methodSelector); //Put first argument of "addMethod" call
+        //TODO: Maybe need to use "pushAddMethodCall()" here?
         pushNewMethod(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line); //Put second argument of "addMethod" call
         pushAddMethodCall(mv);
 

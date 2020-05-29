@@ -66,7 +66,7 @@ methodGroup : EXCLAMATION SEP* className SEP+ classSelector? methodHeaderKeyword
 className : IDENTIFIER;
 classSelector : IDENTIFIER SEP+;
 methodHeaderKeywords: KEYWORD SEP* STRING (SEP+ KEYWORD SEP* STRING)*;
-methodDeclaration : methodHeader SEP* EOL
+methodDeclaration : methodHeader (SEP | COMMENT)* EOL
                     sequence
                     ws EXCLAMATION
                    ;

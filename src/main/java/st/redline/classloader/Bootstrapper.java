@@ -60,7 +60,7 @@ public class Bootstrapper {
         ((PrimSubclass) PRIM_SUBCLASS).metaclass(metaclass);
 
         // Add basicAddSelector:withMethod: to Behaviour
-        ((PrimClass) behavior).addMethod("basicAddSelector:withMethod:", new PrimAddMethod());
+        behavior.addMethod("basicAddSelector:withMethod:", new PrimAddMethod());
 
         // Create special instances, referred to with pseudo variables.
         PrimObject nil = new PrimObject();
@@ -151,7 +151,7 @@ public class Bootstrapper {
             // Loading and instantiating the class causes the 'sendMessages' java method
             // to be called which executes all the message sends of the Smalltalk source.
             final Class<?> aClass = classLoader.loadClass(name);
-            aClass.newInstance();
+            aClass.getDeclaredConstructor().newInstance();
 
             /*final PrimObject cachedObject = classLoader.cachedObject(name);
             if (cachedObject instanceof PrimClass) {
