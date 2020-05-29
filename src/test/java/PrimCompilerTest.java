@@ -1,6 +1,7 @@
 import org.junit.BeforeClass;
 import org.junit.Test;
 import st.redline.classloader.*;
+import st.redline.core.PrimContext;
 import st.redline.core.PrimObject;
 
 import java.io.File;
@@ -30,6 +31,25 @@ public class PrimCompilerTest {
         final Method packageNameMethod = StringReturn.getDeclaredMethod("packageName");
         final Object packageName = packageNameMethod.invoke(testInstance);
         assertEquals(packageName, "st.redline.test");
+    }
+
+    @Test
+    public void test_compiler_string() throws Exception {
+        final Source src = sourceFromString("^ 'test'", "StringReturn2");
+        final Class<?> StringReturn = stClassLoader.compileToClass(src);
+        assertEquals(StringReturn.getSuperclass(), PrimObject.class);
+
+        final Object testInstance = StringReturn.getDeclaredConstructor().newInstance();
+        final PrimContext context = new PrimContext((PrimObject) testInstance);
+        final Method sendMessagesMethod = StringReturn.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
+        sendMessagesMethod.setAccessible(true);
+        final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
+        assertEquals(result.getClass(), PrimObject.class);
+        final PrimObject stResult = (PrimObject) result;
+        final PrimObject classObject = stResult.selfClass();
+        final PrimObject classObject2 = stResult.perform("class");
+        assertEquals(classObject, classObject2);
+        assertEquals(classObject, stClassLoader.findObject("String"));
     }
 
     private static Source sourceFromString(String smalltalkCode, String className) {

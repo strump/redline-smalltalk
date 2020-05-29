@@ -107,6 +107,7 @@ public class SmalltalkClassLoader extends ClassLoader {
 
     public Class<?> compileToClass(Source stSource) {
         final byte[] classData = compile(stSource);
+        saveClass(classData, stSource.className());
         final Class<?> cls = defineClass(null, classData, 0, classData.length);
         return cls;
     }

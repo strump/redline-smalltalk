@@ -1,8 +1,9 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline.core;
 
-public class PrimAddMethod extends PrimObject {
+public class PrimAddMethod extends PrimMethod {
 
+    @Override
     protected PrimObject invoke(PrimObject receiver, PrimContext context) {
         String selector = selector(context);
         PrimObject method = method(context);

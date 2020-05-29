@@ -114,7 +114,9 @@ public class PrimObject {
 
     public PrimObject smalltalkMethod(Object value) {
         //System.out.println("** smalltalkMethod " + value);
-        return instanceOfWith("CompiledMethod", value);
+        final PrimMethod method = new PrimMethod((LambdaBlock) value);
+        method.selfClass(resolveObject("CompiledMethod"));
+        return method;
     }
 
     public PrimObject smalltalkString(Object value) {

@@ -2,6 +2,9 @@
 package st.redline.core;
 
 public class PrimMethod extends PrimObject {
+    public PrimMethod() {
+        super();
+    }
 
     public PrimMethod(LambdaBlock lambdaBlock) {
         this.javaValue(lambdaBlock);
