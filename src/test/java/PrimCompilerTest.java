@@ -33,7 +33,7 @@ public class PrimCompilerTest {
         assertEquals(packageName, "st.redline.test");
     }
 
-    //@Test
+    @Test
     public void test_compiler_string() throws Exception {
         final Source src = sourceFromString("^ 'test'", "StringTest2");
         final Class<?> StringReturn = stClassLoader.compileToClass(src);
@@ -49,7 +49,7 @@ public class PrimCompilerTest {
         final PrimObject classObject = stResult.selfClass();
         final PrimObject classObject2 = stResult.perform("class");
         assertEquals(classObject, classObject2);
-        assertEquals(classObject, stClassLoader.findObject("String"));
+        assertEquals(classObject, stClassLoader.findObject("st.redline.kernel.String"));
     }
 
     private static Source sourceFromString(String smalltalkCode, String className) {

@@ -125,30 +125,34 @@ quo: aNumber
 !Integer methodsFor: 'comparing'!
 
 < aNumber
-	aNumber isInteger
+
+	"aNumber isInteger
 		ifTrue: [self negative == aNumber negative
 					ifTrue: [self negative
 								ifTrue: [^(self digitCompare: aNumber) > 0]
 								ifFalse: [^(self digitCompare: aNumber) < 0]]
 					ifFalse: [^self negative]]
-		ifFalse: [^ (aNumber adaptInteger: self) < aNumber adaptToInteger]. !
+		ifFalse: [^ (aNumber adaptInteger: self) < aNumber adaptToInteger]. !"
+	JVM primitive: 350. !
 
 = aNumber
-	aNumber isNumber ifFalse: [^ false].
+	"aNumber isNumber ifFalse: [^ false].
 	aNumber isInteger
 		ifTrue: [aNumber negative == self negative
 					ifTrue: [^ (self digitCompare: aNumber) = 0]
 					ifFalse: [^ false]]
-		ifFalse: [^ (aNumber adaptInteger: self) = aNumber adaptToInteger]. !
+		ifFalse: [^ (aNumber adaptInteger: self) = aNumber adaptToInteger]. !"
+	JVM primitive: 351. !
 
 > aNumber
-	aNumber isInteger
+	"aNumber isInteger
 		ifTrue: [self negative == aNumber negative
 					ifTrue: [self negative
 								ifTrue: [^(self digitCompare: aNumber) < 0]
 								ifFalse: [^(self digitCompare: aNumber) > 0]]
 					ifFalse: [^ aNumber negative]]
-		ifFalse: [^ (aNumber adaptInteger: self) > aNumber adaptToInteger]. !
+		ifFalse: [^ (aNumber adaptInteger: self) > aNumber adaptToInteger]. ! "
+	JVM primitive: 352. !
 
 hash
 	"Hash is reimplemented because = is implemented."

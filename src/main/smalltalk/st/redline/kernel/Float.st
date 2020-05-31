@@ -5,122 +5,122 @@
  	8.0 13.3 0.3 2.5e6 1.27e-30 1.27e-31 -12.987654e12
  Mainly: no embedded blanks, little e for tens power, and a digit on both sides of the decimal point."
 
-Number variableWordSubclass: #Float
+Number subclass: #Float
 	instanceVariableNames: ''
 	classVariableNames: 'E Epsilon Halfpi Infinity Ln10 Ln2 MaxVal MaxValLn MinValLogBase2 NaN NegativeInfinity NegativeZero Pi RadiansPerDegree Sqrt2 Twopi '
 	poolDictionaries: ''
 	category: 'Numeric-Numbers'.
 
-"Float methodsFor: 'arithmetic'"
+!Float methodsFor: 'arithmetic'!
 
-- * aNumber
+* aNumber
     "Primitive. Answer the result of multiplying the receiver by aNumber.
     Fail if the argument is not a Float. Essential. See Object documentation
     whatIsAPrimitive."
 
-    JVM primitive: 49.
+    JVM primitive: 49. !
 
-- + aNumber
++ aNumber
     "Primitive. Answer the sum of the receiver and aNumber. Essential.
     Fail if the argument is not a Float. See Object documentation
     whatIsAPrimitive."
 
-    JVM primitive: 41.
+    JVM primitive: 41. !
 
-- - aNumber
+- aNumber
     "Primitive. Answer the difference between the receiver and aNumber.
     Fail if the argument is not a Float. Essential. See Object documentation
     whatIsAPrimitive."
 
-    JVM primitive: 42.
+    JVM primitive: 42. !
 
-- / aNumber
+/ aNumber
     "Primitive. Answer the result of dividing receiver by aNumber.
     Fail if the argument is not a Float. Essential. See Object documentation
     whatIsAPrimitive."
 
-    JVM primitive: 50.
+    JVM primitive: 50. !
 
-- abs
+abs
     "This is faster than using Number abs."
     self < 0.0
       ifTrue: [^ 0.0 - self]
-      ifFalse: [^ self].
+      ifFalse: [^ self]. !
 
-- negated
+negated
     "Answer a Number that is the negation of the receiver."
 
-    ^ 0.0 - self.
+    ^ 0.0 - self. !
 
-- reciprocal
-	^ 1.0 / self.
+reciprocal
+	^ 1.0 / self. !
+!
 
+!Float methodsFor: 'mathematical functions'!
 
-"Float methodsFor: 'mathematical functions'"
-
-- arcCos
+arcCos
     "Answer the angle in radians."
 
-    ^ Halfpi - self arcSin.
+    ^ Halfpi - self arcSin. !
 
-- arcSin
+arcSin
 	"Answer the angle in radians."
 
 	((self < -1.0) or: [self > 1.0]) ifTrue: [self error: 'Value out of range'].
 	((self = -1.0) or: [self = 1.0])
 		ifTrue: [^ Halfpi]
-		ifFalse: [^ (self / (1.0 - (self * self)) sqrt) arcTan].
+		ifFalse: [^ (self / (1.0 - (self * self)) sqrt) arcTan]. !
 
-- arcTan
+arcTan
     "Answer the angle in radians.
      Optional. See Object documentation whatIsAPrimitive."
 
-    JVM primitive: 57.
+    JVM primitive: 57. !
 
-- cos
+cos
     "Answer the cosine of the receiver taken as an angle in radians."
 
-    ^ (self + Halfpi) sin.
+    ^ (self + Halfpi) sin. !
 
-- degreeCos
+degreeCos
     "Answer the cosine of the receiver taken as an angle in degrees."
 
-    ^ self degreesToRadians cos.
+    ^ self degreesToRadians cos. !
 
-- degreeSin
+degreeSin
     "Answer the sine of the receiver taken as an angle in degrees."
 
-    ^ self degreesToRadians sin.
+    ^ self degreesToRadians sin. !
 
-- exp
+exp
     "Answer E raised to the receiver power.
      Optional. See Object documentation whatIsAPrimitive."
 
-    JVM primitive: 59.
+    JVM primitive: 59. !
 
-- floorLog: radix
+floorLog: radix
     "Answer the floor of the log base radix of the receiver."
 
-    ^ (self log: radix) floor.
+    ^ (self log: radix) floor. !
 
-- ln
+ln
 	"Answer the natural logarithm of the receiver.
 	 Optional. See Object documentation whatIsAPrimitive."
 
-	JVM primitive: 58.
+	JVM primitive: 58. !
 
-- log
+log
 	"Answer the base 10 logarithm of the receiver."
 
-	^ self ln / Ln10.
+	^ self ln / Ln10. !
 
-- raisedTo: aNumber
+raisedTo: aNumber
 	"Answer the receiver raised to aNumber."
 
 	0.0 = aNumber ifTrue: [^ 1.0].  "special case for 0.0 raisedTo: 0.0"
-	^ (self ln * aNumber asFloat) exp.
+	^ (self ln * aNumber asFloat) exp. !
 
-- reciprocalFloorLog: radix
+reciprocalFloorLog: radix
     "Quick computation of (self log: radix) floor, when self < 1.0.
     Avoids infinite recursion problems with denormalized numbers"
 
@@ -131,199 +131,201 @@ Number variableWordSubclass: #Float
       whileTrue:
         [scale := scale * radix.
         adjust := adjust + 1].
-    ^ ((n floorLog: radix) + adjust) negated.
+    ^ ((n floorLog: radix) + adjust) negated. !
 
-- reciprocalLogBase2
+reciprocalLogBase2
 	"optimized for self = 10, for use in conversion for printing"
 
 	^ self = 10.0
 		ifTrue: [Ln2 / Ln10]
-		ifFalse: [Ln2 / self ln].
+		ifFalse: [Ln2 / self ln]. !
 
-- sin
+sin
 	"Answer the sine of the receiver taken as an angle in radians.
 	 Optional. See Object documentation whatIsAPrimitive."
 
-	JVM primitive: 56.
+	JVM primitive: 56. !
 
-- sqrt
+sqrt
 	"Answer the square root of the receiver.
 	 Optional. See Object documentation whatIsAPrimitive."
 
-	JVM primitive: 55.
+	JVM primitive: 55. !
 
-- tan
+tan
     "Answer the tangent of the receiver taken as an angle in radians."
 
-    ^ self sin / self cos.
+    ^ self sin / self cos. !
 
-- timesTwoPower: anInteger
+timesTwoPower: anInteger
     "Primitive. Answer with the receiver multiplied by 2.0 raised
     to the power of the argument.
     Optional. See Object documentation whatIsAPrimitive."
 
-    JVM primitive: 54.
+    JVM primitive: 54. !
+!
 
+!Float methodsFor: 'comparing'!
 
-"Float methodsFor: 'comparing'"
-
-- < aNumber
+< aNumber
     "Primitive. Compare the receiver with the argument and return true
     if the receiver is less than the argument. Otherwise return false.
     Fail if the argument is not a Float. Essential. See Object documentation
     whatIsAPrimitive."
 
-    JVM primitive: 43.
+    JVM primitive: 43. !
+!
 
-"Float methodsFor: 'comparing'"
+!Float methodsFor: 'comparing'!
 
-- <= aNumber
+<= aNumber
     "Primitive. Compare the receiver with the argument and return true
     if the receiver is less than or equal to the argument. Otherwise return
     false. Fail if the argument is not a Float. Optional. See Object
     documentation whatIsAPrimitive."
 
-    JVM primitive: 45.
+    JVM primitive: 45. !
 
-- = aNumber
+= aNumber
     "Primitive. Compare the receiver with the argument and return true
     if the receiver is equal to the argument. Otherwise return false.
     Fail if the argument is not a Float. Essential. See Object documentation
     whatIsAPrimitive."
 
-    JVM primitive: 47.
+    JVM primitive: 47. !
 
-- > aNumber
+> aNumber
     "Primitive. Compare the receiver with the argument and return true
     if the receiver is greater than the argument. Otherwise return false.
     Fail if the argument is not a Float. Essential. See Object documentation
     whatIsAPrimitive."
 
-    JVM primitive: 44.
+    JVM primitive: 44. !
 
-- >= aNumber
+>= aNumber
     "Primitive. Compare the receiver with the argument and return true
     if the receiver is greater than or equal to the argument. Otherwise return
     false. Fail if the argument is not a Float. Optional. See Object documentation
     whatIsAPrimitive. "
 
-    JVM primitive: 46.
+    JVM primitive: 46. !
 
-- hash
+hash
     "Hash is reimplemented because = is implemented. Both words of the float are used; 8 bits are removed from each end
      to clear most of the exponent regardless of the byte ordering. (The bitAnd:'s ensure that the intermediate results
      do not become a large integer.) Slower than the original version in the ratios 12:5 to 2:1 depending on values."
 
     ^ (((self basicAt: 1) bitAnd: 16r00FFFF00) +
-       ((self basicAt: 2) bitAnd: 16r00FFFF00)) bitShift: -8.
+       ((self basicAt: 2) bitAnd: 16r00FFFF00)) bitShift: -8. !
 
-- ~= aNumber
+~= aNumber
     "Primitive. Compare the receiver with the argument and return true
     if the receiver is not equal to the argument. Otherwise return false.
     Fail if the argument is not a Float. Optional. See Object documentation
     whatIsAPrimitive."
 
-    JVM primitive: 48.
+    JVM primitive: 48. !
+!
 
-"Float methodsFor: 'testing'"
+!Float methodsFor: 'testing'!
 
-- isFloat
-	  ^ true.
+isFloat
+	  ^ true. !
 
-- isInfinite
+isInfinite
     "Return true if the receiver is positive or negative infinity."
 
-    ^ self = Infinity or: [self = NegativeInfinity].
+    ^ self = Infinity or: [self = NegativeInfinity]. !
 
-- isLiteral
+isLiteral
 
-	^ true.
+	^ true. !
 
-- isNaN
+isNaN
     "simple, byte-order independent test for Not-a-Number"
 
-    ^ self ~= self.
+    ^ self ~= self. !
 
-- sign
+sign
     "Answer 1 if the receiver is greater than 0, -1 if less than 0, else 0.
     Handle IEEE-754 negative-zero by reporting a sign of -1"
 
     self > 0 ifTrue: [^ 1].
     (self < 0 or: [((self at: 1) bitShift: -31) = 1]) ifTrue: [^ -1].
-    ^ 0.
+    ^ 0. !
+!
 
+!Float methodsFor: 'truncation and round off'!
 
-"Float methodsFor: 'truncation and round off'"
-
-- exponent
+exponent
     "Primitive. Consider the receiver to be represented as a power of two
     multiplied by a mantissa (between one and two). Answer with the
     SmallInteger to whose power two is raised. Optional. See Object
     documentation whatIsAPrimitive."
 
-	JVM primitive: 53.
+	JVM primitive: 53. !
 
-- fractionPart
+fractionPart
     "Primitive. Answer a Float whose value is the difference between the
     receiver and the receiver's asInteger value. Optional. See Object
     documentation whatIsAPrimitive."
 
-    JVM primitive: 52.
+    JVM primitive: 52. !
 
-- integerPart
+integerPart
     "Answer a Float whose value is the receiver's truncated value."
 
-    ^ self - self fractionPart.
+    ^ self - self fractionPart. !
 
-- rounded
+rounded
     "Answer the integer nearest the receiver."
 
     self >= 0.0
       ifTrue: [^ (self + 0.5) truncated]
-      ifFalse: [^ (self - 0.5) truncated].
+      ifFalse: [^ (self - 0.5) truncated]. !
 
-- significand
+significand
 
-	  ^ self timesTwoPower: (self exponent negated).
+	  ^ self timesTwoPower: (self exponent negated). !
 
-- significandAsInteger
+significandAsInteger
 
     | exp sig |
     exp := self exponent.
     sig := (((self at: 1) bitAnd: 16r000FFFFF) bitShift: 32) bitOr: (self at: 2).
     exp > -1023
       ifTrue: [sig := sig bitOr: (1 bitShift: 52)].
-    ^ sig.
+    ^ sig. !
 
-- truncated
+truncated
     "Answer with a SmallInteger equal to the value of the receiver without
     its fractional part. The primitive fails if the truncated value cannot be
     represented as a SmallInteger. In that case, the code below will compute
     a LargeInteger truncated value. Essential. See Object documentation
     whatIsAPrimitive. "
 
-    JVM primitive: 51.
+    JVM primitive: 51. !
+!
 
+!Float methodsFor: 'converting'!
 
-"Float methodsFor: 'converting'"
-
-- adaptFraction: aFraction
+adaptFraction: aFraction
     "If I am involved in arithmetic with a Fraction, convert the Fraction."
-    ^ aFraction asFloat.
+    ^ aFraction asFloat. !
 
-- adaptInteger: anInteger
+adaptInteger: anInteger
     "If I am involved in arithmetic with an Integer, convert the Integer."
-    ^ anInteger asFloat.
+    ^ anInteger asFloat. !
 
-- adaptToFraction
+adaptToFraction
     "If I am involved in arithmetic with a Fraction, do not convert me."
-    ^ self.
+    ^ self. !
 
-- adaptToInteger
+adaptToInteger
     "If I am involved in arithmetic with an Integer, do not convert me."
-    ^ self.
+    ^ self. !
 
-- asApproximateFraction
+asApproximateFraction
     "Answer a Fraction approximating the receiver. This conversion uses the
     continued fraction method to approximate a floating point number."
 
@@ -359,17 +361,17 @@ Number variableWordSubclass: #Float
       ifTrue: ["Am I really an Integer?"
           ^ num1 "Yes, return Integer result"]
       ifFalse: ["Otherwise return Fraction result"
-          ^ Fraction numerator: num1 denominator: denom1].
+          ^ Fraction numerator: num1 denominator: denom1]. !
 
-- asFloat
+asFloat
     "Answer the receiver itself."
 
-    ^ self.
+    ^ self. !
 
-- asFraction
-    ^ self asApproximateFraction.
+asFraction
+    ^ self asApproximateFraction. !
 
-- asTrueFraction
+asTrueFraction
     " Answer a fraction that EXACTLY represents self,
       a double precision IEEE floating point number.
       Floats are stored in the same form on all platforms.
@@ -405,7 +407,7 @@ Number variableWordSubclass: #Float
       ifTrue: [
         result := sign * fraction bitShift: exp negated ]
       ifFalse:	[
-        zeroBitsCount _ fraction lowBit - 1.
+        zeroBitsCount := fraction lowBit - 1.
         exp := exp - zeroBitsCount.
         exp <= 0
           ifTrue: [
@@ -424,38 +426,38 @@ Number variableWordSubclass: #Float
     " Validate the result (low cost; optional); answer result "
     (result asFloat = self)
       ifFalse: [self error: 'asTrueFraction validation failed' ].
-    ^ result.
+    ^ result. !
 
-- degreesToRadians
+degreesToRadians
     "Answer the receiver in radians. Assumes the receiver is in degrees."
 
-    ^self * RadiansPerDegree.
+    ^self * RadiansPerDegree. !
 
-- isInf
+isInf
     "simple, byte-order independent test for +/- Infinity"
 
-    ^ self = (self * 1.5 + 1.0).
+    ^ self = (self * 1.5 + 1.0). !
 
-- radiansToDegrees
+radiansToDegrees
     "Answer the receiver in degrees. Assumes the receiver is in radians."
 
-    ^ self / RadiansPerDegree.
+    ^ self / RadiansPerDegree. !
+!
 
+!Float methodsFor: 'copying'!
 
-"Float methodsFor: 'copying'"
+deepCopy
 
-- deepCopy
+    ^ self copy. !
 
-    ^ self copy.
+shallowCopy
 
-- shallowCopy
+	  ^ self + 0.0. !
+!
 
-	  ^ self + 0.0.
+!Float methodsFor: 'printing'!
 
-
-"Float methodsFor: 'printing'
-
-- absPrintExactlyOn: aStream base: base
+absPrintExactlyOn: aStream base: base
     "Print my value on a stream in the given base.  Assumes that my value is strictly
     positive; negative numbers, zero, and NaNs have already been handled elsewhere.
     Based upon the algorithm outlined in:
@@ -539,9 +541,9 @@ Number variableWordSubclass: #Float
       aStream nextPutAll: '.0'].
     fixedFormat ifFalse:
       [aStream nextPut: $e.
-      aStream nextPutAll: (baseExpEstimate - 1) printString].
+      aStream nextPutAll: (baseExpEstimate - 1) printString]. !
 
-- absPrintOn: aStream base: base
+absPrintOn: aStream base: base
     "Print my value on a stream in the given base.  Assumes that my value is strictly
     positive; negative numbers, zero, and NaNs have already been handled elsewhere.
     Based upon the algorithm outlined in:
@@ -622,9 +624,9 @@ Number variableWordSubclass: #Float
       aStream nextPutAll: '.0'].
     fixedFormat ifFalse:
       [aStream nextPut: $e.
-      aStream nextPutAll: (baseExpEstimate - 1) printString].
+      aStream nextPutAll: (baseExpEstimate - 1) printString]. !
 
-- hex  "If ya really want to know..."
+hex  "If ya really want to know..."
     | word nibble |
     ^ String streamContents:
       [:strm |
@@ -632,9 +634,9 @@ Number variableWordSubclass: #Float
         [:i | word := self at: i.
         1 to: 8 do:
           [:s | nibble := (word bitShift: -8+s*4) bitAnd: 16rF.
-          strm nextPut: ('0123456789ABCDEF' at: nibble+1)]]].
+          strm nextPut: ('0123456789ABCDEF' at: nibble+1)]]]. !
 
-- printOn: aStream base: base
+printOn: aStream base: base
     "Handle sign, zero, and NaNs; all other values passed to absPrintOn:base:"
 
     self isNaN ifTrue: [aStream nextPutAll: 'NaN'. ^ self]. "check for NaN before sign"
@@ -645,10 +647,10 @@ Number variableWordSubclass: #Float
           ifTrue: [aStream nextPutAll: '-'].
         self = 0.0
           ifTrue: [aStream nextPutAll: '0.0'. ^ self]
-          ifFalse: [self negated absPrintOn: aStream base: base]].
+          ifFalse: [self negated absPrintOn: aStream base: base]]. !
 
 
-- absPrintOn: aStream base: base digitCount: digitCount
+absPrintOn: aStream base: base digitCount: digitCount
     "Print me in the given base, using digitCount significant figures."
 
     | fuzz x exp q fBase scale logScale |
@@ -700,9 +702,9 @@ Number variableWordSubclass: #Float
     q ~= 0
       ifTrue:
         [aStream nextPut: $e.
-        q printOn: aStream].
+        q printOn: aStream]. !
 
-- deprecatedAbsPrintOn: aStream base: base digitCount: digitCount
+deprecatedAbsPrintOn: aStream base: base digitCount: digitCount
     "Print me in the given base, using digitCount significant figures.
     This version has been deprecated by the newer version, but is kept here for comparison"
 
@@ -755,11 +757,12 @@ Number variableWordSubclass: #Float
     q ~= 0
       ifTrue:
         [aStream nextPut: $e.
-        q printOn: aStream].
+        q printOn: aStream]. !
+!
 
-"Float methodsFor: 'private'"
+!Float methodsFor: 'private'!
 
-- testPrintOn: aStream base: base
+testPrintOn: aStream base: base
     "Print me in the given base,"
 
     | fBase significand exp baseExpEstimate be be1 r s mPlus mMinus scale roundingIncludesLimits d tc1 tc2 |
@@ -811,7 +814,7 @@ Number variableWordSubclass: #Float
         mMinus := mMinus * base].
 
     [d := r // s.
-    r :=_ r \\ s.
+    r := r \\ s.
     (tc1 := (r < mMinus) | (roundingIncludesLimits & (r = mMinus))) |
     (tc2 := (r + mPlus > s) | (roundingIncludesLimits & (r + mPlus = s)))] whileFalse:
       [aStream nextPut: (Character digitValue: d).
@@ -822,13 +825,14 @@ Number variableWordSubclass: #Float
       [tc1 not | (tc1 & (r*2 >= s)) ifTrue: [d := d + 1]].
     aStream nextPut: (Character digitValue: d).
     aStream nextPut: $e.
-    aStream nextPutAll: baseExpEstimate printString.
+    aStream nextPutAll: baseExpEstimate printString. !
+!
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "
 
-"Float class methodsFor: 'class initialization'"
+!Float class methodsFor: 'class initialization'!
 
-+ initialize
+initialize
     "Float initialize"
     "Constants from Computer Approximations, pp. 182-183:
       Pi = 3.14159265358979323846264338327950288
@@ -857,31 +861,32 @@ Number variableWordSubclass: #Float
     Infinity := MaxVal * MaxVal.
     NegativeInfinity := 0.0 - Infinity.
     NaN := Infinity - Infinity.
-    NegativeZero := 1.0 / Infinity negated.
+    NegativeZero := 1.0 / Infinity negated. !
 
-+ readFrom: aStream
+readFrom: aStream
     "Answer a new Float as described on the stream, aStream."
 
-    ^ (super readFrom: aStream) asFloat.
+    ^ (super readFrom: aStream) asFloat. !
+!
 
+!Float class methodsFor: 'constants'!
 
-"Float class methodsFor: 'constants'"
-
-+ e
+e
     "Answer the constant, E."
-    ^ E.
+    ^ E. !
 
-+ infinity
+infinity
     "Answer the value used to represent an infinite magnitude"
-    ^ Infinity.
+    ^ Infinity. !
 
-+ nan
+nan
 	"Answer the canonical value used to represent Not-A-Number"
-	^ NaN.
+	^ NaN. !
 
-+ negativeZero
-	^ NegativeZero.
+negativeZero
+	^ NegativeZero. !
 
-+ pi
+pi
 	"Answer the constant, Pi."
-	^ Pi.
+	^ Pi. !
+!

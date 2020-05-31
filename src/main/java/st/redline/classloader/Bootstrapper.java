@@ -46,6 +46,8 @@ public class Bootstrapper {
         PrimClass magnitude = createKernelObject("Magnitude", object, metaclass);
         PrimClass number = createKernelObject("Number", magnitude, metaclass);
         PrimClass random = createKernelObject("Random", number, metaclass);
+        PrimClass _integer = createKernelObject("Integer", number, metaclass);
+        PrimClass _float = createKernelObject("float", number, metaclass);
 
         // Fix up bootstrapped Kernel Objects Metaclass instance.
         klass.selfClass().selfClass(metaclass);
@@ -75,6 +77,9 @@ public class Bootstrapper {
         falseInstance.selfClass(falseObject);
         classLoader.falseInstance(falseInstance);
 
+        PrimObject smalltalkImage = new PrimObject();
+        smalltalkImage.selfClass(object);
+
         // Load the hierarchy which will attached their methods.
         classLoader.cacheObject("st.redline.kernel.Object", object);
         classLoader.cacheObject("st.redline.kernel.Behavior", behavior);
@@ -96,6 +101,9 @@ public class Bootstrapper {
         classLoader.cacheObject("st.redline.kernel.Magnitude", magnitude);
         classLoader.cacheObject("st.redline.kernel.Number", number);
         classLoader.cacheObject("st.redline.kernel.Random", random);
+        classLoader.cacheObject("st.redline.kernel.Integer", _integer);
+        classLoader.cacheObject("st.redline.kernel.Float", _float);
+        classLoader.cacheObject("st.redline.kernel.Smalltalk", smalltalkImage);
     }
 
     private PrimClass createKernelObject(String name, PrimObject superclass) {
@@ -138,6 +146,8 @@ public class Bootstrapper {
         loadObject(classLoader, "st.redline.kernel.Magnitude");
         loadObject(classLoader, "st.redline.kernel.Number");
         loadObject(classLoader, "st.redline.kernel.Random");
+        loadObject(classLoader, "st.redline.kernel.Integer");
+        loadObject(classLoader, "st.redline.kernel.Float");
     }
 
     private void createPrimObject(SmalltalkClassLoader classLoader) {

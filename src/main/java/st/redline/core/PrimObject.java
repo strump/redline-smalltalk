@@ -102,7 +102,7 @@ public class PrimObject {
         return instanceOfWith("Array", new ArrayList<PrimObject>());
     }
 
-    public PrimObject smalltalkArray(PrimObject items[]) {
+    public PrimObject smalltalkArray(PrimObject[] items) {
         final ArrayList<PrimObject> value = new ArrayList<>();
         Collections.addAll(value, items);
         return instanceOfWith("Array", value);
@@ -135,6 +135,10 @@ public class PrimObject {
 //        return symbolObject;
     }
 
+    protected PrimObject smalltalkBoolean(boolean value) {
+        return value ? referenceTrue() : referenceFalse();
+    }
+
     protected PrimObject instanceOfWith(String type, Object value) {
         PrimObject instance = instanceOf(type);
         instance.javaValue(value);
@@ -142,7 +146,14 @@ public class PrimObject {
     }
 
     protected PrimObject instanceOf(String type) {
-        return isBootstrapping() ? new PrimObject() : resolveObject(type).perform("new");
+        if (isBootstrapping()) {
+            final PrimObject primObject = new PrimObject();
+            primObject.selfClass(resolveObject(type));
+            return primObject;
+        }
+        else {
+            return resolveObject(type).perform("new");
+        }
     }
 
     protected boolean isBootstrapping() {
@@ -330,12 +341,20 @@ public class PrimObject {
         return object;
     }
 
+    public PrimObject primitiveNew(PrimObject indexableVariables) {
+        //Answer an instance of the receiver (which is a class) with the number of indexable variables
+        PrimObject object = new PrimObject();
+        object.selfClass(this);
+        return object;
+    }
+
     public PrimObject primitiveEval(PrimContext context) {
 //        System.out.println("primitiveEval: " + context + " " + ((Object[]) javaValue())[1]);
         Object[] values = (Object[]) javaValue();
         // Context is invocation context while values[11 is context of the creator of the block.
         context.setupCallContext((PrimContext) values[1]);
-        return ((LambdaBlock) values[0]).apply(this, this, context);
+        PrimObject receiver = ((PrimContext) values[1]).receiver();
+        return ((LambdaBlock) values[0]).apply(this, receiver, context);
     }
 
     public PrimObject primitive110(PrimContext context) {
@@ -351,6 +370,11 @@ public class PrimObject {
         return this.selfClass();
     }
 
+    public PrimObject primitive302(PrimContext context) {
+        // error: msg
+        throw new StRuntimeError(context.argumentAt(0));
+    }
+
     public PrimObject primitive306(PrimContext context) {
         // ^ superclass
         return this.superclass();
@@ -364,5 +388,72 @@ public class PrimObject {
         PrimClass theClass = (PrimClass) context.receiver();
         theClass.superclass(aSuperclass);
         return theClass;
+    }
+
+    /* Implementation of "<" method of Integer */
+    public PrimObject primitive350(PrimContext context) {
+        final Integer value = (Integer) this.javaValue;
+        final PrimObject argument = context.argumentAt(0);
+        final PrimClass argClass = (PrimClass) argument.selfClass();
+        if (argClass.equals(resolveObject("Integer"))) {
+            Integer argValue = (Integer) context.argumentJavaValueAt(0);
+            return smalltalkBoolean(value < argValue);
+        }
+        else {
+            //Converet types using next smalltalk code:
+            // <code> (aNumber adaptInteger: self) < aNumber adaptToInteger </code>
+            PrimObject leftOperand  = argument.perform0("adaptInteger", this);
+            PrimObject rightOperand = argument.perform0("adaptInteger");
+            return leftOperand.perform0("<", rightOperand);
+        }
+    }
+
+    /* Implementation of "=" method of Integer */
+    public PrimObject primitive351(PrimContext context) {
+        final Integer value = (Integer) this.javaValue;
+        final PrimObject argument = context.argumentAt(0);
+        final PrimClass argClass = (PrimClass) argument.selfClass();
+        if (argClass.equals(resolveObject("Integer"))) {
+            Integer argValue = (Integer) context.argumentJavaValueAt(0);
+            return smalltalkBoolean(value.equals(argValue));
+        }
+        else {
+            //Converet types using next smalltalk code:
+            // <code> (aNumber adaptInteger: self) = aNumber adaptToInteger </code>
+            PrimObject leftOperand  = argument.perform0("adaptInteger", this);
+            PrimObject rightOperand = argument.perform0("adaptInteger");
+            return leftOperand.perform0("=", rightOperand);
+        }
+    }
+
+    /* Implementation of ">" method of Integer */
+    public PrimObject primitive352(PrimContext context) {
+        final Integer value = (Integer) this.javaValue;
+        final PrimObject argument = context.argumentAt(0);
+        final PrimClass argClass = (PrimClass) argument.selfClass();
+        if (argClass.equals(resolveObject("Integer"))) {
+            Integer argValue = (Integer) context.argumentJavaValueAt(0);
+            return smalltalkBoolean(value > argValue);
+        }
+        else {
+            //Converet types using next smalltalk code:
+            // <code> (aNumber adaptInteger: self) > aNumber adaptToInteger </code>
+            PrimObject leftOperand  = argument.perform0("adaptInteger", this);
+            PrimObject rightOperand = argument.perform0("adaptInteger");
+            return leftOperand.perform0(">", rightOperand);
+        }
+    }
+
+    /* Answer the number of named instance variables (as opposed to indexed variables) of the receiver.
+       See Behaviour instSize
+    */
+    public PrimObject primitive444(PrimContext context) {
+        final PrimObject aClass = this.selfClass();
+        return this.smalltalkInteger(0);
+    }
+
+    /* Behaviour instSpec implementation. I have no idea what answer should be :( */
+    public PrimObject primitive445(PrimContext context) {
+        return this.smalltalkInteger(0);
     }
 }

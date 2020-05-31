@@ -752,8 +752,10 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
     @Override
     public Void visitStFloat(@NotNull SmalltalkParser.StFloatContext ctx) {
-        log.trace("  visitFloat");
-        throw new RuntimeException("visitFloat handle me.");
+        log.trace("  visitFloat {}", ctx.getText());
+        String value = ctx.getText();
+        pushNewObject(mv, "smalltalkFloat", value, ctx.getStart().getLine());
+        return null;
     }
 
     @Override
