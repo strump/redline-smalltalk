@@ -294,13 +294,7 @@ public class PrimObject {
     }
 
     protected PrimObject perform0(PrimClass foundInClass, String selector, PrimObject ... arguments) {
-        PrimClass cls = foundInClass;
-        while (!cls.includesSelector(selector)) {
-            cls = cls.superclass();
-            if (cls == null) {
-                break;
-            }
-        }
+        PrimClass cls = findClassWithSelector(foundInClass, selector);
 
         if (cls == null) {
             return this.perform0(doesNotUnderstand_SELECTOR, this.smalltalkString(selector));
@@ -308,6 +302,16 @@ public class PrimObject {
         else {
             return apply(cls.methodFor(selector), cls, selector, arguments);
         }
+    }
+
+    private PrimClass findClassWithSelector(PrimClass cls, String selector) {
+        while (!cls.includesSelector(selector)) {
+            cls = cls.superclass();
+            if (cls == null) {
+                break;
+            }
+        }
+        return cls;
     }
 
     protected PrimObject apply(PrimObject method, PrimClass foundInClass, String selector, PrimObject ... arguments) {
@@ -392,7 +396,7 @@ public class PrimObject {
     public PrimObject primitive350(PrimContext context) {
         final Integer value = (Integer) this.javaValue;
         final PrimObject argument = context.argumentAt(0);
-        final PrimClass argClass = (PrimClass) argument.selfClass();
+        final PrimClass argClass = argument.selfClass();
         if (argClass.equals(resolveObject("Integer"))) {
             Integer argValue = (Integer) context.argumentJavaValueAt(0);
             return smalltalkBoolean(value < argValue);
@@ -410,7 +414,7 @@ public class PrimObject {
     public PrimObject primitive351(PrimContext context) {
         final Integer value = (Integer) this.javaValue;
         final PrimObject argument = context.argumentAt(0);
-        final PrimClass argClass = (PrimClass) argument.selfClass();
+        final PrimClass argClass = argument.selfClass();
         if (argClass.equals(resolveObject("Integer"))) {
             Integer argValue = (Integer) context.argumentJavaValueAt(0);
             return smalltalkBoolean(value.equals(argValue));
@@ -428,7 +432,7 @@ public class PrimObject {
     public PrimObject primitive352(PrimContext context) {
         final Integer value = (Integer) this.javaValue;
         final PrimObject argument = context.argumentAt(0);
-        final PrimClass argClass = (PrimClass) argument.selfClass();
+        final PrimClass argClass = argument.selfClass();
         if (argClass.equals(resolveObject("Integer"))) {
             Integer argValue = (Integer) context.argumentJavaValueAt(0);
             return smalltalkBoolean(value > argValue);

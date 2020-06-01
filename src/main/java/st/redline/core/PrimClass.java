@@ -7,10 +7,10 @@ import static st.redline.core.PrimSubclass.PRIM_SUBCLASS;
 
 public class PrimClass extends PrimObject {
 
-    private boolean meta;
-    private String name;
+    private final boolean meta;
+    private final String name;
     private PrimClass superclass;
-    private Map<String, PrimObject> methods = new HashMap<>();
+    private final Map<String, PrimObject> methods = new HashMap<>();
 
     public PrimClass() {
         this("", false);

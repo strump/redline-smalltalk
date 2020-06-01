@@ -61,12 +61,8 @@ public class Bootstrapper {
 
         // Fix up bootstrapped Kernel Objects Metaclass instance.
         klass.selfClass().selfClass(metaclass);
-        //classDescription.selfClass().selfClass(metaclass);
-        //behavior.selfClass().selfClass(metaclass);
-        //object.selfClass().selfClass(metaclass);
 
         // Initialise special Smalltalk circular hierarchy.
-        //((PrimClass) object.selfClass()).superclass(klass);
         object.addMethod(PrimDoesNotUnderstand.doesNotUnderstand_SELECTOR, PrimDoesNotUnderstand.PRIM_DOES_NOT_UNDERSTAND);
 
         // Let subclass primitive know the Metaclass instance - used when subclassing.
