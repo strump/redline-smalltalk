@@ -151,10 +151,13 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         mv.visitMethodInsn(INVOKESPECIAL, contextName(), "<init>", "(Lst/redline/core/PrimObject;)V", false);
         mv.visitVarInsn(ASTORE, 1);
 
-        // set the class of this as self.
+        // set the class of this as Object.
         mv.visitVarInsn(ALOAD, 0); // this
         mv.visitVarInsn(ALOAD, 0); // receiver
-        mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "selfClass", "(Lst/redline/core/PrimObject;)V", false);
+        pushLiteral(mv, "Object");
+        mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "reference", "(Ljava/lang/String;)Lst/redline/core/PrimObject;", false);
+        mv.visitTypeInsn(CHECKCAST, "st/redline/core/PrimClass");
+        mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "selfClass", "(Lst/redline/core/PrimClass;)V", false);
 
         // call sendMessages with parameters: this & context
         mv.visitVarInsn(ALOAD, 0); // this

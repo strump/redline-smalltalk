@@ -5,11 +5,12 @@ import static st.redline.core.PrimNil.PRIM_NIL;
 
 public class PrimDoesNotUnderstand extends PrimObject {
 
+    public static final String doesNotUnderstand_SELECTOR = "doesNotUnderstand:";
     public static final PrimObject PRIM_DOES_NOT_UNDERSTAND = new PrimDoesNotUnderstand();
 
     protected PrimObject invoke(PrimObject receiver, PrimContext context) {
-        if (!"primDoesNotUnderstand:".equals(context.selector()))
-            return receiver.perform0("primDoesNotUnderstand:", context.selectorAndArguments());
+        if (!doesNotUnderstand_SELECTOR.equals(context.selector()))
+            return receiver.perform0(doesNotUnderstand_SELECTOR, context.selectorAndArguments());
         outputDoesNotUnderstandError(receiver, context);
         return PRIM_NIL;
     }

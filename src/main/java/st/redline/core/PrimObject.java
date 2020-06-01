@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static st.redline.compiler.visitor.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
-import static st.redline.core.PrimDoesNotUnderstand.PRIM_DOES_NOT_UNDERSTAND;
+import static st.redline.core.PrimDoesNotUnderstand.*;
 import static st.redline.core.PrimSubclass.PRIM_SUBCLASS;
 
 public class PrimObject {
     private static final Logger log = LogManager.getLogger(PrimObject.class);
 
-    private PrimObject selfClass;
+    private PrimClass selfClass;
     private Object javaValue;
 
     public String toString() {
@@ -34,11 +34,11 @@ public class PrimObject {
         return javaValue;
     }
 
-    public void selfClass(PrimObject primObject) {
+    public void selfClass(PrimClass primObject) {
         selfClass = primObject;
     }
 
-    public PrimObject selfClass() {
+    public PrimClass selfClass() {
         return selfClass;
     }
 
@@ -115,7 +115,7 @@ public class PrimObject {
     public PrimObject smalltalkMethod(Object value) {
         //System.out.println("** smalltalkMethod " + value);
         final PrimMethod method = new PrimMethod((LambdaBlock) value);
-        method.selfClass(resolveObject("CompiledMethod"));
+        method.selfClass((PrimClass) resolveObject("CompiledMethod"));
         return method;
     }
 
@@ -148,7 +148,7 @@ public class PrimObject {
     protected PrimObject instanceOf(String type) {
         if (isBootstrapping()) {
             final PrimObject primObject = new PrimObject();
-            primObject.selfClass(resolveObject(type));
+            primObject.selfClass((PrimClass) resolveObject(type));
             return primObject;
         }
         else {
@@ -293,14 +293,24 @@ public class PrimObject {
         return perform0(selfClass.superclass(), selector, arguments);
     }
 
-    protected PrimObject perform0(PrimObject foundInClass, String selector, PrimObject ... arguments) {
-        PrimObject cls = foundInClass;
-        while (!cls.includesSelector(selector))
+    protected PrimObject perform0(PrimClass foundInClass, String selector, PrimObject ... arguments) {
+        PrimClass cls = foundInClass;
+        while (!cls.includesSelector(selector)) {
             cls = cls.superclass();
-        return apply(cls.methodFor(selector), cls, selector, arguments);
+            if (cls == null) {
+                break;
+            }
+        }
+
+        if (cls == null) {
+            return this.perform0(doesNotUnderstand_SELECTOR, this.smalltalkString(selector));
+        }
+        else {
+            return apply(cls.methodFor(selector), cls, selector, arguments);
+        }
     }
 
-    protected PrimObject apply(PrimObject method, PrimObject foundInClass, String selector, PrimObject ... arguments) {
+    protected PrimObject apply(PrimObject method, PrimClass foundInClass, String selector, PrimObject ... arguments) {
         log.info("** apply: #{} found in {} to {}", selector, foundInClass, this);
         PrimObject result = method.invoke(this, new PrimContext(this, foundInClass, selector, arguments));
         log.info("** result: {}", String.valueOf(result));
@@ -311,7 +321,7 @@ public class PrimObject {
         return this;
     }
 
-    protected PrimObject methodFor(String selector) {
+    /*protected PrimObject methodFor(String selector) {
         // This only happens for Bootstrapped instance after that PrimClass takes over.
         if (selector.startsWith("subclass:"))
             return PRIM_SUBCLASS;
@@ -320,38 +330,25 @@ public class PrimObject {
 
     protected PrimObject superclass() {
         throw new IllegalStateException("This receiver should not have received this message.");
-    }
+    }*/
 
-    protected boolean includesSelector(String selector) {
+    /*protected boolean includesSelector(String selector) {
         return true;
     }
 
     public boolean isMeta() {
         return false;
-    }
+    }*/
 
     public PrimObject primitiveSubclass(PrimContext primContext) {
 //        System.out.println("primitiveSubclass: " + primContext.argumentJavaValueAt(0));
         return PRIM_SUBCLASS.invoke(this, primContext);
     }
 
-    public PrimObject primitiveNew() {
-        PrimObject object = new PrimObject();
-        object.selfClass(this);
-        return object;
-    }
-
-    public PrimObject primitiveNew(PrimObject indexableVariables) {
-        //Answer an instance of the receiver (which is a class) with the number of indexable variables
-        PrimObject object = new PrimObject();
-        object.selfClass(this);
-        return object;
-    }
-
     public PrimObject primitiveEval(PrimContext context) {
 //        System.out.println("primitiveEval: " + context + " " + ((Object[]) javaValue())[1]);
         Object[] values = (Object[]) javaValue();
-        // Context is invocation context while values[11 is context of the creator of the block.
+        // Context is invocation context while values[1] is context of the creator of the block.
         context.setupCallContext((PrimContext) values[1]);
         PrimObject receiver = ((PrimContext) values[1]).receiver();
         return ((LambdaBlock) values[0]).apply(this, receiver, context);
@@ -377,14 +374,15 @@ public class PrimObject {
 
     public PrimObject primitive306(PrimContext context) {
         // ^ superclass
-        return this.superclass();
+        PrimClass aClass = (PrimClass) this;
+        return aClass.superclass();
     }
 
     public PrimObject primitive307(PrimContext context) {
 //        (aClass == nil or: [aClass isKindOf: Behavior])
 //        ifTrue: [ superclass := aClass]
 //        ifFalse: [self error: 'superclass must be a class-describing object'].
-        PrimObject aSuperclass = context.argumentAt(0);
+        PrimClass aSuperclass = (PrimClass) context.argumentAt(0);
         PrimClass theClass = (PrimClass) context.receiver();
         theClass.superclass(aSuperclass);
         return theClass;

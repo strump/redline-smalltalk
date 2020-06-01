@@ -10,14 +10,14 @@ public class PrimSubclass extends PrimObject {
 
     public static final PrimObject PRIM_SUBCLASS = new PrimSubclass();
 
-    private PrimObject theMetaclass;
+    private PrimClass theMetaclass;
 
     protected PrimObject invoke(PrimObject receiver, PrimContext primContext) {
         log.info("PrimSubclass invoke: {}", primContext.argumentJavaValueAt(0));
         assert receiver.equals(primContext.receiver());
 
         String subclassName = String.valueOf(primContext.argumentJavaValueAt(0));
-        PrimObject superclass = primContext.receiver();
+        PrimClass superclass = (PrimClass) primContext.receiver();
         PrimClass newClass;
         PrimClass newMeta;
         boolean bootstrapping = isBootstrapping();

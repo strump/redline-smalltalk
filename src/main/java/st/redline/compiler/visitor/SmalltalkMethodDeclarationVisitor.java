@@ -73,7 +73,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
         pushReference(mv, className);
         if (isClassMethod) {
             //Use <className>.selfClass() instead of <className> object.
-            mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "selfClass", "()Lst/redline/core/PrimObject;", false);
+            mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "selfClass", "()Lst/redline/core/PrimClass;", false);
         }
         addCheckCast(mv, PRIM_CLASS_FULL_NAME); // Cast PrimObject to PrimClass
         pushLiteral(mv, methodSelector); //Put first argument of "addMethod" call

@@ -111,6 +111,11 @@ public class JVMGeneratorVisitor extends ClassGeneratorVisitor {
                 mv.visitVarInsn(ALOAD, Integer.valueOf(String.valueOf(arguments.get(0))));
             }
         });
+        JVM_WRITERS.put("checkCast:", new JVMWriter() {
+            public void write(MethodVisitor mv, List<Object> arguments) {
+                mv.visitTypeInsn(CHECKCAST, arguments.get(0).toString());
+            }
+        });
         JVM_WRITERS.put("invokeVirtual:method:matching:", new JVMWriter() {
             public void write(MethodVisitor mv, List<Object> arguments) {
                 mv.visitMethodInsn(INVOKEVIRTUAL, String.valueOf(arguments.get(0)), String.valueOf(arguments.get(1)), String.valueOf(arguments.get(2)), false);

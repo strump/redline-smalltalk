@@ -17,8 +17,8 @@ obsolete
     superclass' subclass list."
 
     methodDict := MethodDictionary new.
-    superclass == nil ifFalse: [superclass removeSubclass: self]. ! !
-
+    superclass == nil ifFalse: [superclass removeSubclass: self]. !
+!
 
 !Behavior methodsFor: 'accessing'!
 
@@ -375,7 +375,8 @@ basicNew
     documentation whatIsAPrimitive."
 
     JVM aload: 1;
-        invokeVirtual: 'st/redline/core/PrimObject' method: 'primitiveNew' matching: '()Lst/redline/core/PrimObject;'.
+        checkCast: 'st/redline/core/PrimClass';  "make sure receiver is instance of PrimClass"
+        invokeVirtual: 'st/redline/core/PrimClass' method: 'primitiveNew' matching: '()Lst/redline/core/PrimObject;'.
 !
 
 basicNew: anInteger
@@ -385,8 +386,9 @@ basicNew: anInteger
     Essential. See Object documentation whatIsAPrimitive."
 
     JVM aload: 1;
+        checkCast: 'st/redline/core/PrimClass';  "make sure receiver is instance of PrimClass"
         argLoad: 0;
-        invokeVirtual: 'st/redline/core/PrimObject' method: 'primitiveNew' matching: '(Lst/redline/core/PrimObject;)Lst/redline/core/PrimObject;'.
+        invokeVirtual: 'st/redline/core/PrimClass' method: 'primitiveNew' matching: '(Lst/redline/core/PrimObject;)Lst/redline/core/PrimObject;'.
 !
 
 new
