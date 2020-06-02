@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import st.redline.core.*;
 
-import static st.redline.core.PrimSubclass.PRIM_SUBCLASS;
+import static st.redline.core.PrimSubclassMethod.PRIM_SUBCLASS_METHOD;
 
 public class Bootstrapper {
     private static final Logger log = LogManager.getLogger(Bootstrapper.class);
@@ -66,7 +66,7 @@ public class Bootstrapper {
         object.addMethod(PrimDoesNotUnderstand.doesNotUnderstand_SELECTOR, PrimDoesNotUnderstand.PRIM_DOES_NOT_UNDERSTAND);
 
         // Let subclass primitive know the Metaclass instance - used when subclassing.
-        ((PrimSubclass) PRIM_SUBCLASS).metaclass(metaclass);
+        PRIM_SUBCLASS_METHOD.metaclass(metaclass);
 
         // Add basicAddSelector:withMethod: to Behaviour
         behavior.addMethod("basicAddSelector:withMethod:", new PrimAddMethod());

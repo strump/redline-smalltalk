@@ -5,16 +5,16 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import st.redline.classloader.SmalltalkClassLoader;
 
-public class PrimSubclass extends PrimMethod {
-    private static final Logger log = LogManager.getLogger(PrimSubclass.class);
+public class PrimSubclassMethod extends PrimMethod {
+    private static final Logger log = LogManager.getLogger(PrimSubclassMethod.class);
 
-    public static final PrimMethod PRIM_SUBCLASS = new PrimSubclass();
+    public static final PrimSubclassMethod PRIM_SUBCLASS_METHOD = new PrimSubclassMethod();
 
     private PrimClass theMetaclass;
 
     @Override
     protected PrimObject invoke(PrimObject receiver, PrimContext primContext) {
-        log.info("PrimSubclass invoke: {}", primContext.argumentJavaValueAt(0));
+        log.info("PrimSubclassMethod invoke: {}", primContext.argumentJavaValueAt(0));
         assert receiver.equals(primContext.receiver());
 
         String subclassName = String.valueOf(primContext.argumentJavaValueAt(0));
@@ -26,7 +26,7 @@ public class PrimSubclass extends PrimMethod {
         if (bootstrapping) {
             newClass = resolveClass(subclassName);
             if (newClass == null)
-                throw new RuntimeException("New class is unexpectedly null.");
+                throw new RuntimeException("Subclass "+subclassName+" is unexpectedly null.");
         } else {
             newClass = new PrimClass(subclassName);
             newMeta = new PrimClass(subclassName, true);

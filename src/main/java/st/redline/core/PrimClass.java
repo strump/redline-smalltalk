@@ -3,7 +3,7 @@ package st.redline.core;
 
 import java.util.*;
 
-import static st.redline.core.PrimSubclass.PRIM_SUBCLASS;
+import static st.redline.core.PrimSubclassMethod.PRIM_SUBCLASS_METHOD;
 
 public class PrimClass extends PrimObject {
 
@@ -52,7 +52,7 @@ public class PrimClass extends PrimObject {
 
     public PrimMethod methodFor(String selector) {
         if (selector.startsWith("subclass:"))
-            return PRIM_SUBCLASS;
+            return PRIM_SUBCLASS_METHOD;
 
         return methods.get(selector);
     }

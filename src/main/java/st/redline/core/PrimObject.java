@@ -10,7 +10,7 @@ import java.util.Collections;
 
 import static st.redline.compiler.visitor.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
 import static st.redline.core.PrimDoesNotUnderstand.*;
-import static st.redline.core.PrimSubclass.PRIM_SUBCLASS;
+import static st.redline.core.PrimSubclassMethod.PRIM_SUBCLASS_METHOD;
 
 public class PrimObject {
     private static final Logger log = LogManager.getLogger(PrimObject.class);
@@ -352,7 +352,7 @@ public class PrimObject {
 
     public PrimObject primitiveSubclass(PrimContext primContext) {
 //        System.out.println("primitiveSubclass: " + primContext.argumentJavaValueAt(0));
-        return PRIM_SUBCLASS.invoke(this, primContext);
+        return PRIM_SUBCLASS_METHOD.invoke(this, primContext);
     }
 
     public PrimObject primitiveEval(PrimContext context) {
