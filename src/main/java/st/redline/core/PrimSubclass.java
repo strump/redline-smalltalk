@@ -12,6 +12,7 @@ public class PrimSubclass extends PrimMethod {
 
     private PrimClass theMetaclass;
 
+    @Override
     protected PrimObject invoke(PrimObject receiver, PrimContext primContext) {
         log.info("PrimSubclass invoke: {}", primContext.argumentJavaValueAt(0));
         assert receiver.equals(primContext.receiver());

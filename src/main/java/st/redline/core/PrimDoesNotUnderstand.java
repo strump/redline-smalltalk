@@ -8,6 +8,7 @@ public class PrimDoesNotUnderstand extends PrimMethod {
     public static final String doesNotUnderstand_SELECTOR = "doesNotUnderstand:";
     public static final PrimMethod PRIM_DOES_NOT_UNDERSTAND = new PrimDoesNotUnderstand();
 
+    @Override
     protected PrimObject invoke(PrimObject receiver, PrimContext context) {
         if (!doesNotUnderstand_SELECTOR.equals(context.selector()))
             return receiver.perform0(doesNotUnderstand_SELECTOR, context.selectorAndArguments());

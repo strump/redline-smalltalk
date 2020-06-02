@@ -13,10 +13,12 @@ public class PrimNil extends PrimClass {
         super(name);
     }
 
+    @Override
     public boolean includesSelector(String selector) {
         return true;
     }
 
+    @Override
     public PrimMethod methodFor(String selector) {
         return PRIM_DOES_NOT_UNDERSTAND;
     }

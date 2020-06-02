@@ -10,6 +10,7 @@ public class PrimMethod extends PrimObject {
         this.javaValue(lambdaBlock);
     }
 
+    @Override
     public String toString() {
         return "(PrimMethod) " + javaValue().toString();
     }

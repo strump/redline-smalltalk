@@ -29,6 +29,7 @@ public class PrimClass extends PrimObject {
         this.name = name;
     }
 
+    @Override
     public String toString() {
         if (isMeta())
             return name + " class";

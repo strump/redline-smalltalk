@@ -18,6 +18,7 @@ public class PrimObject {
     private PrimClass selfClass;
     private Object javaValue;
 
+    @Override
     public String toString() {
         if (javaValue != null)
             return javaValue.toString();
