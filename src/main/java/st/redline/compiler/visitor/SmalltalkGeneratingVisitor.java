@@ -363,7 +363,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     public void pushNewMethod(MethodVisitor mv, String className, String name, String sig, int line) {
         pushReceiver(mv);
         pushNewLambda(mv, className, name, sig, line);
-        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "smalltalkMethod", "(Ljava/lang/Object;)Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "smalltalkMethod", "(Ljava/lang/Object;)Lst/redline/core/PrimMethod;", false);
     }
 
     /* Generate lambda function with LambdaBlock interface. Body of the lambda function is static method

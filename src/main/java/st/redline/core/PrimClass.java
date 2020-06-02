@@ -10,7 +10,7 @@ public class PrimClass extends PrimObject {
     private final boolean meta;
     private final String name;
     private PrimClass superclass;
-    private final Map<String, PrimObject> methods = new HashMap<>();
+    private final Map<String, PrimMethod> methods = new HashMap<>();
 
     public PrimClass() {
         this("", false);
@@ -45,22 +45,22 @@ public class PrimClass extends PrimObject {
         return methods.containsKey(selector);
     }
 
-    public PrimObject methodFor(String selector) {
+    public void superclass(PrimClass superclass) {
+        this.superclass = superclass;
+    }
+
+    public PrimMethod methodFor(String selector) {
         if (selector.startsWith("subclass:"))
             return PRIM_SUBCLASS;
 
         return methods.get(selector);
     }
 
-    public void superclass(PrimClass superclass) {
-        this.superclass = superclass;
-    }
-
     protected PrimClass superclass() {
         return superclass;
     }
 
-    public void addMethod(String selector, PrimObject method) {
+    public void addMethod(String selector, PrimMethod method) {
         methods.put(selector, method);
     }
 

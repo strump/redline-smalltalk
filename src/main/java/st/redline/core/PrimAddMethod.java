@@ -6,12 +6,7 @@ public class PrimAddMethod extends PrimMethod {
     @Override
     protected PrimObject invoke(PrimObject receiver, PrimContext context) {
         String selector = selector(context);
-        PrimObject method = method(context);
-        if (!(method instanceof PrimMethod)) {
-            PrimMethod newMethod = new PrimMethod((LambdaBlock) method.javaValue());
-            newMethod.selfClass(method.selfClass());
-            method = newMethod;
-        }
+        PrimMethod method = method(context);
         ((PrimClass) receiver).addMethod(selector, method);
         return receiver;
     }
@@ -20,7 +15,15 @@ public class PrimAddMethod extends PrimMethod {
         return String.valueOf(context.argumentJavaValueAt(0));
     }
 
-    private PrimObject method(PrimContext context) {
-        return context.argumentAt(1);
+    private PrimMethod method(PrimContext context) {
+        PrimObject method = context.argumentAt(1);
+        if (!(method instanceof PrimMethod)) {
+            PrimMethod newMethod = new PrimMethod((LambdaBlock) method.javaValue());
+            newMethod.selfClass(method.selfClass());
+            return newMethod;
+        }
+        else {
+            return (PrimMethod) method;
+        }
     }
 }

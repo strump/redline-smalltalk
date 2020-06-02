@@ -76,7 +76,6 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
             mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "selfClass", "()Lst/redline/core/PrimClass;", false);
         }
         pushLiteral(mv, methodSelector); //Put first argument of "addMethod" call
-        //TODO: Maybe need to use "pushAddMethodCall()" here?
         pushNewMethod(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line); //Put second argument of "addMethod" call
         pushAddMethodCall(mv);
 
@@ -126,6 +125,6 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
     }
 
     private void pushAddMethodCall(MethodVisitor mv) {
-        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimClass", "addMethod", "(Ljava/lang/String;Lst/redline/core/PrimObject;)V", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimClass", "addMethod", "(Ljava/lang/String;Lst/redline/core/PrimMethod;)V", false);
     }
 }

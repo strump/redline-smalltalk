@@ -17,7 +17,7 @@ public class PrimNil extends PrimClass {
         return true;
     }
 
-    public PrimObject methodFor(String selector) {
+    public PrimMethod methodFor(String selector) {
         return PRIM_DOES_NOT_UNDERSTAND;
     }
 }

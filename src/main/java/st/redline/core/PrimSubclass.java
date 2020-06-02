@@ -5,10 +5,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import st.redline.classloader.SmalltalkClassLoader;
 
-public class PrimSubclass extends PrimObject {
+public class PrimSubclass extends PrimMethod {
     private static final Logger log = LogManager.getLogger(PrimSubclass.class);
 
-    public static final PrimObject PRIM_SUBCLASS = new PrimSubclass();
+    public static final PrimMethod PRIM_SUBCLASS = new PrimSubclass();
 
     private PrimClass theMetaclass;
 

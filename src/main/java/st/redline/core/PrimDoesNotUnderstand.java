@@ -3,10 +3,10 @@ package st.redline.core;
 
 import static st.redline.core.PrimNil.PRIM_NIL;
 
-public class PrimDoesNotUnderstand extends PrimObject {
+public class PrimDoesNotUnderstand extends PrimMethod {
 
     public static final String doesNotUnderstand_SELECTOR = "doesNotUnderstand:";
-    public static final PrimObject PRIM_DOES_NOT_UNDERSTAND = new PrimDoesNotUnderstand();
+    public static final PrimMethod PRIM_DOES_NOT_UNDERSTAND = new PrimDoesNotUnderstand();
 
     protected PrimObject invoke(PrimObject receiver, PrimContext context) {
         if (!doesNotUnderstand_SELECTOR.equals(context.selector()))

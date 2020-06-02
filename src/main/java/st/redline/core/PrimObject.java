@@ -117,7 +117,7 @@ public class PrimObject {
         return instanceOfWith("Integer", Integer.valueOf(String.valueOf(value)));
     }
 
-    public PrimObject smalltalkMethod(Object value) {
+    public PrimMethod smalltalkMethod(Object value) {
         //System.out.println("** smalltalkMethod " + value);
         final PrimMethod method = new PrimMethod((LambdaBlock) value);
         method.selfClass(resolveClass("CompiledMethod"));
@@ -323,15 +323,11 @@ public class PrimObject {
         return cls;
     }
 
-    protected PrimObject apply(PrimObject method, PrimClass foundInClass, String selector, PrimObject ... arguments) {
+    protected PrimObject apply(PrimMethod method, PrimClass foundInClass, String selector, PrimObject ... arguments) {
         log.info("** apply: #{} found in {} to {}", selector, foundInClass, this);
         PrimObject result = method.invoke(this, new PrimContext(this, foundInClass, selector, arguments));
         log.info("** result: {}", String.valueOf(result));
         return result;
-    }
-
-    protected PrimObject invoke(PrimObject receiver, PrimContext context) {
-        return this;
     }
 
     /*protected PrimObject methodFor(String selector) {
