@@ -375,7 +375,7 @@ basicNew
     documentation whatIsAPrimitive."
 
     JVM aload: 1;
-        checkCast: 'st/redline/core/PrimClass';  "make sure receiver is instance of PrimClass"
+        checkCast: 'st/redline/core/PrimClass';  "make sure receiver is instance of PrimClass. TODO: eliminate checkCast from here"
         invokeVirtual: 'st/redline/core/PrimClass' method: 'primitiveNew' matching: '()Lst/redline/core/PrimObject;'.
 !
 
@@ -386,7 +386,7 @@ basicNew: anInteger
     Essential. See Object documentation whatIsAPrimitive."
 
     JVM aload: 1;
-        checkCast: 'st/redline/core/PrimClass';  "make sure receiver is instance of PrimClass"
+        checkCast: 'st/redline/core/PrimClass';  "make sure receiver is instance of PrimClass. TODO: eliminate checkCast from here"
         argLoad: 0;
         invokeVirtual: 'st/redline/core/PrimClass' method: 'primitiveNew' matching: '(Lst/redline/core/PrimObject;)Lst/redline/core/PrimObject;'.
 !

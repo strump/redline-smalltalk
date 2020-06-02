@@ -245,6 +245,17 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
 
     /* Generate code:
      * <code>
+       primObject.reference(name);
+       </code>
+     */
+    public void pushResolveClass(MethodVisitor mv, String className) {
+        pushReceiver(mv);
+        pushLiteral(mv, className);
+        mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "resolveClass", "(Ljava/lang/String;)Lst/redline/core/PrimClass;", false);
+    }
+
+    /* Generate code:
+     * <code>
        primObject.referenceNil();
        </code>
      */

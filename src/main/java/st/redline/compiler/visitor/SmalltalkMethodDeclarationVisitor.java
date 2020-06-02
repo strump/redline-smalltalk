@@ -70,12 +70,11 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
 
         //Generate: <code> reference(className).addMethod(selector, lambda) </code>
         line = ctx.sequence().start.getLine(); // first line in method code
-        pushReference(mv, className);
+        pushResolveClass(mv, className);
         if (isClassMethod) {
             //Use <className>.selfClass() instead of <className> object.
             mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "selfClass", "()Lst/redline/core/PrimClass;", false);
         }
-        addCheckCast(mv, PRIM_CLASS_FULL_NAME); // Cast PrimObject to PrimClass
         pushLiteral(mv, methodSelector); //Put first argument of "addMethod" call
         //TODO: Maybe need to use "pushAddMethodCall()" here?
         pushNewMethod(mv, fullClassName(), blockName, LAMBDA_BLOCK_SIG, line); //Put second argument of "addMethod" call
@@ -128,9 +127,5 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
 
     private void pushAddMethodCall(MethodVisitor mv) {
         mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/core/PrimClass", "addMethod", "(Ljava/lang/String;Lst/redline/core/PrimObject;)V", false);
-    }
-
-    private void addCheckCast(MethodVisitor mv, String typeName) {
-        mv.visitTypeInsn(CHECKCAST, typeName);
     }
 }

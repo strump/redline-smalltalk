@@ -155,8 +155,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         mv.visitVarInsn(ALOAD, 0); // this
         mv.visitVarInsn(ALOAD, 0); // receiver
         pushLiteral(mv, "Object");
-        mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "reference", "(Ljava/lang/String;)Lst/redline/core/PrimObject;", false);
-        mv.visitTypeInsn(CHECKCAST, "st/redline/core/PrimClass");
+        mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "resolveClass", "(Ljava/lang/String;)Lst/redline/core/PrimClass;", false);
         mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "selfClass", "(Lst/redline/core/PrimClass;)V", false);
 
         // call sendMessages with parameters: this & context
