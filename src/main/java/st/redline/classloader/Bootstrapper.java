@@ -22,42 +22,42 @@ public class Bootstrapper {
 
     private void createKernelObjectsHierarchy(SmalltalkClassLoader classLoader) {
         // Create Kernel Objects and Classes we need to start Runtime.
-        PrimClass metaclass = createKernelObject("Metaclass", true);
-        PrimClass metaclassClass = createKernelObject("Metaclass class", true);
+        PrimClass metaclass = createKernelClass("Metaclass", true);
+        PrimClass metaclassClass = createKernelClass("Metaclass class", true);
         metaclassClass.selfClass(metaclass);
         metaclass.selfClass(metaclassClass);
 
-        PrimClass objectClass = createKernelObject("Object class", true);
+        PrimClass objectClass = createKernelClass("Object class", true);
         objectClass.selfClass(metaclass);
-        PrimClass object = createKernelObject("Object", false);
+        PrimClass object = createKernelClass("Object", false);
         object.selfClass(objectClass);
 
-        PrimClass behavior = createKernelObject("Behavior", object);
-        PrimClass classDescription = createKernelObject("ClassDescription", behavior);
-        PrimClass klass = createKernelObject("Class", classDescription);
+        PrimClass behavior = createKernelClass("Behavior", object);
+        PrimClass classDescription = createKernelClass("ClassDescription", behavior);
+        PrimClass klass = createKernelClass("Class", classDescription);
 
         objectClass.superclass(klass);
         metaclass.superclass(classDescription);
         metaclassClass.superclass(classDescription.selfClass());
 
         //Create util classes
-        PrimClass undefinedObject = createKernelObject("UndefinedObject", object);
-        PrimClass blockClosure = createKernelObject("BlockClosure", object);
-        PrimClass compiledMethod = createKernelObject("CompiledMethod", object);
-        PrimClass booleanObject = createKernelObject("Boolean", object);
-        PrimClass trueObject = createKernelObject("True", booleanObject);
-        PrimClass falseObject = createKernelObject("False", booleanObject);
-        PrimClass collection = createKernelObject("Collection", object);
-        PrimClass sequenceableCollection = createKernelObject("SequenceableCollection", collection);
-        PrimClass arrayedCollection = createKernelObject("ArrayedCollection", sequenceableCollection);
-        PrimClass string = createKernelObject("String", arrayedCollection);
-        PrimClass symbol = createKernelObject("Symbol", string);
-        PrimClass transcript = createKernelObject("Transcript", object);
-        PrimClass magnitude = createKernelObject("Magnitude", object);
-        PrimClass number = createKernelObject("Number", magnitude);
-        PrimClass random = createKernelObject("Random", number);
-        PrimClass _integer = createKernelObject("Integer", number);
-        PrimClass _float = createKernelObject("Float", number);
+        PrimClass undefinedObject = createKernelClass("UndefinedObject", object);
+        PrimClass blockClosure = createKernelClass("BlockClosure", object);
+        PrimClass compiledMethod = createKernelClass("CompiledMethod", object);
+        PrimClass booleanObject = createKernelClass("Boolean", object);
+        PrimClass trueObject = createKernelClass("True", booleanObject);
+        PrimClass falseObject = createKernelClass("False", booleanObject);
+        PrimClass collection = createKernelClass("Collection", object);
+        PrimClass sequenceableCollection = createKernelClass("SequenceableCollection", collection);
+        PrimClass arrayedCollection = createKernelClass("ArrayedCollection", sequenceableCollection);
+        PrimClass string = createKernelClass("String", arrayedCollection);
+        PrimClass symbol = createKernelClass("Symbol", string);
+        PrimClass transcript = createKernelClass("Transcript", object);
+        PrimClass magnitude = createKernelClass("Magnitude", object);
+        PrimClass number = createKernelClass("Number", magnitude);
+        PrimClass random = createKernelClass("Random", number);
+        PrimClass _integer = createKernelClass("Integer", number);
+        PrimClass _float = createKernelClass("Float", number);
 
         // Fix up bootstrapped Kernel Objects Metaclass instance.
         klass.selfClass().selfClass(metaclass);
@@ -113,11 +113,11 @@ public class Bootstrapper {
         classLoader.cacheObject("st.redline.kernel.Smalltalk", smalltalkImage);
     }
 
-    private PrimClass createKernelObject(String className, boolean isMeta) {
+    private PrimClass createKernelClass(String className, boolean isMeta) {
         return new PrimClass(className,isMeta);
     }
 
-    private PrimClass createKernelObject(String name, PrimClass superclass) {
+    private PrimClass createKernelClass(String name, PrimClass superclass) {
         PrimClass primMeta = new PrimClass(name + " class",true);
         primMeta.superclass(superclass.selfClass());
 
@@ -127,8 +127,8 @@ public class Bootstrapper {
         return primClass;
     }
 
-    private PrimClass createKernelObject(String name, PrimClass superclass, PrimClass metaclass) {
-        PrimClass primClass = createKernelObject(name, superclass);
+    private PrimClass createKernelClass(String name, PrimClass superclass, PrimClass metaclass) {
+        PrimClass primClass = createKernelClass(name, superclass);
         primClass.selfClass().selfClass(metaclass);
         return primClass;
     }

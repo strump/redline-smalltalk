@@ -4,6 +4,7 @@ package st.redline.classloader;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import st.redline.compiler.Compiler;
+import st.redline.core.PrimClass;
 import st.redline.core.PrimObject;
 
 import java.io.*;
@@ -55,6 +56,15 @@ public class SmalltalkClassLoader extends ClassLoader {
             e.printStackTrace();
         }
         throw new ObjectNotFoundException("Object '" + name + "' was not found.");
+    }
+
+    public PrimClass findPrimClass(String name) {
+        log.trace("** findPrimClass {}", name);
+        PrimObject cls = findObject(name);
+        if (cls instanceof PrimClass)
+            return (PrimClass) cls;
+        else
+            throw new StClassNotFoundException("Object '" + name + "' was not found.");
     }
 
     private void instantiateMessageSendingClass(Class<?> messageSendingClass, String name) throws IllegalAccessException, InstantiationException {

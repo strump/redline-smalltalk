@@ -23,7 +23,7 @@ public class PrimSubclass extends PrimObject {
         boolean bootstrapping = isBootstrapping();
 
         if (bootstrapping) {
-            newClass = (PrimClass) superclass.resolveObject(subclassName);
+            newClass = resolveClass(subclassName);
             if (newClass == null)
                 throw new RuntimeException("New class is unexpectedly null.");
         } else {

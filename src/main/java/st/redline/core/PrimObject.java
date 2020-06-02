@@ -67,6 +67,11 @@ public class PrimObject {
         return findObject(importFor(name));
     }
 
+    public PrimClass resolveClass(String name) {
+        //System.out.println("** resolveObject " + name + " " + importFor(name));
+        return findPrimClass(importFor(name));
+    }
+
     public PrimObject smalltalkBlock(Object value, PrimContext homeContext) {
 //        System.out.println("** smalltalkBlock " + value);
         return instanceOfWith("BlockClosure", new Object[] { value, homeContext });
@@ -115,7 +120,7 @@ public class PrimObject {
     public PrimObject smalltalkMethod(Object value) {
         //System.out.println("** smalltalkMethod " + value);
         final PrimMethod method = new PrimMethod((LambdaBlock) value);
-        method.selfClass((PrimClass) resolveObject("CompiledMethod"));
+        method.selfClass(resolveClass("CompiledMethod"));
         return method;
     }
 
@@ -148,7 +153,7 @@ public class PrimObject {
     protected PrimObject instanceOf(String type) {
         if (isBootstrapping()) {
             final PrimObject primObject = new PrimObject();
-            primObject.selfClass((PrimClass) resolveObject(type));
+            primObject.selfClass(resolveClass(type));
             return primObject;
         }
         else {
@@ -162,6 +167,10 @@ public class PrimObject {
 
     protected PrimObject findObject(String name) {
         return classLoader().findObject(name);
+    }
+
+    protected PrimClass findPrimClass(String name) {
+        return classLoader().findPrimClass(name);
     }
 
     protected String importFor(String name) {
