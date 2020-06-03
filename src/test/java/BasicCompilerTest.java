@@ -1,6 +1,7 @@
 import org.junit.BeforeClass;
 import org.junit.Test;
 import st.redline.classloader.*;
+import st.redline.core.PrimClass;
 import st.redline.core.PrimContext;
 import st.redline.core.PrimObject;
 
@@ -36,95 +37,52 @@ public class BasicCompilerTest {
 
     @Test
     public void test_compiler_string() throws Exception {
-        final Source src = sourceFromString("^ 'The test string'", "StringTest");
-        final Class<?> StringReturn = stClassLoader.compileToClass(src);
-        assertEquals(StringReturn.getSuperclass(), PrimObject.class);
-
-        final Object testInstance = StringReturn.getDeclaredConstructor().newInstance();
-        final PrimContext context = new PrimContext((PrimObject) testInstance);
-        final Method sendMessagesMethod = StringReturn.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
-        sendMessagesMethod.setAccessible(true);
-        final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
-        assertEquals(result.getClass(), PrimObject.class);
-        final PrimObject stResult = (PrimObject) result;
-        final PrimObject classObject = stResult.selfClass();
-        final PrimObject classObject2 = stResult.perform("class");
+        final PrimObject result = runString("^ 'The test string'", "StringTest");
+        final PrimObject classObject = result.selfClass();
+        final PrimObject classObject2 = result.perform("class");
         assertEquals(classObject, classObject2);
         assertEquals(classObject, stClassLoader.findObject("st.redline.kernel.String"));
 
-        //Check value inside stResult
-        assertTrue(stResult.javaValue() instanceof String);
-        assertEquals(stResult.javaValue(), "The test string");
+        //Check value inside result
+        assertTrue(result.javaValue() instanceof String);
+        assertEquals(result.javaValue(), "The test string");
     }
 
     @Test
     public void test_compiler_integer() throws Exception {
-        final Source src = sourceFromString("^ 1025", "IntegerTest");
-        final Class<?> IntegerTest = stClassLoader.compileToClass(src);
-        assertEquals(IntegerTest.getSuperclass(), PrimObject.class);
-
-        final Object testInstance = IntegerTest.getDeclaredConstructor().newInstance();
-        final PrimContext context = new PrimContext((PrimObject) testInstance);
-        final Method sendMessagesMethod = IntegerTest.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
-        sendMessagesMethod.setAccessible(true);
-        final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
-        assertEquals(result.getClass(), PrimObject.class);
-        //Check result is instance of Smalltalk class st.redline.kernel.Integer
-        final PrimObject stResult = (PrimObject) result;
-        final PrimObject classObject = stResult.selfClass();
-        final PrimObject classObject2 = stResult.perform("class");
+        final PrimObject result = runString("^ 1025", "IntegerTest");
+        final PrimObject classObject = result.selfClass();
+        final PrimObject classObject2 = result.perform("class");
         assertEquals(classObject, classObject2);
         assertEquals(classObject, stClassLoader.findObject("st.redline.kernel.Integer"));
 
-        //Check value inside stResult
-        assertTrue(stResult.javaValue() instanceof Integer);
-        assertEquals(stResult.javaValue(), 1025);
+        //Check value inside result
+        assertTrue(result.javaValue() instanceof Integer);
+        assertEquals(result.javaValue(), 1025);
     }
 
     @Test
     public void test_compiler_symbol() throws Exception {
-        final Source src = sourceFromString("^ #hello:world:", "SymbolTest");
-        final Class<?> SymbolTest = stClassLoader.compileToClass(src);
-        assertEquals(SymbolTest.getSuperclass(), PrimObject.class);
-
-        final Object testInstance = SymbolTest.getDeclaredConstructor().newInstance();
-        final PrimContext context = new PrimContext((PrimObject) testInstance);
-        final Method sendMessagesMethod = SymbolTest.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
-        sendMessagesMethod.setAccessible(true);
-        final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
-        assertEquals(result.getClass(), PrimObject.class);
-        //Check result is instance of Smalltalk class st.redline.kernel.Integer
-        final PrimObject stResult = (PrimObject) result;
-        final PrimObject classObject = stResult.selfClass();
-        final PrimObject classObject2 = stResult.perform("class");
+        final PrimObject result = runString("^ #hello:world:", "SymbolTest");
+        final PrimObject classObject = result.selfClass();
+        final PrimObject classObject2 = result.perform("class");
         assertEquals(classObject, classObject2);
         assertEquals(classObject, stClassLoader.findObject("st.redline.kernel.Symbol"));
 
-        //Check value in stResult
-        assertTrue(stResult.javaValue() instanceof String);
-        assertEquals(stResult.javaValue(), "hello:world:");
+        //Check value in result
+        assertTrue(result.javaValue() instanceof String);
+        assertEquals(result.javaValue(), "hello:world:");
     }
 
     @Test
     public void test_compiler_literal_array() throws Exception {
-        final Source src = sourceFromString("^ #(first 1234 'hello' Symbol $; $4 $. 16r1F2A true nil)", "LiteralArrayTest");
-        final Class<?> LiteralArrayTest = stClassLoader.compileToClass(src);
-        assertEquals(LiteralArrayTest.getSuperclass(), PrimObject.class);
-
-        final Object testInstance = LiteralArrayTest.getDeclaredConstructor().newInstance();
-        final PrimContext context = new PrimContext((PrimObject) testInstance);
-        final Method sendMessagesMethod = LiteralArrayTest.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
-        sendMessagesMethod.setAccessible(true);
-        final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
-        assertEquals(result.getClass(), PrimObject.class);
-        //Check result is instance of Smalltalk class st.redline.kernel.Integer
-        final PrimObject stResult = (PrimObject) result;
-        final PrimObject classObject = stResult.selfClass();
+        final PrimObject result = runString("^ #(first 1234 'hello' Symbol $; $4 $. 16r1F2A true nil)", "LiteralArrayTest");
+        final PrimObject classObject = result.selfClass();
         assertEquals(classObject, stClassLoader.findObject("st.redline.kernel.Array"));
 
-        //Check value in stResult
-        assertTrue(stResult.javaValue() instanceof ArrayList);
-        final ArrayList<PrimObject> arrayData = (ArrayList<PrimObject>) stResult.javaValue();
+        //Check value in result
+        assertTrue(result.javaValue() instanceof ArrayList);
+        final ArrayList<PrimObject> arrayData = (ArrayList<PrimObject>) result.javaValue();
         assertEquals(arrayData.get(0).javaValue(), "first");
         assertEquals(arrayData.get(1).javaValue(), 1234);
         assertEquals(arrayData.get(2).javaValue(), "hello");
@@ -139,20 +97,23 @@ public class BasicCompilerTest {
 
     @Test
     public void test_compiler_boolean() throws Exception {
-        final Source src = sourceFromString("^ (false | true) ifTrue: ['Success'] ifFalse: ['Fail'] ", "BooleanTest");
-        final Class<?> SymbolTest = stClassLoader.compileToClass(src);
-        assertEquals(SymbolTest.getSuperclass(), PrimObject.class);
+        final PrimObject result = runString("^ (false | true) ifTrue: ['Success'] ifFalse: ['Fail'] ", "BooleanTest");
+        assertTrue(result.javaValue() instanceof String);
+        assertEquals(result.javaValue(), "Success");
+    }
 
-        final Object testInstance = SymbolTest.getDeclaredConstructor().newInstance();
+    private static PrimObject runString(String sourceCode, String className) throws Exception {
+        final Source src = sourceFromString(sourceCode, className);
+        final Class<?> CompiledStClass = stClassLoader.compileToClass(src);
+        assertEquals(CompiledStClass.getSuperclass(), PrimObject.class);
+
+        final Object testInstance = CompiledStClass.getDeclaredConstructor().newInstance();
         final PrimContext context = new PrimContext((PrimObject) testInstance);
-        final Method sendMessagesMethod = SymbolTest.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
+        final Method sendMessagesMethod = CompiledStClass.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
         sendMessagesMethod.setAccessible(true);
         final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
         assertEquals(result.getClass(), PrimObject.class);
-        //Check value in stResult
-        final PrimObject stResult = (PrimObject) result;
-        assertTrue(stResult.javaValue() instanceof String);
-        assertEquals(stResult.javaValue(), "Success");
+        return (PrimObject) result;
     }
 
     private static Source sourceFromString(String smalltalkCode, String className) {
