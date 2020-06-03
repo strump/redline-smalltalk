@@ -137,6 +137,24 @@ public class BasicCompilerTest {
         assertEquals(arrayData.get(9), stClassLoader.nilInstance());
     }
 
+    @Test
+    public void test_compiler_boolean() throws Exception {
+        final Source src = sourceFromString("^ (false | true) ifTrue: ['Success'] ifFalse: ['Fail'] ", "BooleanTest");
+        final Class<?> SymbolTest = stClassLoader.compileToClass(src);
+        assertEquals(SymbolTest.getSuperclass(), PrimObject.class);
+
+        final Object testInstance = SymbolTest.getDeclaredConstructor().newInstance();
+        final PrimContext context = new PrimContext((PrimObject) testInstance);
+        final Method sendMessagesMethod = SymbolTest.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
+        sendMessagesMethod.setAccessible(true);
+        final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
+        assertEquals(result.getClass(), PrimObject.class);
+        //Check value in stResult
+        final PrimObject stResult = (PrimObject) result;
+        assertTrue(stResult.javaValue() instanceof String);
+        assertEquals(stResult.javaValue(), "Success");
+    }
+
     private static Source sourceFromString(String smalltalkCode, String className) {
         return new StringSource(smalltalkCode, className, "st.redline.test");
     }
