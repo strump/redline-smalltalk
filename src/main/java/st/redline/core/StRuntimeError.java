@@ -1,13 +1,14 @@
 package st.redline.core;
 
 public class StRuntimeError extends RuntimeException {
-    private final PrimObject msg;
+    private final PrimObject stMessage;
 
-    public StRuntimeError(PrimObject msg) {
-        this.msg = msg;
+    public StRuntimeError(PrimObject stMessage) {
+        super(stMessage.toString());
+        this.stMessage = stMessage;
     }
 
-    public PrimObject getMsg() {
-        return msg;
+    public PrimObject getStMessage() {
+        return stMessage;
     }
 }

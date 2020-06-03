@@ -9,13 +9,13 @@ Magnitude subclass: #Character
           poolDictionaries: ''
           category: 'Collections-Text'.
 
-"Character methodsFor: 'accessing'"
+!Character methodsFor: 'accessing'!
 
-- asciiValue
+asciiValue
     "Answer the value of the receiver that represents its ascii encoding."
-    ^ value.
+    ^ value. !
 
-- digitValue
+digitValue
     "Answer 0-9 if the receiver is $0-$9, 10-35 if it is $A-$Z, and < 0
     otherwise. This is used to parse literal numbers of radix 2-36."
 
@@ -23,55 +23,56 @@ Magnitude subclass: #Character
       ifTrue: [^ value - $0 asciiValue].
     value >= $A asciiValue
       ifTrue: [value <= $Z asciiValue ifTrue: [^ value - $A asciiValue + 10]].
-    ^ -1.
+    ^ -1. !
+!
 
-"Character methodsFor: 'comparing'"
+!Character methodsFor: 'comparing'!
 
-- < aCharacter
+< aCharacter
     "Answer true if the receiver's value < aCharacter's value."
-    ^ self asciiValue < aCharacter asciiValue.
+    ^ self asciiValue < aCharacter asciiValue. !
 
-- = aCharacter
+= aCharacter
     "Primitive. Answer true if the receiver and the argument are the same
     object (have the same object pointer) and false otherwise. Optional. See
     Object documentation whatIsAPrimitive."
 
-    JVM primitive: 110.
+    JVM primitive: 110.  !
 
-- > aCharacter
+> aCharacter
     "Answer true if the receiver's value > aCharacter's value."
-    ^ self asciiValue > aCharacter asciiValue.
+    ^ self asciiValue > aCharacter asciiValue. !
 
-- hash
+hash
     "Hash is reimplemented because = is implemented."
-    ^ value.
+    ^ value. !
+!
 
+!Character methodsFor: 'testing'!
 
-"Character methodsFor: 'testing'"
-
-- isAlphaNumeric
+isAlphaNumeric
     "Answer whether the receiver is a letter or a digit."
 
-    ^ self isLetter or: [self isDigit].
+    ^ self isLetter or: [self isDigit]. !
 
-- isDigit
+isDigit
 	"Answer whether the receiver is a digit."
 
-	^ value >= 48 and: [value <= 57].
+	^ value >= 48 and: [value <= 57]. !
 
-- isLetter
+isLetter
 	"Answer whether the receiver is a letter."
 
 	^ (8r141 <= value and: [value <= 8r172])
-		or: [8r101 <= value and: [value <= 8r132]].
+		or: [8r101 <= value and: [value <= 8r132]]. !
 
-- isLowercase
+isLowercase
     "Answer whether the receiver is a lowercase letter.
     (The old implementation answered whether the receiver is not an uppercase letter.)"
 
-    ^ 8r141 <= value and: [value <= 8r172].
+    ^ 8r141 <= value and: [value <= 8r172]. !
 
-- isSeparator
+isSeparator
     "Answer whether the receiver is one of the separator characters--space,
     cr, tab, line feed, or form feed."
 
@@ -80,121 +81,124 @@ Magnitude subclass: #Character
     value = 9  ifTrue: [^ true].	"tab"
     value = 10 ifTrue: [^ true].	"line feed"
     value = 12 ifTrue: [^ true].	"form feed"
-    ^ false.
+    ^ false. !
 
-- isSpecial
+isSpecial
     "Answer whether the receiver is one of the special characters"
 
-    ^ '+/\*~<>=@%|&?!!' includes: self.
+    ^ '+/\\*~<>=@%|&?!!' includes: self. !
 
-- isUppercase
+isUppercase
     "Answer whether the receiver is an uppercase letter.
     (The old implementation answered whether the receiver is not a lowercase letter.)"
 
-    ^ 8r101 <= value and: [value <= 8r132].
+    ^ 8r101 <= value and: [value <= 8r132]. !
 
-- isVowel
+isVowel
     "Answer whether the receiver is one of the vowels, AEIOU, in upper or
     lower case."
 
-    ^ 'AEIOU' includes: self asUppercase.
+    ^ 'AEIOU' includes: self asUppercase. !
 
-- tokenish
+tokenish
     "Answer whether the receiver is a valid token-character--letter, digit, or
     colon."
 
-    ^ self isLetter or: [self isDigit or: [self = $:]].
+    ^ self isLetter or: [self isDigit or: [self = $:]]. !
+!
 
-"Character methodsFor: 'copying'"
+!Character methodsFor: 'copying'!
 
-- copy
+copy
     "Answer with the receiver because Characters are unique."
 
-    ^ self.
+    ^ self. !
 
-- deepCopy
+deepCopy
     "Answer with the receiver because Characters are unique."
 
-    ^ self.
+    ^ self. !
+!
 
+!Character methodsFor: 'printing'!
 
-"Character methodsFor: 'printing'"
-
-- hex
+hex
 
     ^ String with: ('0123456789ABCDEF' at: value//16+1)
-        with:  ('0123456789ABCDEF' at: value\\16+1).
+        with:  ('0123456789ABCDEF' at: value\\16+1). !
 
-- isLiteral
+isLiteral
 
-	^ true.
+	^ true. !
 
-- printOn: aStream
+printOn: aStream
 
     aStream nextPut: $$.
-    aStream nextPut: self.
+    aStream nextPut: self. !
 
-- storeOn: aStream
+storeOn: aStream
     "Character literals are preceded by '$'."
 
-    aStream nextPut: $$; nextPut: self.
+    aStream nextPut: $$; nextPut: self. !
+!
 
-
-"Character methodsFor: 'converting'"
+!Character methodsFor: 'converting'!
 
 asCharacter
     "Answer the receiver itself."
 
-    ^ self.
+    ^ self. !
 
-- asInteger
+asInteger
     "Answer the value of the receiver."
 
-    ^ value.
+    ^ value. !
 
-- asLowercase
+asLowercase
     "If the receiver is uppercase, answer its matching lowercase Character."
 
     (8r101 <= value and: [value <= 8r132])  "self isUppercase"
       ifTrue: [^ Character value: value + 8r40]
-      ifFalse: [^ self].
+      ifFalse: [^ self]. !
 
-- asString
+asString
     | cString |
     cString := String new: 1.
     cString at: 1 put: self.
-    ^ cString.
+    ^ cString. !
 
-- asSymbol
+asSymbol
     "Answer a Symbol consisting of the receiver as the only element."
 
-    ^ Symbol internCharacter: self.
+    ^ Symbol internCharacter: self. !
 
-- asUppercase
+asUppercase
     "If the receiver is lowercase, answer its matching uppercase Character."
 
     (8r141 <= value and: [value <= 8r172])  "self isLowercase"
       ifTrue: [^ Character value: value - 8r40]
-      ifFalse: [^ self].
+      ifFalse: [^ self]. !
 
-- to: other
+to: other
     "Answer with a collection in ascii order -- $a to: $z"
 
     ^ (self asciiValue to: other asciiValue) collect:
-          [:ascii | Character value: ascii].
+          [:ascii | Character value: ascii]. !
+!
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "
 
-"Character class methodsFor: 'class initialization'"
+!Character class methodsFor: 'class initialization'!
 
-+ initialize
+initialize
 	"Create the table of unique Characters. This code is not shown so that the
-	user can not destroy the system by trying to recreate the table.".
-  ^ self.
+	user can not destroy the system by trying to recreate the table."
+    ^ self. !
+!
 
-"Character class methodsFor: 'instance creation'"
+!Character class methodsFor: 'instance creation'!
 
-+ digitValue: x
+digitValue: x
     "Answer the Character whose digit value is x. For example, answer $9 for
     x=9, $0 for x=0, $A for x=10, $Z for x=35."
 
@@ -204,65 +208,66 @@ asCharacter
       (index < 10
         ifTrue: [48 + index]
         ifFalse: [55 + index])
-      + 1.
+      + 1. !
 
-+ new
+new
     "Creating new characters is not allowed."
 
-    self error: 'cannot create new characters'.
+    self error: 'cannot create new characters'. !
 
-+ separators
+separators
 	^ #(32 "space"
 		13 "cr"
 		9 "tab"
 		10 "line feed"
 		12 "form feed")
-		collect: [:v | Character value: v].
+		collect: [:v | Character value: v]. !
 
-+ value: anInteger
+value: anInteger
     "Answer the Character whose value is anInteger."
 
-    ^ CharacterTable at: anInteger + 1.
+    ^ CharacterTable at: anInteger + 1. !
+!
 
+!Character class methodsFor: 'accessing untypeable characters'!
 
-"Character class methodsFor: 'accessing untypeable characters'"
-
-+ backspace
+backspace
     "Answer the Character representing a backspace."
 
-    ^ self value: 8.
+    ^ self value: 8. !
 
-+ cr
+cr
 	"Answer the Character representing a carriage return."
 
-	^ self value: 13.
+	^ self value: 13. !
 
-+ enter
+enter
     "Answer the Character representing enter."
-    ^ self value: 3.
+    ^ self value: 3. !
 
-+ linefeed
+linefeed
     "Answer the Character representing a linefeed."
-    ^ self value: 10.
+    ^ self value: 10. !
 
-+ newPage
+newPage
     "Answer the Character representing a form feed."
-    ^ self value: 12.
+    ^ self value: 12. !
 
-+ space
+space
     "Answer the Character representing a space."
-    ^ self value: 32.
+    ^ self value: 32. !
 
-+ tab
+tab
     "Answer the Character representing a tab."
-    ^ self value: 9.
+    ^ self value: 9. !
+!
 
+!Character class methodsFor: 'constants'!
 
-"Character class methodsFor: 'constants'"
+alphabet
+    ^ 'abdcefghijklmnopqrstuvwxyz'. !
 
-+ alphabet
-    ^ 'abdcefghijklmnopqrstuvwxyz'.
-
-+ characterTable
+characterTable
     "Answer the class variable in which unique Characters are stored."
-    ^ CharacterTable.
+    ^ CharacterTable. !
+!
