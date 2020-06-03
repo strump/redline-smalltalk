@@ -6,6 +6,7 @@ import st.redline.core.PrimObject;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -106,7 +107,7 @@ public class BasicCompilerTest {
 
     @Test
     public void test_compiler_literal_array() throws Exception {
-        final Source src = sourceFromString("^ #(first 1234 $E 'hello' Symbol $$ $; $4 $. 16r1F2A)", "LiteralArrayTest");
+        final Source src = sourceFromString("^ #(first 1234 'hello' Symbol $; $4 $. 16r1F2A true nil)", "LiteralArrayTest");
         final Class<?> LiteralArrayTest = stClassLoader.compileToClass(src);
         assertEquals(LiteralArrayTest.getSuperclass(), PrimObject.class);
 
@@ -122,8 +123,18 @@ public class BasicCompilerTest {
         assertEquals(classObject, stClassLoader.findObject("st.redline.kernel.Array"));
 
         //Check value in stResult
-        assertTrue(stResult.javaValue() instanceof Object[]);
-        //assertEquals(stResult.javaValue(), "hello:world:");
+        assertTrue(stResult.javaValue() instanceof ArrayList);
+        final ArrayList<PrimObject> arrayData = (ArrayList<PrimObject>) stResult.javaValue();
+        assertEquals(arrayData.get(0).javaValue(), "first");
+        assertEquals(arrayData.get(1).javaValue(), 1234);
+        assertEquals(arrayData.get(2).javaValue(), "hello");
+        assertEquals(arrayData.get(3).javaValue(), "Symbol");
+        assertEquals(arrayData.get(4).javaValue(), (int)';');
+        assertEquals(arrayData.get(5).javaValue(), (int)'4');
+        assertEquals(arrayData.get(6).javaValue(), (int)'.');
+        assertEquals(arrayData.get(7).javaValue(), 0x1F2A);
+        assertEquals(arrayData.get(8), stClassLoader.trueInstance());
+        assertEquals(arrayData.get(9), stClassLoader.nilInstance());
     }
 
     private static Source sourceFromString(String smalltalkCode, String className) {

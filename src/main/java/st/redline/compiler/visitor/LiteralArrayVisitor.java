@@ -130,7 +130,7 @@ public class LiteralArrayVisitor extends ClassGeneratorVisitor {
     public Void visitBareSymbol(SmalltalkParser.BareSymbolContext ctx) {
         log.info("  visitBareSymbol {}", ctx.getText());
         final String symbolText = ctx.getText();
-        pushNewObject(mv, "smalltalkSymbol", "#"+symbolText, ctx.start.getLine());
+        pushNewObject(mv, "smalltalkSymbol", symbolText, ctx.start.getLine());
         return null;
     }
 

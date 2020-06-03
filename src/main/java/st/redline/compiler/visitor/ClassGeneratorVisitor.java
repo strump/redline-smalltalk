@@ -801,6 +801,10 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         final SmalltalkParser.BinarySelectorContext binarySelector = bareSymbolContext.binarySelector();
         if (binarySelector != null)
             return new BasicNode(binarySelector.start.getLine(), binarySelector.getText(), 0);
+
+        final TerminalNode reservedWord = bareSymbolContext.RESERVED_WORD();
+        if (reservedWord != null)
+            return new BasicNode(reservedWord.getSymbol().getLine(), reservedWord.getText(), 0);
         List<TerminalNode> keywords = bareSymbolContext.KEYWORD();
         if (keywords != null && !keywords.isEmpty())
             return nodeFor(keywords);

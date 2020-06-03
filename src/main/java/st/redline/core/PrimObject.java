@@ -101,7 +101,21 @@ public class PrimObject {
     }
 
     public PrimObject smalltalkCharacter(Object value) {
-        return instanceOfWith("Character", value);
+        Integer intValue = null;
+        if (value instanceof String) {
+            intValue = ((String) value).codePointAt(0);
+        }
+        else if (value instanceof Character) {
+            intValue = (int) ((Character) value);
+        }
+        else if (value instanceof Integer) {
+            intValue = (Integer) value;
+        }
+
+        final PrimObject charObject = new PrimObject();
+        charObject.selfClass(resolveClass("Character"));
+        charObject.javaValue(intValue);
+        return charObject;
     }
 
     public PrimObject smalltalkArray(Object ignored) {

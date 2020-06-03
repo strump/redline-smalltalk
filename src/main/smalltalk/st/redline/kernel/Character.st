@@ -37,7 +37,7 @@ digitValue
     object (have the same object pointer) and false otherwise. Optional. See
     Object documentation whatIsAPrimitive."
 
-    JVM primitive: 110.  !
+    JVM primitive: 110. !
 
 > aCharacter
     "Answer true if the receiver's value > aCharacter's value."
