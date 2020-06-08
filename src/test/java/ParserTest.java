@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public class ParserTest {
-    public static final String SMALLTALK_FOLDER = "smalltalk";
+    public static final String SMALLTALK_FOLDER = "smalltalk/parser";
 
     private static List<String> parserTestFiles;
 
