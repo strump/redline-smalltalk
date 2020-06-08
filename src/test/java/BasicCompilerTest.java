@@ -43,7 +43,7 @@ public class BasicCompilerTest {
     public void test_compiler_string() throws Exception {
         final PrimObject result = runString("^ 'The test string'", "StringTest");
         final PrimObject classObject = result.selfClass();
-        final PrimObject classObject2 = result.perform("class");
+        final PrimObject classObject2 = result.perform("class", null);
         assertEquals(classObject, classObject2);
         assertEquals(classObject, stClassLoader.findObject("st.redline.kernel.String"));
 
@@ -56,7 +56,7 @@ public class BasicCompilerTest {
     public void test_compiler_integer() throws Exception {
         final PrimObject result = runString("^ 1025", "IntegerTest");
         final PrimObject classObject = result.selfClass();
-        final PrimObject classObject2 = result.perform("class");
+        final PrimObject classObject2 = result.perform("class", null);
         assertEquals(classObject, classObject2);
         assertEquals(classObject, stClassLoader.findObject("st.redline.kernel.Integer"));
 
@@ -69,7 +69,7 @@ public class BasicCompilerTest {
     public void test_compiler_symbol() throws Exception {
         final PrimObject result = runString("^ #hello:world:", "SymbolTest");
         final PrimObject classObject = result.selfClass();
-        final PrimObject classObject2 = result.perform("class");
+        final PrimObject classObject2 = result.perform("class", null);
         assertEquals(classObject, classObject2);
         assertEquals(classObject, stClassLoader.findObject("st.redline.kernel.Symbol"));
 
@@ -152,7 +152,7 @@ public class BasicCompilerTest {
 
         final PrimObject val1 = testClass.smalltalkInteger(15);
         final PrimObject val2 = testClass.smalltalkInteger(27);
-        final PrimObject answer = testClass.perform(val1, val2, "sum:and:");
+        final PrimObject answer = testClass.perform(val1, val2, "sum:and:", null);
         assertTrue(answer.javaValue() instanceof Integer);
         assertEquals(answer.javaValue(), 42);
     }
