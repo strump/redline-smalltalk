@@ -96,12 +96,33 @@ public class BasicCompilerTest {
     }
 
     @Test
-    public void test_compiler_boolean() throws Exception {
-        final PrimObject result = runString("^ (false | true) ifTrue: ['Success'] ifFalse: ['Fail'] ", "BooleanTest");
+    public void test_compiler_boolean_true() throws Exception {
+        final PrimObject result = runString("^ true", "BooleanTrueTest");
+        assertEquals(result, stClassLoader.trueInstance());
+    }
+
+    @Test
+    public void test_compiler_boolean_false() throws Exception {
+        final PrimObject result = runString("^ false", "BooleanFalseTest");
+        assertEquals(result, stClassLoader.falseInstance());
+    }
+
+    @Test
+    public void test_compiler_boolean_exp() throws Exception {
+        final PrimObject result = runString("^ (false | true) & (false not)", "BooleanExpTest");
+        assertEquals(result, stClassLoader.trueInstance());
+    }
+
+    @Test
+    public void test_compiler_boolean_exp2() throws Exception {
+        final PrimObject result = runString("^ (false | true) ifTrue: ['Success'] ifFalse: ['Fail'] ", "BooleanExp2Test");
         assertTrue(result.javaValue() instanceof String);
         assertEquals(result.javaValue(), "Success");
     }
 
+    /* Compile Smalltalk code and execute.
+     * Returns result of execution as Smalltalk object.
+     */
     private static PrimObject runString(String sourceCode, String className) throws Exception {
         final Source src = sourceFromString(sourceCode, className);
         final Class<?> CompiledStClass = stClassLoader.compileToClass(src);
