@@ -136,6 +136,27 @@ public class BasicCompilerTest {
         assertEquals(superClass.name(), "Object");
     }
 
+    @Test
+    public void test_compiler_class_withMethods() throws Exception {
+        final PrimObject result = runScript("smalltalk/compiler/ClassMethod_test.st", "ClassMethodTest");
+        assertTrue(result.selfClass().isMeta());
+        assertTrue(result instanceof PrimClass);
+        final PrimClass testClass = (PrimClass) result;
+        assertEquals(testClass.name(), "ClassMethodCompilerTest");
+
+        final PrimClass superClass = testClass.superclass();
+        assertEquals(superClass.name(), "Object");
+
+        assertTrue(testClass.includesSelector("answerPlease"));
+        assertTrue(testClass.selfClass().includesSelector("sum:and:"));
+
+        final PrimObject val1 = testClass.smalltalkInteger(15);
+        final PrimObject val2 = testClass.smalltalkInteger(27);
+        final PrimObject answer = testClass.perform(val1, val2, "sum:and:");
+        assertTrue(answer.javaValue() instanceof Integer);
+        assertEquals(answer.javaValue(), 42);
+    }
+
     /* Compile Smalltalk code and execute.
      * Returns result of execution as Smalltalk object. */
     private static PrimObject runString(String sourceCode, String className) throws Exception {
