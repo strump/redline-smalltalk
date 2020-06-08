@@ -12,7 +12,8 @@ public class PrimMethod extends PrimObject {
 
     @Override
     public String toString() {
-        return "(PrimMethod) " + javaValue().toString();
+        final Object value = javaValue();
+        return "(PrimMethod) " + (value!=null ? value.toString() : "null");
     }
 
     protected PrimObject invoke(PrimObject receiver, PrimContext context) {

@@ -41,7 +41,7 @@ public class PrimSubclassMethod extends PrimMethod {
 
         if (!bootstrapping) {
             SmalltalkClassLoader classLoader = classLoader();
-            String fullQualifiedName = makeFullyQualifiedName(classLoader, subclassName);
+            String fullQualifiedName = makeFullyQualifiedName(superclass, subclassName);
             classLoader.cacheObject(fullQualifiedName, newClass);
         }
 
@@ -53,6 +53,10 @@ public class PrimSubclassMethod extends PrimMethod {
         if (instantiationName != null && instantiationName.endsWith(name))
             return instantiationName;
         throw new RuntimeException("Current instantiating class name not found.");
+    }
+
+    private String makeFullyQualifiedName(PrimClass superClass, String name) {
+        return superClass.packageName() + "." + name;
     }
 
     public void metaclass(PrimClass metaclass) {

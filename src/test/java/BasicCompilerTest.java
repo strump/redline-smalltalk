@@ -1,3 +1,4 @@
+import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import st.redline.classloader.*;
@@ -6,6 +7,9 @@ import st.redline.core.PrimContext;
 import st.redline.core.PrimObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -120,11 +124,26 @@ public class BasicCompilerTest {
         assertEquals(result.javaValue(), "Success");
     }
 
+    @Test
+    public void test_compiler_class() throws Exception {
+        final PrimObject result = runScript("smalltalk/compiler/Class_test.st", "ClassTest");
+        assertTrue(result.selfClass().isMeta());
+        assertTrue(result instanceof PrimClass);
+        final PrimClass testClass = (PrimClass) result;
+        assertEquals(testClass.name(), "ClassCompilerTest");
+
+        final PrimClass superClass = testClass.superclass();
+        assertEquals(superClass.name(), "Object");
+    }
+
     /* Compile Smalltalk code and execute.
-     * Returns result of execution as Smalltalk object.
-     */
+     * Returns result of execution as Smalltalk object. */
     private static PrimObject runString(String sourceCode, String className) throws Exception {
         final Source src = sourceFromString(sourceCode, className);
+        return compileSource(src);
+    }
+
+    private static PrimObject compileSource(Source src) throws Exception {
         final Class<?> CompiledStClass = stClassLoader.compileToClass(src);
         assertEquals(CompiledStClass.getSuperclass(), PrimObject.class);
 
@@ -133,8 +152,17 @@ public class BasicCompilerTest {
         final Method sendMessagesMethod = CompiledStClass.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
         sendMessagesMethod.setAccessible(true);
         final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
-        assertEquals(result.getClass(), PrimObject.class);
+        assertTrue(result instanceof PrimObject);
         return (PrimObject) result;
+    }
+
+    private PrimObject runScript(String filename, String className) throws Exception {
+        final InputStream stream = getClass().getClassLoader().getResourceAsStream(filename);
+        if (stream == null) {
+            throw new FileNotFoundException("File not found: "+filename);
+        }
+        final String sourceCode = IOUtils.toString(stream);
+        return runString(sourceCode, className);
     }
 
     private static Source sourceFromString(String smalltalkCode, String className) {

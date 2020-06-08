@@ -40,6 +40,10 @@ public class PrimClass extends PrimObject {
         return meta;
     }
 
+    public String name() {
+        return name;
+    }
+
     public boolean includesSelector(String selector) {
         if (selector.startsWith("subclass:"))
             return true;
@@ -57,7 +61,7 @@ public class PrimClass extends PrimObject {
         return methods.get(selector);
     }
 
-    protected PrimClass superclass() {
+    public PrimClass superclass() {
         return superclass;
     }
 
