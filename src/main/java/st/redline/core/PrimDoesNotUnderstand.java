@@ -11,7 +11,7 @@ public class PrimDoesNotUnderstand extends PrimMethod {
     @Override
     protected PrimObject invoke(PrimObject receiver, PrimContext context) {
         if (!doesNotUnderstand_SELECTOR.equals(context.selector()))
-            return receiver.perform0(doesNotUnderstand_SELECTOR, context, context.selectorAndArguments());
+            return receiver.perform0(doesNotUnderstand_SELECTOR, context.selectorAndArguments());
         outputDoesNotUnderstandError(receiver, context);
         return PRIM_NIL;
     }

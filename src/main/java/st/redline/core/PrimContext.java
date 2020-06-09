@@ -109,10 +109,8 @@ public class PrimContext {
     }
 
     public void setupCallContext(PrimContext context) {
-        if (context != null) {
-            homeContext = context.homeContext();
-            outerContext = context;
-        }
+        homeContext = context.homeContext();
+        outerContext = context;
     }
 
     public PrimContext outerContext() {
