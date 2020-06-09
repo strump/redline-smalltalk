@@ -82,6 +82,13 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         mv.visitEnd();
     }
 
+    /* Generate method:
+     <code>
+     @Override
+     protected String importFor(String className) {
+        return classLoader().importForBy(className, packageName());
+     }
+     </code> */
     private void createImportForMethod() {
         if (DEFAULT_IMPORTED_PACKAGE.equals(packageName()))
             return;
@@ -158,12 +165,24 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
         mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "resolveClass", "(Ljava/lang/String;)Lst/redline/core/PrimClass;", false);
         mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "selfClass", "(Lst/redline/core/PrimClass;)V", false);
 
+        //Call classLoader().pushExecutionPackage(packageName())
+        mv.visitVarInsn(ALOAD, 0); // this
+        mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "classLoader", "()Lst/redline/classloader/SmalltalkClassLoader;", false);
+        mv.visitVarInsn(ALOAD, 0); // this
+        mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "packageName", "()Ljava/lang/String;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/classloader/SmalltalkClassLoader", "pushExecutionPackage", "(Ljava/lang/String;)V", false);
+
         // call sendMessages with parameters: this & context
         mv.visitVarInsn(ALOAD, 0); // this
         mv.visitVarInsn(ALOAD, 0); // receiver
         mv.visitVarInsn(ALOAD, 1); // context
         mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "sendMessages", SEND_MESSAGES_SIG, false);
         mv.visitInsn(POP);
+
+        //Call classLoader().popExecutionPackage()
+        mv.visitVarInsn(ALOAD, 0); // this
+        mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "classLoader", "()Lst/redline/classloader/SmalltalkClassLoader;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "st/redline/classloader/SmalltalkClassLoader", "popExecutionPackage", "()V", false);
 
         mv.visitInsn(RETURN);
         mv.visitMaxs(0, 0);

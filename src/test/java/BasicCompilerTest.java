@@ -172,7 +172,11 @@ public class BasicCompilerTest {
         final PrimContext context = new PrimContext((PrimObject) testInstance);
         final Method sendMessagesMethod = CompiledStClass.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
         sendMessagesMethod.setAccessible(true);
+
+        stClassLoader.pushExecutionPackage(src.packageName());
         final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
+        stClassLoader.popExecutionPackage();
+
         assertTrue(result instanceof PrimObject);
         return (PrimObject) result;
     }

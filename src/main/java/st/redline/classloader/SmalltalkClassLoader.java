@@ -24,7 +24,7 @@ public class SmalltalkClassLoader extends ClassLoader {
     private final Map<String, Class<?>> classCache;
     private final Map<String, PrimObject> objectCache;
     private final Map<String, Map<String, Source>> packageCache;
-    private final Stack<String> instantiatingName;
+    private final Stack<String> executionPackageNames;
     private boolean bootstrapping;
 
     public SmalltalkClassLoader(ClassLoader classLoader, SourceFinder sourceFinder, Bootstrapper bootstrapper) {
@@ -33,7 +33,7 @@ public class SmalltalkClassLoader extends ClassLoader {
         this.classCache = new HashMap<>();
         this.objectCache = new HashMap<>();
         this.packageCache = new HashMap<>();
-        this.instantiatingName = new Stack<>();
+        this.executionPackageNames = new Stack<>();
 
         // initialize Object cache with bootstrapped objects.
         bootstrapper.bootstrap(this);
@@ -48,7 +48,7 @@ public class SmalltalkClassLoader extends ClassLoader {
             boolean requiresInstantiation = !isCachedClass(name);
             Class<?> messageSendingClass = findClass(name);
             if (requiresInstantiation)
-                instantiateMessageSendingClass(messageSendingClass, name);
+                messageSendingClass.newInstance();
             cls = cachedObject(name);
             if (cls != null)
                 return cls;
@@ -67,30 +67,6 @@ public class SmalltalkClassLoader extends ClassLoader {
             throw new StClassNotFoundException("Object '" + name + "' was not found.");
     }
 
-    private void instantiateMessageSendingClass(Class<?> messageSendingClass, String name) throws IllegalAccessException, InstantiationException {
-        // We have to instantiate the class to cause all the message sends contained within it to be sent.
-        // Should these message sends involve a subclass then we need to ensure that subclass knows the package it is in.
-        // hence this code (which makes me uncomfortable).
-        pushInstantiatingName(name);
-        try {
-            messageSendingClass.newInstance();
-        } finally {
-            popInstantiatingName();
-        }
-    }
-
-    public String peekInstantiationName() {
-        return instantiatingName.peek();
-    }
-
-    private void popInstantiatingName() {
-        instantiatingName.pop();
-    }
-
-    private void pushInstantiatingName(String name) {
-        instantiatingName.push(name);
-    }
-
     protected PrimObject cachedObject(String name) {
         log.trace("** cachedObject {}", name);
         return objectCache.get(name);
@@ -99,6 +75,10 @@ public class SmalltalkClassLoader extends ClassLoader {
     public void cacheObject(String name, PrimObject object) {
         log.trace("** cacheObject {} as {}", object, name);
         objectCache.put(name, object);
+    }
+
+    public boolean isCachedObject(String name) {
+        return objectCache.containsKey(name);
     }
 
     public Class<?> findClass(String name) throws ClassNotFoundException {
@@ -222,6 +202,12 @@ public class SmalltalkClassLoader extends ClassLoader {
     @SuppressWarnings("unchecked")
     public String importForBy(String name, String packageName) {
         log.trace("** importFor: {} in {}", name, packageName);
+
+        final String fullClassName = packageName + "." + name;
+        if (isCachedObject(fullClassName)) {
+            return fullClassName;
+        }
+
         Map<String, Source> imports = packageCache.getOrDefault(packageName, Collections.EMPTY_MAP);
         Source source = imports.get(name);
         if (source != null)
@@ -247,5 +233,17 @@ public class SmalltalkClassLoader extends ClassLoader {
         Map<String, Source> objects = packageCache.getOrDefault(packageName, new HashMap<>());
         objects.put(source.className(), source);
         packageCache.put(packageName, objects);
+    }
+
+    public void pushExecutionPackage(String packageName) {
+        executionPackageNames.push(packageName);
+    }
+
+    public void popExecutionPackage() {
+        executionPackageNames.pop();
+    }
+
+    public String peekExecutionPackage() {
+        return executionPackageNames.peek();
     }
 }
