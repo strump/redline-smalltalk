@@ -118,6 +118,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
             int index = 0;
             for(TerminalNode ident : methodHeaderCtx.IDENTIFIER()) {
                 addArgumentToMap(new ExtendedTerminalNode(ident, index));
+                index ++;
             }
         }
         addToKeyword(methodSelector);

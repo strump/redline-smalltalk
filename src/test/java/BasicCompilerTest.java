@@ -148,13 +148,13 @@ public class BasicCompilerTest {
         assertEquals(superClass.name(), "Object");
 
         assertTrue(testClass.includesSelector("answerPlease"));
-        assertTrue(testClass.selfClass().includesSelector("sum:and:"));
+        assertTrue(testClass.selfClass().includesSelector("concat:and:"));
 
-        final PrimObject val1 = testClass.smalltalkInteger(15);
-        final PrimObject val2 = testClass.smalltalkInteger(27);
-        final PrimObject answer = testClass.perform(val1, val2, "sum:and:");
-        assertTrue(answer.javaValue() instanceof Integer);
-        assertEquals(answer.javaValue(), 42);
+        final PrimObject val1 = testClass.smalltalkString("4");
+        final PrimObject val2 = testClass.smalltalkString("2");
+        final PrimObject answer = testClass.perform(val1, val2, "concat:and:");
+        assertTrue(answer.javaValue() instanceof String);
+        assertEquals(answer.javaValue(), "42");
     }
 
     /* Compile Smalltalk code and execute.

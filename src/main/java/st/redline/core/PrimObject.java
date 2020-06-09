@@ -391,6 +391,14 @@ public class PrimObject {
         return this.selfClass();
     }
 
+    /* Method String#, to concatenate Strings */
+    public PrimObject primitive125(PrimContext context) {
+        final String thisStrVal = (String) this.javaValue;
+        final PrimObject arg = context.argumentAt(0);
+        final String argStringVal = (String) arg.javaValue;
+        return smalltalkString(thisStrVal + argStringVal);
+    }
+
     public PrimObject primitive302(PrimContext context) {
         // error: msg
         throw new StRuntimeError(context.argumentAt(0));

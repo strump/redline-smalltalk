@@ -9,8 +9,8 @@ answerPlease
 
 !ClassMethodCompilerTest class methodsFor: 'test-group'!
 
-sum: val1 and: val2
-    ^ val1 + val2. !
+concat: val1 and: val2
+    ^ val1 , val2. !
 !
 
 ClassMethodCompilerTest
