@@ -5,6 +5,9 @@ Object subclass: #ClassMethodCompilerTest
 
 answerPlease
     'the answer'!
+
+singleArg: arg
+    ^ arg. !
 !
 
 !ClassMethodCompilerTest class methodsFor: 'test-group'!

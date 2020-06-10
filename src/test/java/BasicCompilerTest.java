@@ -155,6 +155,13 @@ public class BasicCompilerTest {
         final PrimObject answer = testClass.perform(val1, val2, "concat:and:");
         assertTrue(answer.javaValue() instanceof String);
         assertEquals(answer.javaValue(), "42");
+
+        final PrimObject instance = testClass.primitiveNew();
+        final PrimObject answer2 = instance.perform("answerPlease");
+        assertEquals(answer2.javaValue(), "the answer");
+
+        final PrimObject answer3 = instance.perform(instance, "singleArg:");
+        assertEquals(answer3, instance);
     }
 
     /* Compile Smalltalk code and execute.
