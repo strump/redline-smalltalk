@@ -164,6 +164,25 @@ public class BasicCompilerTest {
         assertEquals(answer3, instance);
     }
 
+    @Test
+    public void test_compiler_class_withFields() throws Exception {
+        final PrimObject result = runScript("smalltalk/compiler/ClassFields_test.st", "ClassFields_test");
+        assertTrue(result.selfClass().isMeta());
+        assertTrue(result instanceof PrimClass);
+        final PrimClass testClass = (PrimClass) result;
+        assertEquals(testClass.name(), "ClassFieldsCompilerTest");
+
+        final PrimObject instance = testClass.primitiveNew();
+
+        instance.perform(instance.smalltalkInteger(101), "fieldA:");
+        final PrimObject fieldA = instance.perform( "fieldA");
+        assertEquals(fieldA.javaValue(), 101);
+
+        instance.perform(instance.smalltalkString("field B value"), "fieldB:");
+        final PrimObject fieldB = instance.perform( "fieldB");
+        assertEquals(fieldB.javaValue(), "field B value");
+    }
+
     /* Compile Smalltalk code and execute.
      * Returns result of execution as Smalltalk object. */
     private static PrimObject runString(String sourceCode, String className) throws Exception {
