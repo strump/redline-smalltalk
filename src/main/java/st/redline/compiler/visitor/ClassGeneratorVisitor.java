@@ -22,7 +22,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     private static final Logger log = LogManager.getLogger(ClassGeneratorVisitor.class);
 
     protected final static String LAMBDA_BLOCK_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
-    private final static String SEND_MESSAGES_SIG = "(Lst/redline/core/PrimObject;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
+    private final static String SEND_MESSAGES_SIG = "(Lst/redline/core/PrimModule;Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;";
 
     protected MethodVisitor mv;
     protected final ClassWriter cw;
@@ -132,7 +132,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
            importAll(packageName());
            PrimContext context = new PrimContext(this);
            selfClass(this);
-           sendMessages(this, context);
+           mModuleAnswer = sendMessages(this, context);
        }
        </code>
      */
@@ -174,10 +174,11 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
 
         // call sendMessages with parameters: this & context
         mv.visitVarInsn(ALOAD, 0); // this
+        mv.visitInsn(DUP); // this
         mv.visitVarInsn(ALOAD, 0); // receiver
         mv.visitVarInsn(ALOAD, 1); // context
         mv.visitMethodInsn(INVOKEVIRTUAL, fullClassName(), "sendMessages", SEND_MESSAGES_SIG, false);
-        mv.visitInsn(POP);
+        mv.visitFieldInsn(PUTFIELD, superclassName(), "mModuleAnswer", "L"+PRIM_OBJECT_CLASS+";");
 
         //Call classLoader().popExecutionPackage()
         mv.visitVarInsn(ALOAD, 0); // this

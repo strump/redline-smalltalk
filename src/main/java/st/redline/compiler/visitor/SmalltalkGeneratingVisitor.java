@@ -79,7 +79,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     }
 
     public String superclassName() {
-        return "st/redline/core/PrimObject";
+        return "st/redline/core/PrimModule";
     }
 
     public String contextName() {
@@ -240,7 +240,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     public void pushReference(MethodVisitor mv, String name) {
         pushReceiver(mv);
         pushLiteral(mv, name);
-        mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "reference", "(Ljava/lang/String;)Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "reference", "(Ljava/lang/String;)Lst/redline/core/PrimObject;", false);
     }
 
     /* Generate code:
@@ -251,7 +251,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
     public void pushResolveClass(MethodVisitor mv, String className) {
         pushReceiver(mv);
         pushLiteral(mv, className);
-        mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "resolveClass", "(Ljava/lang/String;)Lst/redline/core/PrimClass;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "resolveClass", "(Ljava/lang/String;)Lst/redline/core/PrimClass;", false);
     }
 
     /* Generate code:
@@ -261,7 +261,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
      */
     public void pushNil(MethodVisitor mv) {
         pushReceiver(mv);
-        mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "referenceNil", "()Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "referenceNil", "()Lst/redline/core/PrimObject;", false);
     }
 
     /* Generate code:
@@ -271,7 +271,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
      */
     public void pushTrue(MethodVisitor mv) {
         pushReceiver(mv);
-        mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "referenceTrue", "()Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "referenceTrue", "()Lst/redline/core/PrimObject;", false);
     }
 
     /* Generate code:
@@ -281,7 +281,7 @@ public class SmalltalkGeneratingVisitor extends SmalltalkBaseVisitor<Void> imple
      */
     public void pushFalse(MethodVisitor mv) {
         pushReceiver(mv);
-        mv.visitMethodInsn(INVOKEVIRTUAL, superclassName(), "referenceFalse", "()Lst/redline/core/PrimObject;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, PRIM_OBJECT_CLASS, "referenceFalse", "()Lst/redline/core/PrimObject;", false);
     }
 
     /* Generate code (assuming arguments are already on stack):

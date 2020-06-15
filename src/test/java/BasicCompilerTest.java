@@ -4,6 +4,7 @@ import org.junit.Test;
 import st.redline.classloader.*;
 import st.redline.core.PrimClass;
 import st.redline.core.PrimContext;
+import st.redline.core.PrimModule;
 import st.redline.core.PrimObject;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public class BasicCompilerTest {
     public void test_compiler() throws Exception {
         final Source src = sourceFromString("[1 < 0] whileTrue: [Transcript show: false]", "WhileTrueTest");
         final Class<?> WhileTrueTest = stClassLoader.compileToClass(src);
-        assertEquals(WhileTrueTest.getSuperclass(), PrimObject.class);
+        assertEquals(WhileTrueTest.getSuperclass(), PrimModule.class);
 
         final Object testInstance = WhileTrueTest.getDeclaredConstructor().newInstance();
         final Method packageNameMethod = WhileTrueTest.getDeclaredMethod("packageName");
@@ -192,16 +193,13 @@ public class BasicCompilerTest {
 
     private static PrimObject compileSource(Source src) throws Exception {
         final Class<?> CompiledStClass = stClassLoader.compileToClass(src);
-        assertEquals(CompiledStClass.getSuperclass(), PrimObject.class);
+        assertEquals(CompiledStClass.getSuperclass(), PrimModule.class);
 
         final Object testInstance = CompiledStClass.getDeclaredConstructor().newInstance();
         final PrimContext context = new PrimContext((PrimObject) testInstance);
-        final Method sendMessagesMethod = CompiledStClass.getDeclaredMethod("sendMessages", PrimObject.class, PrimContext.class);
-        sendMessagesMethod.setAccessible(true);
+        final Method moduleAnswerMethod = CompiledStClass.getMethod("moduleAnswer");
 
-        stClassLoader.pushExecutionPackage(src.packageName());
-        final Object result = sendMessagesMethod.invoke(testInstance, testInstance, context);
-        stClassLoader.popExecutionPackage();
+        final Object result = moduleAnswerMethod.invoke(testInstance);
 
         assertTrue(result instanceof PrimObject);
         return (PrimObject) result;
