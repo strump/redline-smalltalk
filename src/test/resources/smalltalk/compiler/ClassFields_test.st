@@ -9,11 +9,14 @@ fieldA
 fieldA: value
     fieldA := value!
 
-fieldA
-    ^ fieldA!
+fieldB
+    ^ fieldB!
 
 fieldB: value
     fieldB := value!
+
+fieldC
+    ^ fieldC!
 !
 
 ClassFieldsCompilerTest

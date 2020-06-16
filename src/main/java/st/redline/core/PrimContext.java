@@ -89,11 +89,11 @@ public class PrimContext {
     }
 
     public PrimObject instVarAt(String var) {
-        throw new RuntimeException("TODO.JCL - get instVar: " + var);
+        return receiver.getInstanceVar(var);
     }
 
     public void instVarAtPut(String var, PrimObject object) {
-        throw new RuntimeException("TODO.JCL - set instVar: " + var);
+        receiver.setInstanceVar(var, object);
     }
 
     public static void temporaryPutAt(PrimObject object, int index, PrimContext context) {

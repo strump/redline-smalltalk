@@ -7,6 +7,8 @@ import st.redline.classloader.SmalltalkClassLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static st.redline.compiler.visitor.SmalltalkGeneratingVisitor.DEFAULT_IMPORTED_PACKAGE;
 import static st.redline.core.PrimDoesNotUnderstand.*;
@@ -17,6 +19,7 @@ public class PrimObject {
 
     private PrimClass selfClass;
     private Object javaValue;
+    private Map<String, PrimObject> instanceVars = new HashMap<>();
 
     @Override
     public String toString() {
@@ -43,6 +46,7 @@ public class PrimObject {
         return selfClass;
     }
 
+    /* TODO: next 24 methods should be extracted to some other class. Maybe SmalltalkClassLoader */
     public PrimObject referenceNil() {
         //System.out.println("** referenceNil");
         return classLoader().nilInstance();
@@ -338,31 +342,26 @@ public class PrimObject {
         return cls;
     }
 
+    public PrimObject getInstanceVar(String varName) {
+        final PrimObject value = this.instanceVars.get(varName);
+        if (value==null) {
+            return referenceNil();
+        }
+        else {
+            return value;
+        }
+    }
+
+    public void setInstanceVar(String varName, PrimObject value) {
+        this.instanceVars.put(varName, value);
+    }
+
     protected PrimObject apply(PrimMethod method, PrimClass foundInClass, String selector, PrimObject ... arguments) {
         log.info("** apply: #{} found in {} to {}", selector, foundInClass, this);
         PrimObject result = method.invoke(this, new PrimContext(this, foundInClass, selector, arguments));
         log.info("** result: {}", String.valueOf(result));
         return result;
     }
-
-    /*protected PrimObject methodFor(String selector) {
-        // This only happens for Bootstrapped instance after that PrimClass takes over.
-        if (selector.startsWith("subclass:"))
-            return PRIM_SUBCLASS;
-        return PRIM_DOES_NOT_UNDERSTAND;
-    }
-
-    protected PrimObject superclass() {
-        throw new IllegalStateException("This receiver should not have received this message.");
-    }*/
-
-    /*protected boolean includesSelector(String selector) {
-        return true;
-    }
-
-    public boolean isMeta() {
-        return false;
-    }*/
 
     public PrimObject primitiveSubclass(PrimContext primContext) {
 //        System.out.println("primitiveSubclass: " + primContext.argumentJavaValueAt(0));

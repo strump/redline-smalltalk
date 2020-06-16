@@ -2,15 +2,11 @@ import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import st.redline.classloader.*;
-import st.redline.core.PrimClass;
-import st.redline.core.PrimContext;
-import st.redline.core.PrimModule;
-import st.redline.core.PrimObject;
+import st.redline.core.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -165,7 +161,7 @@ public class BasicCompilerTest {
         assertEquals(answer3, instance);
     }
 
-    @Test
+    @Test(expected = FieldNotFoundException.class)
     public void test_compiler_class_withFields() throws Exception {
         final PrimObject result = runScript("smalltalk/compiler/ClassFields_test.st", "ClassFields_test");
         assertTrue(result.selfClass().isMeta());
@@ -175,13 +171,18 @@ public class BasicCompilerTest {
 
         final PrimObject instance = testClass.primitiveNew();
 
+        PrimObject fieldA = instance.perform("fieldA");
+        assertEquals(fieldA, stClassLoader.nilInstance());
+
         instance.perform(instance.smalltalkInteger(101), "fieldA:");
-        final PrimObject fieldA = instance.perform( "fieldA");
+        fieldA = instance.perform("fieldA");
         assertEquals(fieldA.javaValue(), 101);
 
         instance.perform(instance.smalltalkString("field B value"), "fieldB:");
-        final PrimObject fieldB = instance.perform( "fieldB");
+        final PrimObject fieldB = instance.perform("fieldB");
         assertEquals(fieldB.javaValue(), "field B value");
+
+        final PrimObject fieldC = instance.perform("fieldC");
     }
 
     /* Compile Smalltalk code and execute.
@@ -193,7 +194,7 @@ public class BasicCompilerTest {
 
     private static PrimObject compileSource(Source src) throws Exception {
         final Class<?> CompiledStClass = stClassLoader.compileToClass(src);
-        assertEquals(CompiledStClass.getSuperclass(), PrimModule.class);
+        assertTrue(PrimObject.class.isAssignableFrom(CompiledStClass.getSuperclass()));
 
         final Object testInstance = CompiledStClass.getDeclaredConstructor().newInstance();
         final PrimContext context = new PrimContext((PrimObject) testInstance);
