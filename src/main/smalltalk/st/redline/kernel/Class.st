@@ -450,12 +450,6 @@ subclass: className instanceVariableNames: ivn category: cat
     "Shorthand for subclass creation."
     ^ self subclass: className instanceVariableNames: ivn classVariableNames: '' poolDictionaries: '' category: cat. !
 
-subclass: className instanceVariableNames: ivn classVariableNames: cvn poolDictionaries: pd category: cat
-    "This is the standard initialization message for creating a new class as a subclass of an existing class (the receiver)."
-    JVM aload: 1;
-        aload: 2;
-        invokeVirtual: 'st/redline/core/PrimObject' method: 'primitiveSubclass' matching: '(Lst/redline/core/PrimContext;)Lst/redline/core/PrimObject;'. !
-
 variableByteSubclass: t instanceVariableNames: f classVariableNames: d poolDictionaries: s category: cat
     "This is the standard initialization message for creating a new class as a
     subclass of an existing class (the receiver) in which the subclass is to
