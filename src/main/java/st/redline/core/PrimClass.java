@@ -11,13 +11,11 @@ public class PrimClass extends PrimObject {
     private final String name;
     private PrimClass superclass;
     private final Map<String, PrimMethod> methods = new HashMap<>();
+    private Set<String> instanceVariableNames;
+    private String category;
 
     public PrimClass() {
         this("", false);
-    }
-
-    public PrimClass(boolean isMeta) {
-        this("", isMeta);
     }
 
     public PrimClass(String name) {
@@ -25,8 +23,24 @@ public class PrimClass extends PrimObject {
     }
 
     public PrimClass(String name, boolean isMeta) {
+        this(name, isMeta, null, null);
+    }
+
+    public PrimClass(String name, boolean isMeta, String[] instanceVariableNames) {
+        this(name, isMeta, instanceVariableNames, null);
+    }
+
+    public PrimClass(String name, boolean isMeta, String[] instanceVariableNames, String category) {
         this.meta = isMeta;
         this.name = name;
+        this.instanceVariableNames = instanceVariableNames!=null ? toSet(instanceVariableNames) : Collections.emptySet();
+        this.category = category!=null ? category : "Unclassified";
+    }
+
+    private static Set<String> toSet(String[] strings) {
+        final HashSet<String> result = new HashSet<>();
+        Collections.addAll(result, strings);
+        return result;
     }
 
     @Override
@@ -45,8 +59,6 @@ public class PrimClass extends PrimObject {
     }
 
     public boolean includesSelector(String selector) {
-        if (selector.startsWith("subclass:"))
-            return true;
         return methods.containsKey(selector);
     }
 
@@ -55,9 +67,6 @@ public class PrimClass extends PrimObject {
     }
 
     public PrimMethod methodFor(String selector) {
-        if (selector.startsWith("subclass:"))
-            return PRIM_SUBCLASS_METHOD;
-
         return methods.get(selector);
     }
 

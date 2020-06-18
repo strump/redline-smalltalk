@@ -70,6 +70,7 @@ public class Bootstrapper {
 
         // Add basicAddSelector:withMethod: to Behaviour
         behavior.addMethod("basicAddSelector:withMethod:", new PrimAddMethod());
+        addSumblassMethods(klass);
 
         // Create special instances, referred to with pseudo variables.
         PrimObject nil = new PrimObject();
@@ -111,6 +112,14 @@ public class Bootstrapper {
         classLoader.cacheObject("st.redline.kernel.Integer", _integer);
         classLoader.cacheObject("st.redline.kernel.Float", _float);
         classLoader.cacheObject("st.redline.kernel.Smalltalk", smalltalkImage);
+    }
+
+    private void addSumblassMethods(PrimClass klass) {
+        klass.addMethod("subclass:", PRIM_SUBCLASS_METHOD);
+        klass.addMethod("subclass:instanceVariableNames:", PRIM_SUBCLASS_METHOD);
+        klass.addMethod("subclass:instanceVariableNames:category:", PRIM_SUBCLASS_METHOD);
+        klass.addMethod("subclass:instanceVariableNames:classVariableNames:category:", PRIM_SUBCLASS_METHOD);
+        klass.addMethod("subclass:instanceVariableNames:classVariableNames:poolDictionaries:category:", PRIM_SUBCLASS_METHOD);
     }
 
     private PrimClass createKernelClass(String className, boolean isMeta) {
