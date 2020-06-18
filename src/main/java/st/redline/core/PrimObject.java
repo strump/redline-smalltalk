@@ -19,7 +19,7 @@ public class PrimObject {
 
     private PrimClass selfClass;
     private Object javaValue;
-    private Map<String, PrimObject> instanceVars = new HashMap<>();
+    private final Map<String, PrimObject> instanceVars = new HashMap<>();
 
     @Override
     public String toString() {
@@ -361,11 +361,6 @@ public class PrimObject {
         PrimObject result = method.invoke(this, new PrimContext(this, foundInClass, selector, arguments));
         log.info("** result: {}", String.valueOf(result));
         return result;
-    }
-
-    public PrimObject primitiveSubclass(PrimContext primContext) {
-//        System.out.println("primitiveSubclass: " + primContext.argumentJavaValueAt(0));
-        return PRIM_SUBCLASS_METHOD.invoke(this, primContext);
     }
 
     public PrimObject primitiveEval(PrimContext context) {

@@ -161,7 +161,7 @@ public class BasicCompilerTest {
         assertEquals(answer3, instance);
     }
 
-    @Test(expected = FieldNotFoundException.class)
+    @Test
     public void test_compiler_class_withFields() throws Exception {
         final PrimObject result = runScript("smalltalk/compiler/ClassFields_test.st", "ClassFields_test");
         assertTrue(result.selfClass().isMeta());
@@ -182,7 +182,13 @@ public class BasicCompilerTest {
         final PrimObject fieldB = instance.perform("fieldB");
         assertEquals(fieldB.javaValue(), "field B value");
 
-        final PrimObject fieldC = instance.perform("fieldC");
+        try {
+            final PrimObject fieldC = instance.perform("fieldC");
+            fail("Exception FieldNotFoundException should be thrown");
+        }
+        catch (FieldNotFoundException e) {
+            //ok
+        }
     }
 
     /* Compile Smalltalk code and execute.

@@ -90,4 +90,19 @@ public class PrimClass extends PrimObject {
         object.selfClass(this);
         return object;
     }
+
+    //Check if var is valid field name including superclass fields.
+    public boolean hasInstanceVar(String var) {
+        if (instanceVariableNames.contains(var)) {
+            return true;
+        }
+        else {
+            if (superclass != null) {
+                return superclass.hasInstanceVar(var);
+            }
+            else {
+                return false;
+            }
+        }
+    }
 }

@@ -89,10 +89,16 @@ public class PrimContext {
     }
 
     public PrimObject instVarAt(String var) {
+        if (!receiver.selfClass().hasInstanceVar(var)) {
+            throw new FieldNotFoundException("Class "+receiver.selfClass().name()+" doesn't have field "+var);
+        }
         return receiver.getInstanceVar(var);
     }
 
     public void instVarAtPut(String var, PrimObject object) {
+        if (!receiver.selfClass().hasInstanceVar(var)) {
+            throw new FieldNotFoundException("Class "+receiver.selfClass().name()+" doesn't have field "+var);
+        }
         receiver.setInstanceVar(var, object);
     }
 
