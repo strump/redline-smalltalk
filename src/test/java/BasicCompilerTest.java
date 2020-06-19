@@ -183,7 +183,35 @@ public class BasicCompilerTest {
         assertEquals(fieldB.javaValue(), "field B value");
 
         try {
+            //Call method to read non-existing field
             final PrimObject fieldC = instance.perform("fieldC");
+            fail("Exception FieldNotFoundException should be thrown");
+        }
+        catch (FieldNotFoundException e) {
+            //ok
+        }
+    }
+
+    @Test
+    public void test_compiler_classFields() throws Exception {
+        final PrimObject result = runScript("smalltalk/compiler/ClassVariable_test.st", "ClassVariableTest");
+        assertTrue(result.selfClass().isMeta());
+        assertTrue(result instanceof PrimClass);
+        final PrimClass testClass = (PrimClass) result;
+        assertEquals(testClass.name(), "ClassVariableCompilerTest");
+
+        testClass.perform(testClass.smalltalkInteger(101), "fieldA:");
+        PrimObject fieldA = testClass.perform("fieldA");
+        assertEquals(fieldA.javaValue(), 101);
+
+        testClass.perform(testClass.smalltalkString("42"), "fieldB:");
+        final PrimObject fieldB = testClass.perform("fieldB");
+        assertEquals(fieldB.javaValue(), "42");
+
+        try {
+            //Call method to read non-existing field
+            final PrimObject instance = testClass.primitiveNew();
+            final PrimObject fieldC = instance.perform("tryReadClassField");
             fail("Exception FieldNotFoundException should be thrown");
         }
         catch (FieldNotFoundException e) {

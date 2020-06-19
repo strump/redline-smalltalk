@@ -118,6 +118,7 @@ public class Bootstrapper {
         klass.addMethod("subclass:", PRIM_SUBCLASS_METHOD);
         klass.addMethod("subclass:instanceVariableNames:", PRIM_SUBCLASS_METHOD);
         klass.addMethod("subclass:instanceVariableNames:category:", PRIM_SUBCLASS_METHOD);
+        klass.addMethod("subclass:instanceVariableNames:classVariableNames:", PRIM_SUBCLASS_METHOD);
         klass.addMethod("subclass:instanceVariableNames:classVariableNames:category:", PRIM_SUBCLASS_METHOD);
         klass.addMethod("subclass:instanceVariableNames:classVariableNames:poolDictionaries:category:", PRIM_SUBCLASS_METHOD);
     }

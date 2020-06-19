@@ -247,7 +247,7 @@ public class PrimObject {
 
     public PrimObject perform(PrimObject arg1, PrimObject arg2, PrimObject arg3, String selector) {
 //        System.out.println("** perform(" + arg1 + "," + arg2 + "," + arg3 + "," + selector + ") " + this);
-        return perform0(selector, arg1, arg2);
+        return perform0(selector, arg1, arg2, arg3);
     }
 
     public PrimObject superPerform(PrimObject arg1, PrimObject arg2, PrimObject arg3, String selector) {
