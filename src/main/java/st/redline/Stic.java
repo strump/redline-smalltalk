@@ -1,32 +1,40 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
 import st.redline.classloader.*;
 
 import java.io.*;
 
 public class Stic {
 
-    private final String[] args;
+    //private final String[] args;
+    private final String scriptFilename;
 
     public static void main(String[] args) throws Exception {
-        new Stic(args).run();
+        for(String filename: args) {
+            new Stic(filename).run();
+        }
     }
 
-    public Stic(String[] args) {
-        this.args = args;
+    public Stic(String scriptFilename) {
+        this.scriptFilename = scriptFilename;
     }
 
     private void run() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        run(loadScript(scriptName()));
+        run(loadScript(scriptFilename));
     }
 
-    private void run(Class cls) throws IllegalAccessException, InstantiationException {
+    private void run(Class<?> cls) throws IllegalAccessException, InstantiationException {
         cls.newInstance();
     }
 
-    private Class loadScript(String name) throws ClassNotFoundException {
-        return classLoader().loadScript(name);
+    private Class<?> loadScript(String filename) throws ClassNotFoundException {
+        final Source src = sourceFinder().sourceFile(filename);
+        return classLoader().compileToClass(src);
     }
 
     private SmalltalkClassLoader classLoader() {
@@ -55,21 +63,5 @@ public class Stic {
 
     private ClassLoader currentClassLoader() {
         return Thread.currentThread().getContextClassLoader();
-    }
-
-    private String scriptName() {
-        return hasArguments() ? firstArgument() : defaultScriptName();
-    }
-
-    private String defaultScriptName() {
-        return "st.redline.script.NoArguments";
-    }
-
-    private String firstArgument() {
-        return args[0];
-    }
-
-    private boolean hasArguments() {
-        return args.length > 0;
     }
 }

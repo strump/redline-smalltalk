@@ -22,7 +22,7 @@ public class PrimSubclassMethod extends PrimMethod {
 
     @Override
     protected PrimObject invoke(PrimObject receiver, PrimContext primContext) {
-        log.info("PrimSubclassMethod invoke: {}", primContext.argumentJavaValueAt(0));
+        log.trace("PrimSubclassMethod invoke: {}", primContext.argumentJavaValueAt(0));
         assert receiver.equals(primContext.receiver());
 
         final ClassDefinition classDefinition = parseArguments(primContext.selector(), primContext.arguments());

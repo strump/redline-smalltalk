@@ -36,7 +36,7 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
 
     /* Generate java lambda body with Smalltalk block code inside. */
     public void handleBlock(SmalltalkParser.BlockContext ctx) {
-        log.info("  handleBlock {} {}", blockName, blockNumber);
+        log.trace("  handleBlock {} {}", blockName, blockNumber);
         openBlockLambdaMethod();
         SmalltalkParser.BlockParamListContext blockParamList = ctx.blockParamList();
         if (blockParamList != null)
@@ -71,7 +71,7 @@ public class BlockGeneratorVisitor extends ClassGeneratorVisitor {
 
     @Override
     public Void visitBlockParamList(SmalltalkParser.BlockParamListContext ctx) {
-        log.info("  visitBlockParamList");
+        log.trace("  visitBlockParamList");
         int index = 0;
         int n = ctx.getChildCount();
         for(int i = 0; i < n; ++i) {

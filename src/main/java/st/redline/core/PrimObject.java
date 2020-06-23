@@ -357,9 +357,9 @@ public class PrimObject {
     }
 
     protected PrimObject apply(PrimMethod method, PrimClass foundInClass, String selector, PrimObject ... arguments) {
-        log.info("** apply: #{} found in {} to {}", selector, foundInClass, this);
+        log.trace("** apply: #{} found in {} to {}", selector, foundInClass, this);
         PrimObject result = method.invoke(this, new PrimContext(this, foundInClass, selector, arguments));
-        log.info("** result: {}", String.valueOf(result));
+        log.trace("** result: {}", String.valueOf(result));
         return result;
     }
 

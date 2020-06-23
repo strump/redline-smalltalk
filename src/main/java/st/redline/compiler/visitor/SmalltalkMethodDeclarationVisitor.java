@@ -53,7 +53,7 @@ public class SmalltalkMethodDeclarationVisitor extends BlockGeneratorVisitor {
     public Void visitMethodDeclaration(SmalltalkParser.MethodDeclarationContext ctx) {
         visitMethodHeader(ctx.methodHeader());
         initBlockName();
-        log.info("visitMethodDeclaration: class {}, selector {}, method {}", className, methodSelector, blockName);
+        log.trace("visitMethodDeclaration: class {}, selector {}, method {}", className, methodSelector, blockName);
 
         //Generating Java method from method declaration `sequence`.
         openBlockLambdaMethod();

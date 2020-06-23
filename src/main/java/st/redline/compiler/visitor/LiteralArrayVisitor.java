@@ -30,7 +30,7 @@ public class LiteralArrayVisitor extends ClassGeneratorVisitor {
      */
     @Override
     public Void visitLiteralArrayRest(@NotNull SmalltalkParser.LiteralArrayRestContext ctx) {
-        log.info("  visitLiteralArrayRest");
+        log.trace("  visitLiteralArrayRest");
         int arraySize = calcLiteralArraySize(ctx);
 
         pushReceiver(mv);
@@ -84,7 +84,7 @@ public class LiteralArrayVisitor extends ClassGeneratorVisitor {
 
     @Override
     public Void visitParsetimeLiteral(@NotNull SmalltalkParser.ParsetimeLiteralContext ctx) {
-        log.info("  visitParsetimeLiteral");
+        log.trace("  visitParsetimeLiteral");
         SmalltalkParser.PseudoVariableContext pseudoVariable = ctx.pseudoVariable();
         if (pseudoVariable != null)
             return pseudoVariable.accept(currentVisitor());
@@ -108,7 +108,7 @@ public class LiteralArrayVisitor extends ClassGeneratorVisitor {
 
     @Override
     public Void visitPseudoVariable(@NotNull SmalltalkParser.PseudoVariableContext ctx) {
-        log.info("  visitPseudoVariable {}", ctx.RESERVED_WORD().getSymbol().getText());
+        log.trace("  visitPseudoVariable {}", ctx.RESERVED_WORD().getSymbol().getText());
         TerminalNode pseudoVariable = ctx.RESERVED_WORD();
         String name = pseudoVariable.getSymbol().getText();
         if ("self".equals(name))
@@ -128,7 +128,7 @@ public class LiteralArrayVisitor extends ClassGeneratorVisitor {
 
     @Override
     public Void visitBareSymbol(SmalltalkParser.BareSymbolContext ctx) {
-        log.info("  visitBareSymbol {}", ctx.getText());
+        log.trace("  visitBareSymbol {}", ctx.getText());
         final String symbolText = ctx.getText();
         pushNewObject(mv, "smalltalkSymbol", symbolText, ctx.start.getLine());
         return null;
@@ -136,7 +136,7 @@ public class LiteralArrayVisitor extends ClassGeneratorVisitor {
 
     @Override
     public Void visitBareLiteralArray(SmalltalkParser.BareLiteralArrayContext ctx) {
-        log.info("  visitBareLiteralArray");
+        log.trace("  visitBareLiteralArray");
         LiteralArrayVisitor literalArrayVisitor = new LiteralArrayVisitor(classGen, cw, mv);
 
         classGen.pushCurrentVisitor(literalArrayVisitor);

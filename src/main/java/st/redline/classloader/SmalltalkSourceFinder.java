@@ -17,13 +17,13 @@ public class SmalltalkSourceFinder implements SourceFinder {
         this.classPaths = classPaths;
     }
 
-    public Source find(String name) {
-        //System.out.println(">>> find: " + name);
-        String filename = toFilename(name);
+    public Source find(String className) {
+        //System.out.println(">>> find: " + className);
+        String filename = toFilename(className);
         File file = new File(filename);
         if (file.exists())
             return sourceFile(filename, file, "");
-        return new SourceNotFound(name);
+        return new SourceNotFound(className);
     }
 
     public List<Source> findIn(String packageName) {
@@ -89,8 +89,15 @@ public class SmalltalkSourceFinder implements SourceFinder {
         return classPath.endsWith(".jar") || classPath.endsWith(".JAR");
     }
 
-    private Source sourceFile(String filename, File file, String classpath) {
+    @Override
+    public Source sourceFile(String filename, File file, String classpath) {
         return sourceFactory.createFromFile(filename, file, classpath);
+    }
+
+    @Override
+    public Source sourceFile(String filename) {
+        final File file = new File(filename);
+        return sourceFile(filename, file, "");
     }
 
     private String toFilename(String name) {

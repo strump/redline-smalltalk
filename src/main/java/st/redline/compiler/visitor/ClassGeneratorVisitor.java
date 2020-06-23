@@ -112,7 +112,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     }
 
     private void openJavaClass() {
-        log.info("openJavaClass: {}", fullClassName());
+        log.trace("openJavaClass: {}", fullClassName());
         cw.visit(BYTECODE_VERSION, ACC_PUBLIC + ACC_SUPER, fullClassName(), null, superclassName(), null);
         cw.visitSource(className() + sourceFileExtension(), null);
         cw.visitInnerClass("java/lang/invoke/MethodHandles$Lookup", "java/lang/invoke/MethodHandles", "Lookup", ACC_PUBLIC + ACC_FINAL + ACC_STATIC);
@@ -120,7 +120,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     }
 
     private void closeJavaClass() {
-        log.info("closeJavaClass: {}", fullClassName());
+        log.trace("closeJavaClass: {}", fullClassName());
         cw.visitEnd();
         classGen.setClassBytes(cw.toByteArray());
     }
@@ -613,7 +613,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     private void setupTryBlock() {
         if (tryCatchRecords.isEmpty())
             return;
-        log.info("  setupTryBlock");
+        log.trace("  setupTryBlock");
         for (SmalltalkGeneratingVisitor.BlockAnswerRecord record : tryCatchRecords)
             mv.visitTryCatchBlock(tryStartLabel, tryEndLabel, record.handlerLabel, record.exceptionName);
         mv.visitLabel(tryStartLabel);
@@ -622,7 +622,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     private void setupCatchBlock() {
         if (tryCatchRecords.isEmpty())
             return;
-        log.info("  setupCatchBlock");
+        log.trace("  setupCatchBlock");
         for (SmalltalkGeneratingVisitor.BlockAnswerRecord record : tryCatchRecords) {
             mv.visitJumpInsn(GOTO, tryEndLabel);
             mv.visitLabel(record.handlerLabel);
@@ -901,7 +901,7 @@ public class ClassGeneratorVisitor extends SmalltalkGeneratingVisitor {
     }
 
     private void loadBlockAnswerClass(String blockAnswerClassName) {
-        log.info("  loadBlockAnswerClass: {}", blockAnswerClassName);
+        log.trace("  loadBlockAnswerClass: {}", blockAnswerClassName);
         byte[] classBytes = createBlockAnswerClass(blockAnswerClassName);
         SmalltalkClassLoader classLoader = classLoader();
         classLoader.defineClass(classBytes);

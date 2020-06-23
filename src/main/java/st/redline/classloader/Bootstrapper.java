@@ -11,6 +11,7 @@ public class Bootstrapper {
     private static final Logger log = LogManager.getLogger(Bootstrapper.class);
 
     public void bootstrap(SmalltalkClassLoader classLoader) {
+        log.info("Start bootstrapping ...");
         setContextClassLoader(classLoader);
 
         classLoader.beginBootstrapping();
@@ -18,6 +19,7 @@ public class Bootstrapper {
         classLoader.importAll("st.redline.kernel");
         loadKernelObjects(classLoader);
         classLoader.endBootstrapping();
+        log.info("Finished bootstrapping ...");
     }
 
     private void createKernelObjectsHierarchy(SmalltalkClassLoader classLoader) {
