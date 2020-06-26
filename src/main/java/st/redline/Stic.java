@@ -1,24 +1,67 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline;
 
+import org.apache.commons.cli.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import st.redline.classloader.*;
+import st.redline.core.PrimSubclassMethod;
+
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Stic {
 
     private final String scriptFilename;
-    public final static String USAGE = "Usage:\n" +
-            " > redline FILE [FILE ...]\n" +
-            "Run smalltalk compiler and execite FILE from arguments";
+    private static final String[] levelNames;
+
+    static {
+        final List<String> names = Arrays.stream(Level.values()).map(Level::name).collect(Collectors.toList());
+        levelNames = new String[Level.values().length];
+        names.toArray(levelNames);
+    }
 
     public static void main(String[] args) throws Exception {
-        if (args.length == 0) {
-            System.out.println(USAGE);
-            System.exit(0);
-        }
+        CommandLineParser parser = new DefaultParser();
 
-        for(String filename: args) {
-            new Stic(filename).run();
+        Options options = new Options();
+        options.addOption(Option.builder("l" )
+                .longOpt("loglevel")
+                .hasArg()
+                .desc("logging level. Possible values: "+String.join(", ", levelNames))
+                .optionalArg(true)
+                .argName("LOGLEVEL")
+                .build());
+
+        final CommandLine cli = parser.parse(options, args);
+
+        if (cli.getArgs().length == 0) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp( "redline [arguments] file [file ...]",
+                    "Run smalltalk compiler and execute FILE from arguments",
+                    options, "\nSee License for details");
+        }
+        else {
+            //Apply cli options
+            if (cli.hasOption("loglevel")) {
+                final String loglevelStr = cli.getOptionValue("loglevel");
+                final Level loglevel = Level.getLevel(loglevelStr);
+                if (loglevel == null) {
+                    throw new IllegalArgumentException("Invalid loglevel value \""+loglevelStr+"\"");
+                }
+                System.out.println(">> loglevel="+loglevelStr);
+
+                Configurator.setLevel("st.redline", loglevel);
+            }
+
+            //Run all files from arguments
+            for (String filename : cli.getArgs()) {
+                new Stic(filename).run();
+            }
         }
     }
 
