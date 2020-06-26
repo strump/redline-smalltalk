@@ -1,20 +1,22 @@
 /* Redline Smalltalk, Copyright (c) James C. Ladd. All rights reserved. See LICENSE in the root of this distribution. */
 package st.redline;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
 import st.redline.classloader.*;
-
-import java.io.*;
+import java.io.File;
 
 public class Stic {
 
-    //private final String[] args;
     private final String scriptFilename;
+    public final static String USAGE = "Usage:\n" +
+            " > redline FILE [FILE ...]\n" +
+            "Run smalltalk compiler and execite FILE from arguments";
 
     public static void main(String[] args) throws Exception {
+        if (args.length == 0) {
+            System.out.println(USAGE);
+            System.exit(0);
+        }
+
         for(String filename: args) {
             new Stic(filename).run();
         }
